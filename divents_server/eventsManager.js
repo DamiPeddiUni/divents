@@ -9,7 +9,7 @@ function createEvent (req, res) {
         photos: [],
         subscribers: []
     })
-    event.save()
+    event.save() // inserisco nel database
     .then((result) => {
         res.send(result);
     })
@@ -31,7 +31,7 @@ function getEventsList (req, res) {
 function getEventDetails (req, res) {
     Event.findById(req.params.id)
     .then((result) => {
-        res.send(result)
+        res.send(result) // ritorniamo il risultato
     })
     .catch((err) => {
         res.send(err)
