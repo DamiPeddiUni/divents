@@ -8,4 +8,3 @@ function getVersion (req, res) {
 }
 
 module.exports = { getVersion }
-//commento inutile
