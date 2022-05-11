@@ -2,7 +2,7 @@ const Event = require('./models/Event')
 
 function createEvent (req, res) {
     const event = new Event({
-        author: "" + Math.random() * 1000000,
+        author: "author" + Math.random() * 1000000,
         title: "title" + Math.random() * 1000000,
         subtitle: "subtitle" + Math.random() * 1000000,
         date: new Date(),
