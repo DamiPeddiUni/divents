@@ -39,3 +39,4 @@ function getEventDetails (req, res) {
 }
 
 module.exports = { createEvent, getEventsList, getEventDetails }
+//commento inutile
