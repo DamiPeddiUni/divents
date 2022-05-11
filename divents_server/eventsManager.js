@@ -1,4 +1,6 @@
 const Event = require('./models/Event')
+const Reservation = require('./models/Reservation')
+const User = require('./models/User')
 
 function createEvent (req, res) {
     const event = new Event({
@@ -38,5 +40,21 @@ function getEventDetails (req, res) {
     })
 }
 
-module.exports = { createEvent, getEventsList, getEventDetails }
+function addReservation (req, res) {
+
+    const reservation = new Reservation({
+        user: req.body.userId,
+        event: req.params.id,
+        qrCode: Math.random() * 1000000,
+    })
+    reservation.save() // inserisco nel database
+    .then((result) => {
+        res.send(result);
+    })
+    .catch((err) => {
+        res.send(err)
+    })
+}
+
+module.exports = { createEvent, getEventsList, getEventDetails, addReservation }
 //commento inutile

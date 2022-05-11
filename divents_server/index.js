@@ -6,7 +6,7 @@ var http = require('http');
 // import funzioni da altri files
 const { getVersion } = require('./version.js')
 const { checkUserAuth, registerUser } = require('./usersManager')
-const { createEvent, getEventsList, getEventDetails } = require('./eventsManager')
+const { createEvent, getEventsList, getEventDetails, addReservation } = require('./eventsManager')
 
 // inizializzo il server
 const app = express();
@@ -39,6 +39,7 @@ API:
 - registerUser (info)
 - createEvent (info)
 - getEventDetails (id)
+- addReservation()
 
 */
 
@@ -64,4 +65,8 @@ app.get('/api/v1/getEventsList', (req, res) => {
 
 app.get('/api/v1/getEventDetails/:id', (req, res) => {
     getEventDetails(req, res);
+})
+
+app.get('/api/v1/addReservation/:id', (req, res) => {
+    addReservation(req, res);
 })
