@@ -62,3 +62,5 @@ app.get('/api/v1/getEventsList', (req, res) => {
 app.get('/api/v1/getEventDetails/:id', (req, res) => {
     getEventDetails(req, res);
 })
+
+// Prova commmento
