@@ -21,7 +21,7 @@ function createEvent (req, res) {
 }
 
 function getEventsList (req, res) {
-    Event.find()
+    Event.find() // trova gli eventi
     .then((result) => {
         res.send(result)
     })
