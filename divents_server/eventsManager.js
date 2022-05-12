@@ -22,17 +22,20 @@ function createEvent (req, res) {
 
 function getEventsList (req, res) {
     Event.find() // trova gli eventi nel db
-    .sort(ascending("date"))
     .then((result) => { // result è un array di eventi
+        
         var dataOggi = new Date();
-        var daRit = Array();
-        var lenght = result.lenght;
+        var daRit = [];
+        var length = result.length;
         for (var i = 0; i < length; i++) {
-            if (result[i].Date <= dataOggi){
+            console.log(i)
+            if (result[i].date >= dataOggi){
                 daRit.push(result[i]);
             }
         }
-        res.send(JSON.stringify(result))
+        console.log(daRit)
+        res.send(JSON.stringify(daRit))
+        
     })
     .catch((err) => {
         res.send(err)
