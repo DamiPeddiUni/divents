@@ -21,9 +21,17 @@ function createEvent (req, res) {
 }
 
 function getEventsList (req, res) {
-    Event.find() // trova gli eventi
-    .then((result) => {
-        res.send(result)
+    Event.find() // trova gli eventi nel db
+    .then((result) => { // result è un array di eventi
+        var dataOggi = new Date();
+        var daRit = Array();
+        var lenght = result.lenght;
+        for (var i = 0; i < length; i++) {
+            if (result[i].Date <= dataOggi){
+                daRit.push(result[i]);
+            }
+        }
+        res.send(JSON.stringify(result))
     })
     .catch((err) => {
         res.send(err)
