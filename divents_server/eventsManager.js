@@ -4,12 +4,18 @@ const User = require('./models/User')
 
 function createEvent (req, res) {
     const event = new Event({
-        author: "author" + Math.random() * 1000000,
-        title: "title" + Math.random() * 1000000,
-        subtitle: "subtitle" + Math.random() * 1000000,
-        date: new Date(),
-        photos: [],
-        subscribers: []
+        author: req.body.author,
+        title: req.body.title,
+        brief_descr: req.body.brief_descr,
+        detailed_descr: req.body.detailed_descr,
+        requirements: req.body.requirements,
+        key_words: req.body.key_words,
+        place: req.body.place,
+        date : req.body.date,
+        photos: req.body.photos,
+        max_subscriber : req.body.max_subscriber,
+        subscriber: req.body.subscriber,
+        partecipants: req.body.partecipants
     })
     event.save() // inserisco nel database
     .then((result) => {
