@@ -75,5 +75,3 @@ function addReservation (req, res) {
 }
 
 module.exports = { createEvent, getEventsList, getEventDetails, addReservation }
-//commento inutile
-//altro commento nuovo
