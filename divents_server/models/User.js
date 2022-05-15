@@ -6,6 +6,9 @@ const userSchema = new Schema({
     name: { type: String, required: true },
     email: { type: String, required: true },
     type: { type: Number, required: true },
+    profile_photo: { type: String, required: true},
+    brief_presentation: { type: String, required: true},
+    location : { type: String, required: true},
     profile_completed: { type: Boolean, required: true }
 })
 

@@ -4,12 +4,18 @@ const User = require('./models/User')
 
 function createEvent (req, res) {
     const event = new Event({
-        author: "author" + Math.random() * 1000000,
-        title: "title" + Math.random() * 1000000,
-        subtitle: "subtitle" + Math.random() * 1000000,
-        date: new Date(),
-        photos: [],
-        subscribers: []
+        author: req.body.author,
+        title: req.body.title,
+        brief_descr: req.body.brief_descr,
+        detailed_descr: req.body.detailed_descr,
+        requirements: req.body.requirements,
+        key_words: req.body.key_words,
+        place: req.body.place,
+        date : req.body.date,
+        photos: req.body.photos,
+        max_subscriber : req.body.max_subscriber,
+        subscriber: req.body.subscriber,
+        partecipants: req.body.partecipants
     })
     event.save() // inserisco nel database
     .then((result) => {
@@ -21,9 +27,21 @@ function createEvent (req, res) {
 }
 
 function getEventsList (req, res) {
-    Event.find() // trova gli eventi
-    .then((result) => {
-        res.send(result)
+    Event.find() // trova gli eventi nel db
+    .then((result) => { // result è un array di eventi
+        
+        var dataOggi = new Date();
+        var daRit = [];
+        var length = result.length;
+        for (var i = 0; i < length; i++) {
+            console.log(i)
+            if (result[i].date >= dataOggi){
+                daRit.push(result[i]);
+            }
+        }
+        console.log(daRit)
+        res.send(JSON.stringify(daRit))
+        
     })
     .catch((err) => {
         res.send(err)
@@ -57,5 +75,3 @@ function addReservation (req, res) {
 }
 
 module.exports = { createEvent, getEventsList, getEventDetails, addReservation }
-//commento inutile
-//altro commento nuovo
