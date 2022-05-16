@@ -42,7 +42,7 @@ function getEventsList (req, res) {
                 daRit.push(result[i]);
             }
         }
-        console.log(daRit)
+        // console.log(daRit)
         res.send(JSON.stringify(daRit))
         
     })
@@ -62,7 +62,7 @@ function getEventDetails (req, res) {
 }
 
 function addReservation (req, res) {
-    
+
     const reservation = new Reservation({
         user: req.body.userId,
         event: req.params.id,
