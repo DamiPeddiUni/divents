@@ -37,7 +37,7 @@ function getEventsList (req, res) {
         var daRit = [];
         var length = result.length;
         for (var i = 0; i < length; i++) {
-            console.log(i)
+            // console.log(i)
             if (result[i].date >= dataOggi){
                 daRit.push(result[i]);
             }
