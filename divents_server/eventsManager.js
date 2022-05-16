@@ -10,7 +10,10 @@ function createEvent (req, res) {
         detailed_descr: req.body.detailed_descr,
         requirements: req.body.requirements,
         key_words: req.body.key_words,
-        place: req.body.place,
+        location_name: req.body.location_name,
+        address : req.body.address,
+        latitude : req.body.latitude,
+        longitude : req.body.longitude,
         date : req.body.date,
         photos: req.body.photos,
         max_subscriber : req.body.max_subscriber,
@@ -59,7 +62,7 @@ function getEventDetails (req, res) {
 }
 
 function addReservation (req, res) {
-
+    
     const reservation = new Reservation({
         user: req.body.userId,
         event: req.params.id,

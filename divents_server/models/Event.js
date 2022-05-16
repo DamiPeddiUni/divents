@@ -8,7 +8,10 @@ const eventSchema = new Schema({
     detailed_descr: { type: String, required: true },
     requirements: { type: String, required: true},
     key_words: {type: Array, required: true},
-    place: { type: String, required : true},
+    location_name: { type: String, required : true}, // nome del luogo
+    address : { type : String, required : true},
+    latitude : { type : String, required : true},
+    longitude : { type : String, required : true},
     date: { type: Date, required: true },
     photos: { type: Array, required: true },
     max_subscribers: { type: Number, required: true},
