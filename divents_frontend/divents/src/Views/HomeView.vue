@@ -7,6 +7,7 @@
       </div>
     </div>
     <div class="events-container">
+      <div class="order-by-panel">Order by: </div>
       <div v-for="(event, index) in events" :key="index">
         <div class="event-card">
           <div class="event-card-image"></div>
