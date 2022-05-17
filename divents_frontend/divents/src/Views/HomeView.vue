@@ -6,8 +6,8 @@
         <input class="search-input" type="text" placeholder="Search">
       </div>
     </div>
+    <div class="order-by-panel">Order by: </div>
     <div class="events-container">
-      <div class="order-by-panel">Order by: </div>
       <div v-for="(event, index) in events" :key="index">
         <div class="event-card">
           <div class="event-card-image"></div>
@@ -197,6 +197,9 @@ export default {
   }
   .load-more-button:hover{
     background: #f2f2f2;
+  }
+  .order-by-panel{
+    margin-bottom: 20px;
   }
 
   @media screen and (max-width: 1024px){

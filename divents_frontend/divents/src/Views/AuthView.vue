@@ -17,7 +17,7 @@ export default {
   name: 'AuthView',
   data() {
     return {
-      
+      user: null,
     };
   },
   methods: {
@@ -26,15 +26,28 @@ export default {
       const provider = new GoogleAuthProvider();
 			signInWithPopup(auth, provider)
 			.then((result) => {
-				console.log(result.user);
+				this.user = result.user;
 				console.log(auth.currentUser);
 
-				// if completed
-        this.$router.push('/');
+        this.checkUserAuth();
 			})
 			.catch((error) => {
 				console.log(error);
 			});
+    },
+    checkUserAuth(){
+      DataService.checkUserAuth(this.user.uid)
+      .then(response => {
+        var profile_completed = response.data.profile_completed
+        if (profile_completed){
+          this.$router.push('/');
+        }else{
+          this.$router.push('/completeProfile');
+        }
+      })
+      .catch(error => {
+        console.log(error)
+      })
     }
   },
   mounted(){

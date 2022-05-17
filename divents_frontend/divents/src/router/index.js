@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/Views/HomeView'
 import DetailView from '@/Views/DetailView'
 import AuthView from '@/Views/AuthView'
+import CompleteProfileView from '@/Views/CompleteProfileView'
 
 import {getAuth, onAuthStateChanged} from 'firebase/auth';
 
@@ -32,6 +33,15 @@ const routes = [
     meta: {
       requiresAuth: false,
       onlyNotAuth: true,
+    }
+  },
+  {
+    path: '/completeProfile',
+    name: 'completeProfile',
+    component: CompleteProfileView,
+    meta: {
+      requiresAuth: true,
+      onlyNotAuth: false,
     }
   },
 ]
