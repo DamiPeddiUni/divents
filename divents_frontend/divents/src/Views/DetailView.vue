@@ -134,6 +134,9 @@ export default {
   }
   .border{
     /*centrare il testo e bottone sulla dx*/
+    position:relative;
+    left: 10px;
+    top: 5px;
   }
   .button{
     background-color: #1B98E0;
@@ -141,6 +144,7 @@ export default {
     width: 100px;
     height: 30px;
     border-width: 0px;
+    color: white;
   }
   
 </style>
