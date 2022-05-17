@@ -8,6 +8,10 @@ class DataService {
     getEventDetails(id) {
         return http.get('/api/v1/getEventDetails/'+id);
     }
+
+    getUserDetails(id){
+        return http.get('/api/v1/getUserDetails/'+id)
+    }
 }
 
 export default new DataService();

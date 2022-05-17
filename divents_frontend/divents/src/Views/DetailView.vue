@@ -1,56 +1,177 @@
 <template>
   <div class="container">
     <!--detailview {{this.$route.params.id}}-->
+
+    
+  <div>
+    <b-carousel
+      id="carousel-1"
+      v-model="slide"
+      :interval="4000"
+      controls
+      indicators
+      background="#ababab"
+      img-width="1024"
+      img-height="480"
+      style="text-shadow: 1px 1px 2px #333;"
+      @sliding-start="onSlideStart"
+      @sliding-end="onSlideEnd"
+      >
+        <!-- Text slides with image -->
+        <b-carousel-slide img-src="https://picsum.photos/1024/480/?image=52">
+        </b-carousel-slide>
+
+        <!-- Slides with custom text -->
+        <b-carousel-slide img-src="https://picsum.photos/1024/480/?image=54">
+        </b-carousel-slide>
+
+        <!-- Slides with image only -->
+        <b-carousel-slide img-src="https://picsum.photos/1024/480/?image=58">
+        </b-carousel-slide>
+
+        <!-- Slides with img slot -->
+        <!-- Note the classes .d-block and .img-fluid to prevent browser default image alignment -->
+        <b-carousel-slide>
+          <template #img>
+            <img
+              class="d-block img-fluid w-100"
+              width="1024"
+              height="480"
+              src="https://picsum.photos/1024/480/?image=55"
+              alt="image slot"
+            >
+          </template>
+        </b-carousel-slide>
+
+        <!-- Slide with blank fluid image to maintain slide aspect ratio 
+        <b-carousel-slide caption="Blank Image" img-blank img-alt="Blank image">
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse eros felis, tincidunt
+            a tincidunt eget, convallis vel est. Ut pellentesque ut lacus vel interdum.
+          </p>
+        </b-carousel-slide>
+        -->
+      </b-carousel>
+      
+
+      <p class="mt-4">
+        Slide #: {{ slide }}<br>
+        Sliding: {{ sliding }}
+      </p>
+    </div>
+
+
+
     <div>
       <img class="image-containter" :src="'data:image/jpg;base64,' + event.photos[0]">
     </div>
+
+
     <div class="grid-container">
-      <div class="event-title">
-        {{event.title}}
+      <table>
+        <tr>
+          <td class="event-title" colspan="2">{{event.title}}</td>
+        </tr>
+        <tr>
+          <td>Location</td>
+          <td class="text-right">{{event.date}}</td>
+        </tr>
+      </table>
+
+      <table class="table">
+        <tr>
+          <td class="event-location">Location</td>
+        </tr>
+        <tr>
+          <td class="event-date">{{day}}/{{month}}/{{year}}</td>
+        </tr>
+        <tr>
+          <td class="partecipants-number">number of partecipants</td>
+        </tr>
+        <tr class="event-button-takepart">
+          <td><button class="button">Iscriviti</button></td>
+        </tr>
+      </table>
+    </div>
+    <div class="grid-container">
+      <div class="event-brief-description">
+        {{event.brief_descr}}Event breif description
       </div>
-      <div class="background">
-        <div class="border">
-          <div class="event-location">
-            Location
-          </div>
-          <div class="event-date">
-            {{day}}/{{month}}/{{year}} <!--Il codice che inizializza queste variabili è acnora da fare-->
-          </div>
-          <div class="partecipants-number">
-            number of partecipants
-          </div>
-          <div class="event-button-takepart">
-            <button class="button">Iscriviti</button>
-          </div>
-        </div>
+      <div>
       </div>
     </div>
 
-    <div class="grid-container">
+    <!--
+    <div class="grid-container-3">
       <div class="container-1">
-        <div class="item">Location</div>
-        <div class="item">Date</div>
+        <div>Location</div>
+        <div>{{event.date}}</div>
       </div>
       <div>
 
       </div>
     </div>
+    -->
 
     <div class="grid-container">
       <div>
-        Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam eaque ipsa, quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt, explicabo. Nemo enim ipsam voluptatem, quia voluptas sit, aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos, qui ratione voluptatem sequi nesciunt, neque porro quisquam est, qui dolorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt, ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit, qui in ea voluptate velit esse, quam nihil molestiae consequatur, vel illum, qui dolorem eum fugiat, quo voluptas nulla pariatur? [33] At vero eos et accusamus et iusto odio dignissimos ducimus, qui blanditiis praesentium voluptatum deleniti atque corrupti, quos dolores et quas molestias excepturi sint, obcaecati cupiditate non provident, similique sunt in culpa, qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio, cumque nihil impedit, quo minus id, quod maxime placeat, facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet, ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.
+        {{event.detailed_descr}}Event Detailed description
       </div>
+    </div>
+
+    <div class="grid-container">
+      <table class="table">
+        <tr>
+          <td>{{event.requirements}}</td>Event Requirements
+        </tr>
+      </table>
+      <div>
+        
+      </div>
+    </div>
+
+    <div class="grid-container">
+      MAPPA
+    </div>
+
+    <div class="grid-container">
+      <table class="table">
+        <tr rowspan="3">
+          <td rowspan="3">
+            immagine profilo
+          </td>
+          <td class="event-brief-description">
+            {{user.name}} Nome utente
+          </td>
+          <td>
+            View profile
+          </td>
+        </tr>
+        <tr>
+          <td>
+             Descrizione utente
+          </td>
+          <td>
+           
+          </td>
+          
+        </tr>
+        <tr>
+          <td>
+            Contatta
+          </td>
+          <td>
+          </td>
+        </tr>
+      </table>
     </div>
   </div>
 </template>
 
+
+
 <script>
 import DataService from '@/services/DataService';
-import moment from 'moment';
-import Vue from 'vue'
-
-
-
 
 export default {
   name: 'DetailView',
@@ -59,6 +180,11 @@ export default {
       event: {
         photos: []
       },
+      user:{
+
+      },
+      slide: 0,
+      sliding: null,
       day:'giorno',
       month:'mese',
       year:'anno'
@@ -69,18 +195,37 @@ export default {
       DataService.getEventDetails(this.$route.params.id)
       .then(response => {
         this.event = response.data
-        //console.log(this.event)
+        console.log("Author id:")
+        console.log(this.event.author)
       })
       .catch(error => {
-        this.events = response.data
+        
+      })
+    },
+    getUserDetails(){
+      DataService.getUserDetails(this.event.author)
+      .then(response => {
+        this.user = response.data
+        console.log(this.user)
+      })
+      .catch(error => {
+        
       })
     },
     printDate(){
       //Codice per formattare la data in modo giusto
+      day=this.event.data.str.substr(9,10);
+    },
+    onSlideStart(slide) {
+      this.sliding = true
+    },
+    onSlideEnd(slide) {
+      this.sliding = false
     }
   },
   mounted(){
     this.getEventDetails()
+    this.getUserDetails()
   }
 }
 </script>
@@ -110,10 +255,24 @@ export default {
     gap: 10px;
     margin-top: 40px;
   }
+  .grid-container-3{
+    display: grid;
+    width: 100%;
+    grid-template-columns: 1fr 350px;
+    gap: 10px;
+    height: 0px;
+  }
   .background{
     background-color:rgb(240, 240, 240);
-    width: 350px;
+    width: auto;
     height: 100px;
+    border-radius: 15px;
+    border-spacing: 50px;
+  }
+  .background-1{
+    background-color:rgb(240, 240, 240);
+    width: auto;
+    height: auto;
     border-radius: 15px;
   }
   .grid-container-1{
@@ -146,5 +305,52 @@ export default {
     border-width: 0px;
     color: white;
   }
+  .table{
+    border-collapse: separate;
+    border-spacing: 15px 5px;
+    background-color:rgb(240, 240, 240);
+    width: auto;
+    height: 100px;
+    border-radius: 15px;
+    border-spacing: 10px;
+  }
+  .event-brief-description{
+    font-size: 25px;
+    font-weight: bold;
+    align-content: left;
+  }
+
+
+  /************************************************ */
+  .bd-example {
+    position: relative;
+    padding: 1rem;
+    margin: 1rem -15px 0;
+    border: solid #f8f9fa;
+    border-width: 0.2rem 0 0;
+  }
+  .carousel {
+    position: relative;
+  }
+  .carousel-indicators {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 15;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-pack: center;
+    justify-content: center;
+    padding-left: 0;
+    margin-right: 15%;
+    margin-left: 15%;
+    list-style: none;
+  }
+
+
+
+
+
   
 </style>
