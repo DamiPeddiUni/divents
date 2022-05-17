@@ -12,6 +12,8 @@ paths:
     x-summary: Events Manager
     get:
       summary: getEventsList
+      description: >-
+        Get the events list.
       responses:
         '200':
           description: 'Collection of events'
@@ -21,6 +23,47 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Event'
+  /users:
+    x-summary: Users Manager
+    post:
+      summary: registerUser
+      description: >-
+        Complete the profile of the user.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - type
+                - profile_photo
+                - brief_presentation
+                - location
+                - profile_completed
+              properties:
+                name:
+                  type: string
+                  description: "Name of the user"
+                type:
+                  type: integer
+                  description: "Type of user (event manager or private user"
+                profile_photo:
+                  type: string
+                  description: "Profile picture"
+                brief_presentation:
+                  type: string
+                  description: "Brief presentation of the user"
+                location :
+                  type: string
+                  description: "Name of the location where the event takes place"
+                profile_completed:
+                  type: boolean
+                  description: "Information about the completeness of the profile"
+      responses:
+        '201':
+          description: "Information compiled successfully."
+      
 components:
   schemas:
     Event:
@@ -87,3 +130,39 @@ components:
         partecipants:
           type: array
           description: 'List of users who have joined the event'
+    User:
+      type: object
+      required:
+        - auth_id
+        - name
+        - email
+        - type
+        - profile_photo
+        - brief_presentation
+        - location
+        - profile_completed
+      properties:
+        auth_id: 
+          type: string
+          description: "ID of the user given after the authentication"
+        name:
+          type: string
+          description: "Name of the user"
+        email:
+          type: string
+          description: "Email of the user"
+        type:
+          type: integer
+          description: "Type of user (event manager or private user"
+        profile_photo:
+          type: string
+          description: "Profile picture"
+        brief_presentation:
+          type: string
+          description: "Brief presentation of the user"
+        location :
+          type: string
+          description: "Name of the location where the event takes place"
+        profile_completed:
+          type: boolean
+          description: "Information about the completeness of the profile"
