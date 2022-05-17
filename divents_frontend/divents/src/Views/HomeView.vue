@@ -33,11 +33,13 @@
 <script>
 
 import DataService from '@/services/DataService';
+import {getAuth, onAuthStateChanged} from 'firebase/auth';
 
 export default {
   name: 'HomeView',
   data() {
     return {
+      isLoggedIn: false,
       events: {},
     };
   },
@@ -50,10 +52,30 @@ export default {
       .catch(error => {
         console.log(error)
       })
+    },
+    handleAuth(){
+      onAuthStateChanged(getAuth(), (user) => {
+        if (user) {
+          this.isLoggedIn = true;
+          console.log("Logged in as: " + user)
+          /*
+          {
+            uid: user.uid,
+            name: user.displayName,
+            email: user.email,
+            photoURL: user.photoURL
+          };
+          */
+        } else {
+          this.isLoggedIn = false;
+          console.log("User is not authenticated")
+        }
+      });
     }
   },
   mounted(){
     this.getEventsList()
+    this.handleAuth()
   }
 }
 </script>

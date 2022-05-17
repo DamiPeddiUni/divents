@@ -2,6 +2,9 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 import HomeView from '@/Views/HomeView'
 import DetailView from '@/Views/DetailView'
+import AuthView from '@/Views/AuthView'
+
+import {getAuth, onAuthStateChanged} from 'firebase/auth';
 
 const routes = [
   {
@@ -9,7 +12,8 @@ const routes = [
     name: 'home',
     component: HomeView,
     meta: {
-      requiresAuth: false
+      requiresAuth: false,
+      onlyNotAuth: false,
     }
   },
   {
@@ -17,7 +21,17 @@ const routes = [
     name: 'event_detail',
     component: DetailView,
     meta: {
-      requiresAuth: false
+      requiresAuth: false,
+      onlyNotAuth: false,
+    }
+  },
+  {
+    path: '/auth',
+    name: 'auth',
+    component: AuthView,
+    meta: {
+      requiresAuth: false,
+      onlyNotAuth: true,
     }
   },
 ]
@@ -26,5 +40,36 @@ const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
 })
+
+router.beforeEach(async (to, from, next) => {
+  if (to.matched.some((record) => record.meta.requiresAuth)) {
+    if (await getCurrentUser()) {
+      next()
+    } else {
+      next('/auth')
+    }
+  } else if (to.matched.some((record) => record.meta.onlyNotAuth)) {
+    if (await getCurrentUser()) {
+      next('/')
+    } else {
+      next()
+    }
+  } else {
+    next()
+  }
+})
+
+const getCurrentUser = () => {
+  return new Promise((resolve, reject) => {
+    const removeListener = onAuthStateChanged(
+      getAuth(), 
+      (user) => {
+        removeListener();
+        resolve(user);
+      },
+      reject
+    );
+  })
+}
 
 export default router
