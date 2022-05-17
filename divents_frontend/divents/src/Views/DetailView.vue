@@ -2,66 +2,6 @@
   <div class="container">
     <!--detailview {{this.$route.params.id}}-->
 
-    
-  <div>
-    <b-carousel
-      id="carousel-1"
-      v-model="slide"
-      :interval="4000"
-      controls
-      indicators
-      background="#ababab"
-      img-width="1024"
-      img-height="480"
-      style="text-shadow: 1px 1px 2px #333;"
-      @sliding-start="onSlideStart"
-      @sliding-end="onSlideEnd"
-      >
-        <!-- Text slides with image -->
-        <b-carousel-slide img-src="https://picsum.photos/1024/480/?image=52">
-        </b-carousel-slide>
-
-        <!-- Slides with custom text -->
-        <b-carousel-slide img-src="https://picsum.photos/1024/480/?image=54">
-        </b-carousel-slide>
-
-        <!-- Slides with image only -->
-        <b-carousel-slide img-src="https://picsum.photos/1024/480/?image=58">
-        </b-carousel-slide>
-
-        <!-- Slides with img slot -->
-        <!-- Note the classes .d-block and .img-fluid to prevent browser default image alignment -->
-        <b-carousel-slide>
-          <template #img>
-            <img
-              class="d-block img-fluid w-100"
-              width="1024"
-              height="480"
-              src="https://picsum.photos/1024/480/?image=55"
-              alt="image slot"
-            >
-          </template>
-        </b-carousel-slide>
-
-        <!-- Slide with blank fluid image to maintain slide aspect ratio 
-        <b-carousel-slide caption="Blank Image" img-blank img-alt="Blank image">
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse eros felis, tincidunt
-            a tincidunt eget, convallis vel est. Ut pellentesque ut lacus vel interdum.
-          </p>
-        </b-carousel-slide>
-        -->
-      </b-carousel>
-      
-
-      <p class="mt-4">
-        Slide #: {{ slide }}<br>
-        Sliding: {{ sliding }}
-      </p>
-    </div>
-
-
-
     <div>
       <img class="image-containter" :src="'data:image/jpg;base64,' + event.photos[0]">
     </div>
@@ -168,8 +108,6 @@
   </div>
 </template>
 
-
-
 <script>
 import DataService from '@/services/DataService';
 
@@ -180,23 +118,20 @@ export default {
       event: {
         photos: []
       },
-      user:{
-
-      },
-      slide: 0,
-      sliding: null,
-      day:'giorno',
-      month:'mese',
-      year:'anno'
+      user: "",
+      data: "",
+      day: "a",
+      month: "a",
+      year: "a"
     };
   },
   methods: {
     getEventDetails(){
-      DataService.getEventDetails(this.$route.params.id)
+      return DataService.getEventDetails(this.$route.params.id)
       .then(response => {
         this.event = response.data
-        console.log("Author id:")
-        console.log(this.event.author)
+        /*console.log("Author id:")
+        console.log(this.event.author)*/
       })
       .catch(error => {
         
@@ -206,7 +141,6 @@ export default {
       DataService.getUserDetails(this.event.author)
       .then(response => {
         this.user = response.data
-        console.log(this.user)
       })
       .catch(error => {
         
@@ -214,18 +148,17 @@ export default {
     },
     printDate(){
       //Codice per formattare la data in modo giusto
-      day=this.event.data.str.substr(9,10);
-    },
-    onSlideStart(slide) {
-      this.sliding = true
-    },
-    onSlideEnd(slide) {
-      this.sliding = false
+      var data = new String(this.event.date)
+      this.year=this.data.substring(0,4);
+      this.day=this.data.substring(5,7);
+      this.month=this.data.substring(8,10);
+      console.log(year)
     }
   },
-  mounted(){
-    this.getEventDetails()
+  async mounted(){
+    await this.getEventDetails()
     this.getUserDetails()
+    this.printDate()
   }
 }
 </script>
@@ -319,34 +252,11 @@ export default {
     font-weight: bold;
     align-content: left;
   }
+  .event-location{
+    color: #1B98E0;
+    font-weight: bold;
+  }
 
-
-  /************************************************ */
-  .bd-example {
-    position: relative;
-    padding: 1rem;
-    margin: 1rem -15px 0;
-    border: solid #f8f9fa;
-    border-width: 0.2rem 0 0;
-  }
-  .carousel {
-    position: relative;
-  }
-  .carousel-indicators {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 15;
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-pack: center;
-    justify-content: center;
-    padding-left: 0;
-    margin-right: 15%;
-    margin-left: 15%;
-    list-style: none;
-  }
 
 
 
