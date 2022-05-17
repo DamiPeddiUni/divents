@@ -46,9 +46,10 @@ export default {
 
 <style scoped>
   .container{
-    width: 100%;
+    width: calc(100% - 20px);
     max-width: 1024px;
     margin: 0 auto;
+    padding: 10px;
   }
   .auth-title{
     font-size: 50px;

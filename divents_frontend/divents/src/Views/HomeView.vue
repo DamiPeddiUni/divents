@@ -83,8 +83,9 @@ export default {
 
 <style scoped>
   .container{
-    width: 100%;
+    width: calc(100% - 20px);
     max-width: 1024px;
+    padding: 10px;
     margin: 0 auto;
   }
   .search-title{
