@@ -6,8 +6,8 @@
         <input class="search-input" type="text" placeholder="Search">
       </div>
     </div>
+    <div class="order-by-panel">Order by: </div>
     <div class="events-container">
-      <div class="order-by-panel">Order by: </div>
       <div v-for="(event, index) in events" :key="index">
         <div class="event-card">
           <div class="event-card-image"></div>
@@ -33,11 +33,13 @@
 <script>
 
 import DataService from '@/services/DataService';
+import {getAuth, onAuthStateChanged} from 'firebase/auth';
 
 export default {
   name: 'HomeView',
   data() {
     return {
+      isLoggedIn: false,
       events: {},
     };
   },
@@ -50,10 +52,30 @@ export default {
       .catch(error => {
         console.log(error)
       })
+    },
+    handleAuth(){
+      onAuthStateChanged(getAuth(), (user) => {
+        if (user) {
+          this.isLoggedIn = true;
+          console.log("Logged in as: " + user)
+          /*
+          {
+            uid: user.uid,
+            name: user.displayName,
+            email: user.email,
+            photoURL: user.photoURL
+          };
+          */
+        } else {
+          this.isLoggedIn = false;
+          console.log("User is not authenticated")
+        }
+      });
     }
   },
   mounted(){
     this.getEventsList()
+    this.handleAuth()
   }
 }
 </script>
@@ -61,8 +83,9 @@ export default {
 
 <style scoped>
   .container{
-    width: 100%;
+    width: calc(100% - 20px);
     max-width: 1024px;
+    padding: 10px;
     margin: 0 auto;
   }
   .search-title{
@@ -174,6 +197,9 @@ export default {
   }
   .load-more-button:hover{
     background: #f2f2f2;
+  }
+  .order-by-panel{
+    margin-bottom: 20px;
   }
 
   @media screen and (max-width: 1024px){
