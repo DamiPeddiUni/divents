@@ -1,9 +1,20 @@
 const User = require('./models/User')
 
 function checkUserAuth (req, res) { // dice se il profilo dell'utente è completo oppure no
-    User.findById(req.params.id)
+    User.find({auth_id :req.params.id})
     .then((result) => {
-        res.send(result.profile_completed)
+        if (result.length > 0){
+            var response = {
+                profile_completed: result.profile_completed
+            }
+            res.send(JSON.stringify(response))
+        }else{
+            var response = {
+                profile_completed: false
+            }
+            res.send(JSON.stringify(response))
+        }
+        
     })
     .catch((err) => {
         res.send(err)

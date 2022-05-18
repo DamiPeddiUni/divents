@@ -1,0 +1,244 @@
+openapi: 3.0.0
+info:
+  version: '1.0'
+  title: "divents OpenAPI"
+  description: API to manage events.
+  license:
+    name: MIT
+servers:
+  - url: http://localhost:3000/
+paths:
+  /events:
+    x-summary: Events Manager
+    get:
+      summary: getEventsList
+      description: >-
+        Get the events list.
+      responses:
+        '200':
+          description: 'Collection of events'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Event'
+    post:
+      summary: createEvent
+      description: >-
+        Create an event.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - author
+                - title
+                - brief_descr
+                - detailed_descr
+                - requirements
+                - key_words
+                - location_name
+                - address
+                - latitude
+                - longitude
+                - date
+                - photos
+                - max_subscribers
+                - subscribers
+                - partecipants
+              properties:
+                author:
+                  type: string
+                  description: 'ID of the creator'
+                title:
+                  type: string
+                  description: 'Name of the event'
+                brief_descr:
+                  type: string
+                  description: 'Brief description of the event'
+                detailed_descr:
+                  type: string
+                  description: 'Detailed description of the event'
+                requirements:
+                  type: string
+                  description: 'Requirements to access the event'
+                key_words:
+                  type: array
+                  description: 'List of key words of the event'
+                location_name:
+                  type: string
+                  description: 'Name of the location of the event'
+                address:
+                  type: string
+                  description: 'Address where the event takes place'
+                latitude:
+                  type: string
+                  description: 'Latitude where the event takes place'
+                longitude:
+                  type: string
+                  description: 'Longitude where the event takes place'
+                date:
+                  type: string
+                  description: 'Date when the event takes place'
+                photos:
+                  type: array
+                  description: 'Photo of the location'
+                max_subscribers:
+                  type: integer
+                  description: 'Numbers of allowed partecipants to the event'
+                subscribers:
+                  type: array
+                  description: 'List of users who have registered for the event'
+                partecipants:
+                  type: array
+                  description: 'List of users who have joined the event'
+      responses:
+        '201':
+          description: "Event created successfully."
+          
+          
+  /users:
+    x-summary: Users Manager
+    post:
+      summary: registerUser
+      description: >-
+        Complete the profile of the user.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - type
+                - profile_photo
+                - brief_presentation
+                - location
+                - profile_completed
+              properties:
+                name:
+                  type: string
+                  description: "Name of the user"
+                type:
+                  type: integer
+                  description: "Type of user (event manager or private user"
+                profile_photo:
+                  type: string
+                  description: "Profile picture"
+                brief_presentation:
+                  type: string
+                  description: "Brief presentation of the user"
+                location :
+                  type: string
+                  description: "Name of the location where the event takes place"
+                profile_completed:
+                  type: boolean
+                  description: "Information about the completeness of the profile"
+      responses:
+        '201':
+          description: "Information compiled successfully."
+      
+components:
+  schemas:
+    Event:
+      type: object
+      required:
+        - author
+        - title
+        - brief_descr
+        - detailed_descr
+        - requirements
+        - key_words
+        - location_name
+        - address
+        - latitude
+        - longitude
+        - date
+        - photos
+        - max_subscribers
+        - subscribers
+        - partecipants
+      properties:
+        author:
+          type: string
+          description: 'ID of the creator'
+        title:
+          type: string
+          description: 'Name of the event'
+        brief_descr:
+          type: string
+          description: 'Brief description of the event'
+        detailed_descr:
+          type: string
+          description: 'Detailed description of the event'
+        requirements:
+          type: string
+          description: 'Requirements to access the event'
+        key_words:
+          type: array
+          description: 'List of key words of the event'
+        location_name:
+          type: string
+          description: 'Name of the location of the event'
+        address:
+          type: string
+          description: 'Address where the event takes place'
+        latitude:
+          type: string
+          description: 'Latitude where the event takes place'
+        longitude:
+          type: string
+          description: 'Longitude where the event takes place'
+        date:
+          type: string
+          description: 'Date when the event takes place'
+        photos:
+          type: array
+          description: 'Photo of the location'
+        max_subscribers:
+          type: integer
+          description: 'Numbers of allowed partecipants to the event'
+        subscribers:
+          type: array
+          description: 'List of users who have registered for the event'
+        partecipants:
+          type: array
+          description: 'List of users who have joined the event'
+    User:
+      type: object
+      required:
+        - auth_id
+        - name
+        - email
+        - type
+        - profile_photo
+        - brief_presentation
+        - location
+        - profile_completed
+      properties:
+        auth_id: 
+          type: string
+          description: "ID of the user given after the authentication"
+        name:
+          type: string
+          description: "Name of the user"
+        email:
+          type: string
+          description: "Email of the user"
+        type:
+          type: integer
+          description: "Type of user (event manager or private user"
+        profile_photo:
+          type: string
+          description: "Profile picture"
+        brief_presentation:
+          type: string
+          description: "Brief presentation of the user"
+        location :
+          type: string
+          description: "Name of the location where the event takes place"
+        profile_completed:
+          type: boolean
+          description: "Information about the completeness of the profile"

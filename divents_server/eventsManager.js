@@ -37,12 +37,12 @@ function getEventsList (req, res) {
         var daRit = [];
         var length = result.length;
         for (var i = 0; i < length; i++) {
-            console.log(i)
+            // console.log(i)
             if (result[i].date >= dataOggi){
                 daRit.push(result[i]);
             }
         }
-        console.log(daRit)
+        // console.log(daRit)
         res.send(JSON.stringify(daRit))
         
     })
@@ -62,7 +62,7 @@ function getEventDetails (req, res) {
 }
 
 function addReservation (req, res) {
-    
+
     const reservation = new Reservation({
         user: req.body.userId,
         event: req.params.id,
