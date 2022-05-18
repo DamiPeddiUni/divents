@@ -170,13 +170,6 @@ export default {
     gap: 10px;
     margin-top: 40px;
   }
-  .grid-container-3{
-    display: grid;
-    width: 100%;
-    grid-template-columns: 1fr 350px;
-    gap: 10px;
-    height: 0px;
-  }
   .background{
     background-color:rgb(240, 240, 240);
     width: auto;
