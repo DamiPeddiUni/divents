@@ -4,6 +4,7 @@ import HomeView from '@/Views/HomeView'
 import DetailView from '@/Views/DetailView'
 import AuthView from '@/Views/AuthView'
 import CompleteProfileView from '@/Views/CompleteProfileView'
+import EventCreationView from '@/Views/EventCreationView'
 
 import {getAuth, onAuthStateChanged} from 'firebase/auth';
 
@@ -39,6 +40,15 @@ const routes = [
     path: '/completeProfile',
     name: 'completeProfile',
     component: CompleteProfileView,
+    meta: {
+      requiresAuth: true,
+      onlyNotAuth: false,
+    }
+  },
+  {
+    path: '/createEvent',
+    name: 'createEvent',
+    component: EventCreationView,
     meta: {
       requiresAuth: true,
       onlyNotAuth: false,
