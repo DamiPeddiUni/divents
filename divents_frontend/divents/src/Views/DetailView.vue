@@ -1,11 +1,8 @@
 <template>
   <div class="container">
-    <!--detailview {{this.$route.params.id}}-->
-
     <div>
       <img class="image-containter" :src="'data:image/jpg;base64,' + event.photos[0]">
     </div>
-
 
     <div class="grid-container">
       <table>
@@ -14,7 +11,7 @@
         </tr>
         <tr>
           <td>Location</td>
-          <td class="text-right">{{event.date}}</td>
+          <td class="text-right">{{data}}</td>
         </tr>
       </table>
 
@@ -23,7 +20,7 @@
           <td class="event-location">Location</td>
         </tr>
         <tr>
-          <td class="event-date">{{day}}/{{month}}/{{year}}</td>
+          <td class="event-date">{{data}}</td>
         </tr>
         <tr>
           <td class="partecipants-number">number of partecipants</td>
@@ -40,18 +37,6 @@
       <div>
       </div>
     </div>
-
-    <!--
-    <div class="grid-container-3">
-      <div class="container-1">
-        <div>Location</div>
-        <div>{{event.date}}</div>
-      </div>
-      <div>
-
-      </div>
-    </div>
-    -->
 
     <div class="grid-container">
       <div>
@@ -84,7 +69,7 @@
             {{user.name}} Nome utente
           </td>
           <td>
-            View profile
+            <a v-bind:href="''+userLink">View profile</a>
           </td>
         </tr>
         <tr>
@@ -98,7 +83,7 @@
         </tr>
         <tr>
           <td>
-            Contatta
+            <a href="">Contatta</a>
           </td>
           <td>
           </td>
@@ -120,9 +105,6 @@ export default {
       },
       user: "",
       data: "",
-      day: "a",
-      month: "a",
-      year: "a"
     };
   },
   methods: {
@@ -130,8 +112,9 @@ export default {
       return DataService.getEventDetails(this.$route.params.id)
       .then(response => {
         this.event = response.data
-        /*console.log("Author id:")
-        console.log(this.event.author)*/
+        //Da modificare o aggiungere una volta completata la pagina visualizzazione utente
+        //userLink="http://localhost:8080/user/"+this.event.author
+        this.printDate()
       })
       .catch(error => {
         
@@ -147,18 +130,17 @@ export default {
       })
     },
     printDate(){
-      //Codice per formattare la data in modo giusto
-      var data = new String(this.event.date)
-      this.year=this.data.substring(0,4);
-      this.day=this.data.substring(5,7);
-      this.month=this.data.substring(8,10);
-      console.log(year)
+      var date = new Date(this.event.date)
+      var year=date.getFullYear()
+      var month=date.getMonth()+1
+      var day=date.getDate()
+      this.data= day+"/"+month+"/"+year
+      
     }
   },
-  async mounted(){
-    await this.getEventDetails()
+  mounted(){
+    this.getEventDetails()
     this.getUserDetails()
-    this.printDate()
   }
 }
 </script>
@@ -256,11 +238,4 @@ export default {
     color: #1B98E0;
     font-weight: bold;
   }
-
-
-
-
-
-
-  
 </style>
