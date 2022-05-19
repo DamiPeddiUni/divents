@@ -75,8 +75,8 @@
                     </tr>
                 </table>
             </div>
-              <input type="file" v-bind="image">
-              <input type="button" @click="saveImage(image)">
+              <input type="file" ref="fileInput">
+              <input id="event-image" type="button" @click="saveImage" text="salva immagini">
             <div>
               <!--<input type="file" id="files" name="files" multiple v-model="details.photos">-->
               <!--
@@ -90,14 +90,11 @@
 
 <script>
 import DataService from '@/services/DataService';
-
+var images = [];
 export default {
   name: 'CreateEventView',
   data() {
     return {
-      i:0,
-      image: "",
-      images: [],
       details: {
         author: "",
         title: "",
@@ -127,10 +124,23 @@ export default {
     print(){
       console.log(this.details.title)
     },
-    saveImage(image){
-      images[this.i]=image
-      this.i++
-    }
+    saveImage(){
+      image=document.getElementById("event-image")
+      this.$refs.fileInput.value=null;
+      //images.push(getBase64(image))
+      console.log("Funzione chiamata")
+      console.log(images[0])
+    },
+    /*getBase64(file) {
+      var reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = function () {
+        console.log(reader.result);
+      };
+      reader.onerror = function (error) {
+        console.log('Error: ', error);
+      };
+    }*/
   },
   mounted(){
     

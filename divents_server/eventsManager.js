@@ -4,7 +4,7 @@ const User = require('./models/User')
 
 function createEvent (req, res) {
     // da auth_id a id utente
-    //user.findOne
+    User.findOne({auth_id :req.params.id})
     const event = new Event({
         author: req.body.author,
         title: req.body.title,
