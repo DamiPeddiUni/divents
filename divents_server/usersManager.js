@@ -56,5 +56,15 @@ function registerUser (req, res) { // inserisco i dati mancanti nel profilo dell
     
 }
 
+function getUserDetails (req, res){ //cerco un profilo
+    User.findById(req.params.id)
+    .then((result) => {
+        res.send(result)
+    })
+    .catch((err) => {
+        res.send(err)
+    })
+}
 
-module.exports = { checkUserAuth, registerUser }
+
+module.exports = { checkUserAuth, registerUser, getUserDetails }
