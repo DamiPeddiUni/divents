@@ -16,6 +16,15 @@ class DataService {
     checkUserAuth(id){
         return http.get('/api/v1/checkUserAuth/' + id);
     }
+    setNewEvent(details){
+        http.post('url',details)
+        .then(function(response){
+            return "correct post"
+        })
+        .catch(function(error){
+            return "error"
+        });
+    }
 }
 
 export default new DataService();
