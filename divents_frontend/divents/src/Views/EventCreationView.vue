@@ -75,6 +75,8 @@
                     </tr>
                 </table>
             </div>
+              <input type="file" v-bind="image">
+              <input type="button" @click="saveImage(image)">
             <div>
               <!--<input type="file" id="files" name="files" multiple v-model="details.photos">-->
               <!--
@@ -93,6 +95,9 @@ export default {
   name: 'CreateEventView',
   data() {
     return {
+      i:0,
+      image: "",
+      images: [],
       details: {
         author: "",
         title: "",
@@ -121,6 +126,10 @@ export default {
     },
     print(){
       console.log(this.details.title)
+    },
+    saveImage(image){
+      images[this.i]=image
+      this.i++
     }
   },
   mounted(){
