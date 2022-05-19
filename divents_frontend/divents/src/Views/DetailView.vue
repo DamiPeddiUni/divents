@@ -26,7 +26,7 @@
           <td class="partecipants-number">number of partecipants</td>
         </tr>
         <tr class="event-button-takepart">
-          <td><button class="button">Iscriviti</button></td>
+          <td><button class="button" @click="takePartButton">Iscriviti</button></td>
         </tr>
       </table>
     </div>
@@ -136,6 +136,9 @@ export default {
       var day=date.getDate()
       this.data= day+"/"+month+"/"+year
       
+    },
+    takePartButton(){
+      console.log("take part")
     }
   },
   mounted(){
