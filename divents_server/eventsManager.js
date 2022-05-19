@@ -71,6 +71,7 @@ function addReservation (req, res) {
     reservation.save() // inserisco nel database
     .then((result) => {
         res.send(result);
+        // send email
     })
     .catch((err) => {
         res.send(err)
