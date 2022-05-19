@@ -10,6 +10,7 @@ const { createEvent, getEventsList, getEventDetails, addReservation } = require(
 
 // inizializzo il server
 const app = express();
+app.use(express.json())
 app.use(cors())
 const server = http.createServer(app);
 
@@ -51,11 +52,11 @@ app.get('/api/v1/checkUserAuth/:id', (req, res) => {
     checkUserAuth(req, res);
 })
 
-app.get('/api/v1/registerUser', (req, res) => {
+app.post('/api/v1/registerUser', (req, res) => {
     registerUser(req, res);
 })
 
-app.get('/api/v1/createEvent', (req, res) => {
+app.post('/api/v1/createEvent', (req, res) => {
     createEvent(req, res);
 })
 
