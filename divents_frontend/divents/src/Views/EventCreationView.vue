@@ -122,7 +122,7 @@ export default {
       details.author="" //devo prenderlo tramite api dal login
       details.latitude="" //devo prenderla da delle mappe??
       details.longitude="" //devo prenderla da delle mappe??
-      DataService.setNewEvent(details)
+      DataService.createEvent(details)
     },
     print(){
       console.log(this.details.title)

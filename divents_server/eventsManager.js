@@ -3,6 +3,8 @@ const Reservation = require('./models/Reservation')
 const User = require('./models/User')
 
 function createEvent (req, res) {
+    // da auth_id a id utente
+    //user.findOne
     const event = new Event({
         author: req.body.author,
         title: req.body.title,

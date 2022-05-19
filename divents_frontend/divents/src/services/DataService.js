@@ -19,14 +19,8 @@ class DataService {
     registerUser(data){
         return http.post('/api/v1/registerUser', data);
     }
-    setNewEvent(details){
-        http.post('url',details)
-        .then(function(response){
-            return "correct post"
-        })
-        .catch(function(error){
-            return "error"
-        });
+    createEvent(details){
+        return http.post('/api/v1/createEvent', details);
     }
 }
 
