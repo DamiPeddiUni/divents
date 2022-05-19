@@ -39,6 +39,7 @@ export default {
       DataService.checkUserAuth(this.user.uid)
       .then(response => {
         var profile_completed = response.data.profile_completed
+        
         if (profile_completed){
           this.$router.push('/');
         }else{

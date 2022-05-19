@@ -7,6 +7,9 @@ class DataService {
     checkUserAuth(id){
         return http.get('/api/v1/checkUserAuth/' + id);
     }
+    registerUser(data){
+        return http.post('/api/v1/registerUser', data);
+    }
 }
 
 export default new DataService();

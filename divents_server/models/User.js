@@ -8,7 +8,7 @@ const userSchema = new Schema({
     type: { type: Number, required: true },
     profile_photo: { type: String, required: true},
     brief_presentation: { type: String, required: true},
-    location : { type: String, required: true},
+    location : { type: String, required: false},
     profile_completed: { type: Boolean, required: true }
 })
 
