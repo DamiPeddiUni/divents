@@ -75,8 +75,8 @@
                     </tr>
                 </table>
             </div>
-              <input type="file" ref="fileInput">
-              <input id="event-image" type="button" @click="saveImage" text="salva immagini">
+              <input id="event-image-file" type="file" ref="fileInput">
+              <input id="event-image-btn" type="button" @click="saveImage" text="salva immagini">
             <div>
               <!--<input type="file" id="files" name="files" multiple v-model="details.photos">-->
               <!--
@@ -90,7 +90,6 @@
 
 <script>
 import DataService from '@/services/DataService';
-var images = [];
 export default {
   name: 'CreateEventView',
   data() {
@@ -109,7 +108,9 @@ export default {
         date: "",
         photos: "",
         max_subscribers: "",
-      }
+      },
+      image: "",
+      images: []
     };
   },
   methods: {
@@ -125,25 +126,23 @@ export default {
       console.log(this.details.title)
     },
     saveImage(){
-      image=document.getElementById("event-image")
-      this.$refs.fileInput.value=null;
-      //images.push(getBase64(image))
-      console.log("Funzione chiamata")
-      console.log(images[0])
+      this.image = this.$refs.fileInput.files[0]
+      console.log(this.image)
+      this.getBase64(this.image)
+      
     },
-    /*getBase64(file) {
+    getBase64(file) {
       var reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = function () {
-        console.log(reader.result);
+        return reader.result
       };
       reader.onerror = function (error) {
         console.log('Error: ', error);
       };
-    }*/
+    }
   },
   mounted(){
-    
   }
 }
 </script>
