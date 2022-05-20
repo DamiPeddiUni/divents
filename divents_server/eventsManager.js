@@ -29,7 +29,9 @@ function createEvent (req, res) {
     })
 }
 
-function getEventsList (req, res) {
+
+
+function getEventsList (req, res) {  
     Event.find() // trova gli eventi nel db
     .then((result) => { // result è un array di eventi
         
@@ -77,4 +79,29 @@ function addReservation (req, res) {
     })
 }
 
-module.exports = { createEvent, getEventsList, getEventDetails, addReservation }
+function checkReservation (req, res) {
+    User.findOne({
+        user : req.params.id, 
+        event : req.body.id, 
+        qrCode : req.body
+    })
+    .then( (result) => {
+        if (result){
+            var response = {
+                permission : true
+            }
+            res.send(JSON.stringify(response))
+        } else {
+            var response = {
+                permission : false
+            }
+            res.send(JSON.stringify(response))
+        }
+    })
+    .catch((err) => {
+        console.log(err)
+        res.send(err)
+    })
+}
+
+module.exports = { createEvent, getEventsList, getEventDetails, addReservation, checkReservation }
