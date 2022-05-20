@@ -29,7 +29,9 @@ function createEvent (req, res) {
     })
 }
 
-function getEventsList (req, res) {
+
+
+function getEventsList (req, res) {  
     Event.find() // trova gli eventi nel db
     .then((result) => { // result è un array di eventi
         
@@ -77,4 +79,78 @@ function addReservation (req, res) {
     })
 }
 
-module.exports = { createEvent, getEventsList, getEventDetails, addReservation }
+// event : req.params.id, 
+// qrCode : req.body.qrCode
+function checkReservation (req, res) { //req.body.auth_id del creatore dell'evento
+    // findOne trovo id di chi fa la richiesta
+    // cerco id dell'utente che ha creato l'evento findbyid
+    User.findOne({auth_id : req.body.auth_id})
+    .then( (result) => {
+        if (result){
+            var user_id = result._id
+            Event.findById(req.params.id)
+            .then((result) => {
+                if (result){
+                    if (result.author == user_id){
+                        // chi sta facendo la richiesta è il creatore dell'evento
+                        Reservation.findOne({
+                            event : req.params.id, 
+                            qrCode : req.body.qrCode
+                        })
+                        .then( (result) => {
+                            if (result){
+                                // aggiungo user id alla lista di partecipanti
+                                Event.findByIdAndUpdate(req.params.id,{$push : {partecipants : result.user}})
+                                .then((result) => {
+                                    var response = {
+                                        success : true
+                                    }
+                                    res.send(JSON.stringify(response))
+                                })
+                                .catch( (err) => {
+                                    console.log(err)
+                                    res.send(JSON.stringify(err))
+                                })
+                            } else {
+                                var response = {
+                                    success : false
+                                }
+                                res.send(JSON.stringify(response))
+                            }
+                            
+                        })
+                        .catch( (err) => {
+                            console.log(err)
+                            res.send(JSON.stringify(err))
+                        })
+                    } else {
+                        var response = {
+                            success : false
+                        }
+                        res.send(JSON.stringify(response))
+                    }
+                }else{
+                    var response = {
+                        success : false
+                    }
+                    res.send(JSON.stringify(response))
+                }
+            })
+            .catch( (err) => {
+                console.log(err)
+                res.send(JSON.stringify(err))
+            })
+        } else {
+            var response = {
+                success : false
+            }
+            res.send(JSON.stringify(response))
+        }
+    })
+    .catch((err) => {
+        console.log(err)
+        res.send(err)
+    })
+}
+
+module.exports = { createEvent, getEventsList, getEventDetails, addReservation, checkReservation }
