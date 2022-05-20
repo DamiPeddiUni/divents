@@ -5,6 +5,7 @@ import DetailView from '@/Views/DetailView'
 import AuthView from '@/Views/AuthView'
 import CompleteProfileView from '@/Views/CompleteProfileView'
 import EventCreationView from '@/Views/EventCreationView'
+import ValidateView from '@/Views/ValidateView'
 
 import {getAuth, onAuthStateChanged} from 'firebase/auth';
 
@@ -49,6 +50,15 @@ const routes = [
     path: '/createEvent',
     name: 'createEvent',
     component: EventCreationView,
+    meta: {
+      requiresAuth: true,
+      onlyNotAuth: false,
+    }
+  },
+  {
+    path: '/validate/:id',
+    name: 'validate',
+    component: ValidateView,
     meta: {
       requiresAuth: true,
       onlyNotAuth: false,
