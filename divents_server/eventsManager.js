@@ -1,6 +1,9 @@
 const Event = require('./models/Event')
 const Reservation = require('./models/Reservation')
 const User = require('./models/User')
+const nodemailer = require('nodemailer')
+require('dotenv').config();
+var QRCode = require('qrcode')
 
 function createEvent (req, res) {
     const event = new Event({
@@ -66,16 +69,46 @@ function getEventDetails (req, res) {
 
 function addReservation (req, res) {
 
-    const reservation = new Reservation({
-        user: req.body.userId,
-        event: req.params.id,
-        qrCode: Math.random() * 1000000,
-    })
-    reservation.save() // inserisco nel database
+    User.findOne({auth_id :req.body.auth_id})
     .then((result) => {
-        res.send(result);
+        if (result){
+            var reservationCode = Math.random() * 1000000
+            var userID = result._id;
+            var userEmail = result.email;
+
+            // check se non esiste già una reservation uguale
+            var userReservation = Reservation.findOne({
+                user: userID,
+                event: req.params.id,
+            })
+            .then((result) => {
+                if (result == null){
+                    const reservation = new Reservation({
+                        user: userID,
+                        event: req.params.id,
+                        qrCode: reservationCode,
+                    })
+                    reservation.save() // inserisco nel database
+                    .then((result) => {
+                        sendEmail(userEmail, reservationCode)
+                        addSubscriber(userID, req.params.id);
+                        res.send("")
+                    })
+                    .catch((err) => {
+                        //res.send(err)
+                        console.log(err)
+                    })
+                }else{
+                    console.log("User has already took part")
+                }
+            })
+            
+
+            
+        }
     })
     .catch((err) => {
+        console.log(err)
         res.send(err)
     })
 }
@@ -146,6 +179,80 @@ function checkReservation (req, res) { //req.body.auth_id del creatore dell'even
                 success : false
             }
             res.send(JSON.stringify(response))
+
+        }
+    })
+    .catch((err) => {
+        console.log(err)
+        res.send(err)
+    })
+    
+}
+
+function addSubscriber(userID, eventID){
+    console.log("adding subscriber")
+    Event.findOneAndUpdate(
+        {_id: eventID},
+        { $push: {subscribers: userID} }
+    )
+    .then((result) => {
+        console.log(userID + " added successfully")
+    })          
+    .catch((err) => {
+        console.log(err)
+    })
+}
+
+async function sendEmail(userEmail, reservationCode){
+
+    let img = await QRCode.toDataURL(reservationCode + "");
+    
+
+    console.log("sending email to " + userEmail + " with content: " + reservationCode)
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: process.env.EMAIL_ACCOUNT,
+            pass: process.env.EMAIL_PASSWORD,
+        }
+    })
+    const mailOptions = {
+        from: process.env.EMAIL_ACCOUNT,
+        to: userEmail,
+        subject: 'Divents reservation confirmation',
+        attachDataUrls: true,
+        html: '<h1>Thanks for your reservation.</h1><br><p>Here is your ticket!</p><br><img src="' + img +'">'
+    }
+    transporter.sendMail(mailOptions, function(error, info){
+        if (error){
+            console.log(error)
+        }else{
+            console.log("Email sent.")
+        }
+    })
+}
+
+function getUserTakingPart(req, res){
+    var eventID = req.params.id;
+    User.findOne({auth_id :req.body.auth_id})
+    .then((result) => {
+        if (result){
+            var userID = result._id;
+
+            // check se non esiste già una reservation uguale
+            var userReservation = Reservation.findOne({
+                user: userID,
+                event: req.params.id,
+            })
+            .then((result) => {
+                var response = {
+                    userTakePart: result != null,
+                }
+                res.send(JSON.stringify(response))
+            })
+            
+
+            
         }
     })
     .catch((err) => {
@@ -154,4 +261,4 @@ function checkReservation (req, res) { //req.body.auth_id del creatore dell'even
     })
 }
 
-module.exports = { createEvent, getEventsList, getEventDetails, addReservation, checkReservation }
+module.exports = { createEvent, getEventsList, getEventDetails, addReservation, checkReservation, getUserTakingPart }

@@ -1,110 +1,73 @@
 <template>
   <div class="container">
     <div>
-      <img class="image-containter" :src="'data:image/jpg;base64,' + event.photos[0]">
-    </div>
-
-    <div class="grid-container">
-      <table>
-        <tr>
-          <td class="event-title" colspan="2">{{event.title}}</td>
-        </tr>
-        <tr>
-          <td>Location</td>
-          <td class="text-right">{{data}}</td>
-        </tr>
-      </table>
-
-      <table class="table">
-        <tr>
-          <td class="event-location">Location</td>
-        </tr>
-        <tr>
-          <td class="event-date">{{data}}</td>
-        </tr>
-        <tr>
-          <td class="partecipants-number">number of partecipants</td>
-        </tr>
-        <tr class="event-button-takepart">
-          <td><button class="button">Iscriviti</button></td>
-        </tr>
-      </table>
-    </div>
-    <div class="grid-container">
-      <div class="event-brief-description">
-        {{event.brief_descr}}Event breif description
-      </div>
-      <div>
-      </div>
+      <img class="image-containter" :src="event.photos[0]">
     </div>
 
     <div class="grid-container">
       <div>
-        {{event.detailed_descr}}Event Detailed description
+        <div class="event-title" colspan="2">{{event.title}}</div>
+        <div class="flex-two-column">
+          <div class="light-blue-text">Location</div>
+          <div class="text-right">{{data}}</div>
+        </div>
+        <div class="event-brief-description">
+          {{event.brief_descr}}
+        </div>
+        <div class="event-detailed-description">
+          {{event.detailed_descr}}
+        </div>
+        <div class="gray-panel">
+          {{event.requirements}}
+        </div>
+        <div class="map-container">
+          Come join us!
+        </div>
+        <div class="gray-panel author-container">
+          <div class="author-image" :style="{ 'background-image': 'url(' + user.profile_photo + ')' }"></div>
+          <div class="author-text">
+            <div class="author-name">{{user.name}}</div>
+            <div class="author-description">{{user.brief_presentation}}</div>
+            
+          </div>
+        </div>
       </div>
-    </div>
-
-    <div class="grid-container">
-      <table class="table">
-        <tr>
-          <td>{{event.requirements}}</td>Event Requirements
-        </tr>
-      </table>
       <div>
-        
+        <div class="gray-panel">
+          <div class="event-location">Location</div>
+          <div class="event-date">{{data}}</div>
+          <div class="partecipants-number light-blue-text">{{event.subscribers.length}} take part</div>
+          <div class="event-button-takepart">
+            <button v-if="isLoggedIn" class="button" id="take-part-button" @click="takePartButton">Take part</button>
+            <a v-if="loggedInUser.uid == user.auth_id" class="verifyButton" id="take-part-button">Verify subscribers</a>
+          </div>
+        </div>
       </div>
-    </div>
-
-    <div class="grid-container">
-      MAPPA
-    </div>
-
-    <div class="grid-container">
-      <table class="table">
-        <tr rowspan="3">
-          <td rowspan="3">
-            immagine profilo
-          </td>
-          <td class="event-brief-description">
-            {{user.name}} Nome utente
-          </td>
-          <td>
-            <a v-bind:href="''+userLink">View profile</a>
-          </td>
-        </tr>
-        <tr>
-          <td>
-             Descrizione utente
-          </td>
-          <td>
-           
-          </td>
-          
-        </tr>
-        <tr>
-          <td>
-            <a href="">Contatta</a>
-          </td>
-          <td>
-          </td>
-        </tr>
-      </table>
+      
     </div>
   </div>
 </template>
 
 <script>
 import DataService from '@/services/DataService';
+import {getAuth, onAuthStateChanged} from 'firebase/auth';
 
 export default {
   name: 'DetailView',
   data() {
     return {
       event: {
-        photos: []
+        photos: [],
+        subscribers: []
       },
-      user: "",
+      user: {
+        auth_id: ""
+      },
       data: "",
+      loggedInUser: {
+        uid: ""
+      },
+      isLoggedIn: false,
     };
   },
   methods: {
@@ -115,6 +78,7 @@ export default {
         //Da modificare o aggiungere una volta completata la pagina visualizzazione utente
         //userLink="http://localhost:8080/user/"+this.event.author
         this.printDate()
+        this.getUserDetails()
       })
       .catch(error => {
         
@@ -124,6 +88,7 @@ export default {
       DataService.getUserDetails(this.event.author)
       .then(response => {
         this.user = response.data
+        console.log(this.user)
       })
       .catch(error => {
         
@@ -136,11 +101,55 @@ export default {
       var day=date.getDate()
       this.data= day+"/"+month+"/"+year
       
+    },
+    takePartButton(){
+      DataService.addReservation(this.$route.params.id, JSON.stringify({
+        auth_id: this.loggedInUser.uid
+      }))
+      .then(response => {
+        this.$router.go()
+      })
+    },
+    handleAuth(){
+      onAuthStateChanged(getAuth(), (loggedInUser) => {
+        if (loggedInUser) {
+          this.loggedInUser = loggedInUser;
+          this.isLoggedIn = true;
+          this.checkUserTakingPart();
+          /*
+          {
+            uid: user.uid,
+            name: user.displayName,
+            email: user.email,
+            photoURL: user.photoURL
+          };
+          */
+        } else {
+          this.isLoggedIn = false;
+          console.log("User is not authenticated")
+        }
+      });
+    },
+    checkUserTakingPart(){
+      DataService.getUserTakingPart(this.$route.params.id, JSON.stringify({
+        auth_id: this.loggedInUser.uid
+      }))
+      .then((result) => {
+        var userTakePart = result.data.userTakePart;
+        if (userTakePart){
+          document.getElementById("take-part-button").disabled = true;
+          document.getElementById("take-part-button").innerHTML = "You already take part";
+        }
+      })
+      .catch((error) => {
+        console.log(error)
+      })
     }
   },
   mounted(){
     this.getEventDetails()
-    this.getUserDetails()
+    
+    this.handleAuth()
   }
 }
 </script>
@@ -148,8 +157,9 @@ export default {
 
 <style scoped>
   .container{
-    width: 100%;
+    width: calc(100% - 20px);
     max-width: 1024px;
+    padding: 10px;
     margin: 0 auto;
   }
   .event-title{
@@ -167,68 +177,90 @@ export default {
     display: grid;
     width: 100%;
     grid-template-columns: 1fr 350px;
-    gap: 10px;
-    margin-top: 40px;
-  }
-  .background{
-    background-color:rgb(240, 240, 240);
-    width: auto;
-    height: 100px;
-    border-radius: 15px;
-    border-spacing: 50px;
-  }
-  .background-1{
-    background-color:rgb(240, 240, 240);
-    width: auto;
-    height: auto;
-    border-radius: 15px;
-  }
-  .grid-container-1{
-    display: grid;
-    width: 70%;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-  }
-  .text-right{
-    text-align: right;
-  }
-  .width{
-    width: 350px;
-  }
-  .container-1 {
-    display: flex;
-    justify-content: space-between;
-  }
-  .border{
-    /*centrare il testo e bottone sulla dx*/
-    position:relative;
-    left: 10px;
-    top: 5px;
+    gap: 20px;
+    margin-top: 30px;
   }
   .button{
     background-color: #1B98E0;
     border-radius: 5px;
-    width: 100px;
-    height: 30px;
+    width: 100%;
+    height: 40px;
     border-width: 0px;
     color: white;
+    cursor: pointer;
+    display: block;
   }
-  .table{
-    border-collapse: separate;
-    border-spacing: 15px 5px;
-    background-color:rgb(240, 240, 240);
-    width: auto;
-    height: 100px;
-    border-radius: 15px;
-    border-spacing: 10px;
+  .button:disabled{
+    opacity: 0.5;
+  }
+  .verifyButton{
+    width: 100%;
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    cursor: pointer;
+    font-size: 12px;
   }
   .event-brief-description{
-    font-size: 25px;
-    font-weight: bold;
-    align-content: left;
+    font-size: 20px;
+    margin-top: 20px;
+  }
+  .event-detailed-description{
+    font-size: 16px;
+    margin-top: 20px;
+    margin-bottom: 20px;
   }
   .event-location{
     color: #1B98E0;
     font-weight: bold;
+  }
+  .flex-two-column{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  .light-blue-text{
+    font-size: 14px;
+    font-weight: lighter;
+    color: #1B98E0;
+    align-items: center;
+  }
+  .gray-panel{
+    border-radius: 10px;
+    padding: 20px;
+    background-color: #F7F7F7;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .map-container{
+    margin-top: 20px;
+  }
+  .author-container{
+    display: grid;
+    grid-template-columns: 50px 1fr;
+    gap: 10px;
+    margin-top: 30px;
+  }
+  .author-image{
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: red;
+  }
+  .author-text{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+  }
+  .author-name{
+    font-size: 14px;
+  }
+  .author-description{
+    font-size: 12px;
   }
 </style>

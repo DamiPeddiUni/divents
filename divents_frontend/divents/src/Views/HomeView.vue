@@ -9,8 +9,8 @@
     <div class="order-by-panel">Order by: </div>
     <div class="events-container">
       <div v-for="(event, index) in events" :key="index">
-        <div class="event-card">
-          <div class="event-card-image"></div>
+        <a :href="'/event/' + event._id" class="event-card">
+          <div class="event-card-image" :style="{ 'background-image': 'url(' + event.photos[0] + ')' }"></div>
           <div class="event-card-text">
             <div class="event-card-header">
               <div class="event-card-location">{{event.location}}</div>
@@ -20,7 +20,7 @@
             <div class="event-card-subtitle">{{event.subtitle}}</div>
             <div class="event-card-subscribers">{{event.subscribers.length}} people take part</div>
           </div>
-        </div>
+        </a>
       </div>
     </div>
     <div class="load-more-container">
@@ -124,12 +124,18 @@ export default {
     height: 310px;
     border-radius: 10px;
     box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 5px;
+    text-decoration: none;
+    display: block;
+    color: black;
   }
   .event-card-image{
     width: 100%;
     height: 150px;
     border-radius: 10px 10px 0 0;
     background: rgba(0, 0, 0, 0.2);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
   }
   .event-card-text{
     padding: 10px;
