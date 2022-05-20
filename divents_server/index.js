@@ -10,7 +10,11 @@ const { createEvent, getEventsList, getEventDetails, addReservation } = require(
 
 // inizializzo il server
 const app = express();
-app.use(express.json())
+app.use(express.json({limit: '50mb'}));
+const bodyParser = require("body-parser")
+
+app.use(bodyParser.urlencoded({ extended: true }));
+
 app.use(cors())
 const server = http.createServer(app);
 

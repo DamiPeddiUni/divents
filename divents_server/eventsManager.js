@@ -16,39 +16,43 @@ function createEvent (req, res) {
         longitude : req.body.longitude,
         date : req.body.date,
         photos: req.body.photos,
-        max_subscriber : req.body.max_subscriber,
-        subscriber: req.body.subscriber,
-        partecipants: req.body.partecipants
+        max_subscribers : req.body.max_subscribers,
+        subscribers: [],
+        partecipants: []
     })
 
+    
     // da auth_id a id utente
     User.findOne({auth_id :req.body.author})
     .then((result) => {
+        
         if(result){
-            console.log("Id trovato correttamente")
-            event.author=new String(result._id)
+            
+            event.author=result._id
+            console.log("Id creatore: " + result._id)
+            event.save() // inserisco nel database
             .then((result) => {
+                console.log("Inserito correttamente")
                 res.send(result);
             })
             .catch((err) => {
-                res.send(err)
+                console.log("Errore riga 39")
+                console.log(err)
             })
-            event.save() // inserisco nel database
         }
         else{
             console.log("Id non trovato")
         }
     })
     .catch((err) => {
+        console.log("Sono nel catch")
         console.log(err)
-        res.send(err)
     })
 }
 
 function getEventsList (req, res) {
     Event.find() // trova gli eventi nel db
     .then((result) => { // result è un array di eventi
-        
         var dataOggi = new Date();
         var daRit = [];
         var length = result.length;

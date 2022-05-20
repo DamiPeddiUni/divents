@@ -9,7 +9,8 @@
                     </tr>
                     <tr>
                         <td>
-                            <textarea id="title" class="input-text" v-model="details.title" placeholder="Title">  </textarea>
+                            <textarea id="title" v-on:input="update" class="input-text" v-model="details.title" placeholder="Title">  </textarea>
+                            <div class="error">{{error.titleError}}</div>
                         </td>
                     </tr>
                     <tr>
@@ -17,7 +18,8 @@
                     </tr>
                     <tr>
                         <td>
-                            <textarea id="shortDescription" class="input-text" v-model="details.brief_descr" placeholder="Brief description">  </textarea>
+                            <textarea v-on:input="update" id="shortDescription" class="input-text" v-model="details.brief_descr" placeholder="Brief description">  </textarea>
+                            <div class="error">{{error.shortDescriError}}</div>
                         </td>
                     </tr>
                     <tr>
@@ -25,7 +27,8 @@
                     </tr>
                     <tr>
                         <td>
-                            <textarea id="completeDescription" class="input-text" v-model="details.detailed_descr" placeholder="Complete description">  </textarea>
+                            <textarea v-on:input="update" id="completeDescription" class="input-text" v-model="details.detailed_descr" placeholder="Complete description">  </textarea>
+                            <div class="error">{{error.completeDescrError}}</div>
                         </td>
                     </tr>
                     <tr>
@@ -33,7 +36,8 @@
                     </tr>
                     <tr>
                         <td>
-                            <textarea id="requirements" class="input-text" v-model="details.requirements" placeholder="Requirements">  </textarea>
+                            <textarea v-on:input="update" id="requirements" class="input-text" v-model="details.requirements" placeholder="Requirements">  </textarea>
+                            <div class="error">{{error.reqError}}</div>
                         </td>
                     </tr>
                     <tr>
@@ -41,7 +45,8 @@
                     </tr>
                     <tr>
                         <td>
-                            <textarea id="keyWords" class="input-text" v-model="details.key_words" placeholder="Separated by ','">  </textarea>
+                            <textarea v-on:input="update" id="keyWords" class="input-text" v-model="details.key_words" placeholder="Separated by ','">  </textarea>
+                            <div class="error">{{error.keyWordsError}}</div>
                         </td>
                     </tr>
                     <tr>
@@ -49,7 +54,8 @@
                     </tr>
                     <tr>
                         <td>
-                            <textarea id="locationName" class="input-text" v-model="details.location_name" placeholder="Location name">  </textarea>
+                            <textarea v-on:input="update" id="locationName" class="input-text" v-model="details.location_name" placeholder="Location name">  </textarea>
+                            <div class="error">{{error.locationError}}</div>
                         </td>
                     </tr>
                     <tr>
@@ -57,7 +63,8 @@
                     </tr>
                     <tr>
                         <td>
-                            <textarea id="addres" class="input-address" v-model="details.addres" placeholder="Address: 'Via Mario Rossi 25 b'">  </textarea>
+                            <textarea v-on:input="update" id="addres" class="input-address" v-model="details.address" placeholder="Address: 'Via Mario Rossi 25 b'">  </textarea>
+                            <div class="error">{{error.addressError}}</div>
                         </td>
                     </tr>
                     <tr>
@@ -65,7 +72,8 @@
                     </tr>
                     <tr>
                         <td>
-                            <input type="date" id="data" class="input-date" v-model="details.date">
+                            <input v-on:input="update" type="date" id="data" class="input-date" v-model="details.date">
+                            <div class="error">{{error.dateError}}</div>
                         </td>
                     </tr>
                     <tr>
@@ -73,7 +81,8 @@
                     </tr>
                     <tr>
                         <td>
-                            <input type="number" min="1" max="10000" id="maxsub" class="input-maxsub" v-model="details.max_subscribers" placeholder="100">
+                            <input v-on:input="update" type="number" min="1" max="10000" id="maxsub" class="input-maxsub" v-model="details.max_subscribers" placeholder="100">
+                            <div class="error">{{error.maxSubError}}</div>
                         </td>
                     </tr>
                     <tr>
@@ -95,7 +104,7 @@
 
 <script>
 import DataService from '@/services/DataService';
-import {getAuth, onAuthStateChanged} from 'firebase/auth';
+import {getAuth, onAuthStateonchanged} from 'firebase/auth';
 
 export default {
   name: 'CreateEventView',
@@ -110,66 +119,97 @@ export default {
         key_words: "",
         location_name: "",
         address: "",
-        latitude: "",
-        longitude: "",
+        latitude: "0",
+        longitude: "0",
         date: "",
-        photos: "",
+        photos: [],
         max_subscribers: "",
       },
       image: "",
-      images: []
+      error: {
+        titleError:"",
+        shortDescriError:"",
+        completeDescrError:"",
+        reqError:"",
+        keyWordsError:"",
+        locationError:"",
+        addressError:"",
+        dateError:"",
+        maxSubError:""
+      }
     };
   },
   methods: {
     createEvent(){
       //{author, title, brief_descr, detailed_descr, requirements, key_words, location_name, address,
       // latitude, longitude, date, photos, max_subscribers}
-      this.details.latitude=null //devo prenderla da delle mappe??
-      this.details.longitude=null //devo prenderla da delle mappe??
+      //this.details.latitude="" //devo prenderla da delle mappe??
+      //this.details.longitude="" //devo prenderla da delle mappe??
       //Controllo che tutti i dati inseriti siano validi
-      /*if(this.details.author.trim().length<=0){
+      if(this.details.author.trim().length<=0){
         console.log("Errore nel prendere l'autore")
+        return
       }
       else if(this.details.title.trim().length<=0){
         //Errore nell'inserimento del titolo
+        error.titleError="Errore titolo non valido"
+        return
       }
       else if(this.details.brief_descr.trim().length<=0){
         //Errore nell'inserimento della descrizione breve
+        error.titleError="Errore descrizione non valida"
+        return
       }
       else if(this.details.detailed_descr.trim().length<=0){
         //Errore nell'inserimento della descrizione completa
+        error.titleError="Errore descrizione non valida"
       }
       else if(this.details.requirements.trim().length<=0){
         //Errore nell'inserimento dei requisiti
+        return
+        error.titleError="Errore requisiti non validi"
       }
       else if(this.details.key_words.trim().length<=0){
         //Errore nell'inserimento delle parole chiave
+        error.titleError="Errore parole chiave non valide"
+        return
       }
       else if(this.details.location_name.trim().length<=0){
         //Errore nell'inserimento nel nome del posto
+        error.titleError="Errore nome location non valida"
+        return
       }
       else if(this.details.address.trim().length<=0){
         //Errore nell'inserimento nell'indirizzo
+        error.titleError="Errore indirizzo non valido"
+        return
       }
-      else if(false/*this.details.latitude.trim().length<=0*//*){
+      else if(false/*this.details.latitude.trim().length<=0*/){
         //Errore nell'inserimento della latitudine
+        return
       }
-      else if(false/*this.details.longitude.trim().length<=0*//*){
+      else if(false/*this.details.longitude.trim().length<=0*/){
+        return
         //Errore nell'inserimento della longitudine
       }
       else if(this.details.data.trim().length<=0){
         //Errore nell'inserimento della data
+        error.titleError="Errore data non valida"
+        return
       }
       else if(this.details.photos=null){
         //Errore nell'inserimento delle foto
+        return
       }
       else if(this.details.max_subscribers<=0){
         //Errore nell'inserimento del numero massimo di partecipanti
+        error.titleError="Errore numero massimo iscritti non valido"
+        return
       }
       //{author, title, brief_descr, detailed_descr, requirements, key_words, location_name, address,
       // latitude, longitude, date, photos, max_subscribers}
-      else{*/
-        DataService.createEvent(JSON.stringify({
+      else{
+      var data = {
           author: this.details.author,
           title: this.details.title,
           brief_descr: this.details.brief_descr,
@@ -183,7 +223,10 @@ export default {
           date: this.details.date,
           photos: this.details.photos,
           max_subscribers: this.details.max_subscribers
-        }))
+        }
+        console.log("stampo data: ")
+        console.log(data)
+        DataService.createEvent(JSON.stringify(data))
         .then(response => {
           console.log(response)
           if(response.status == 200){
@@ -193,31 +236,35 @@ export default {
         .catch(error => {
           console.log(error)
         })
-      //}
+      }
     },
     print(){
       console.log(this.details.title)
     },
-    saveImage(){
+    async saveImage(){
       this.image = this.$refs.fileInput.files[0]
-      console.log(this.image)
-      this.images.push(this.getBase64(this.image))
+      var self = this;
+      this.getBase64(this.image, function(e){
+        var b64 = e.target.result;
+        self.details.photos.push(b64)
+        console.log("stampo le foto")
+        console.log(self.details.photos)
+      })
     },
-    getBase64(file) {
+    getBase64(file, callback) {
       var reader = new FileReader();
       reader.readAsDataURL(file);
-      reader.onload = function () {
-        return reader.result
-      };
+      reader.onload = callback
       reader.onerror = function (error) {
         console.log('Error: ', error);
       };
     },
     handleAuth(){
-      onAuthStateChanged(getAuth(), (user) => {
+      onAuthStateonchanged(getAuth(), (user) => {
         if (user) {
           console.log("Logged in as: " + user.displayName)
-          this.details.author = user
+          this.details.author = user.uid
+          console.log(user.uid)
           /*
           {
             uid: user.uid,
@@ -231,6 +278,85 @@ export default {
         }
       });
     },
+    update(){
+      if(this.details.title.trim().length>=0){
+        //Errore nell'inserimento del titolo
+        error.titleError=""
+      }
+      else if(this.details.brief_descr.trim().length>=0){
+        //Errore nell'inserimento della descrizione breve
+        error.titleError=""
+      }
+      else if(this.details.detailed_descr.trim().length>=0){
+        //Errore nell'inserimento della descrizione completa
+        error.titleError=""
+      }
+      else if(this.details.requirements.trim().length>=0){
+        //Errore nell'inserimento dei requisiti
+        error.titleError=""
+      }
+      else if(this.details.key_words.trim().length>=0){
+        //Errore nell'inserimento delle parole chiave
+        error.titleError=""
+      }
+      else if(this.details.location_name.trim().length>=0){
+        //Errore nell'inserimento nel nome del posto
+        error.titleError=""
+      }
+      else if(this.details.address.trim().length>=0){
+        //Errore nell'inserimento nell'indirizzo
+        error.titleError=""
+      }
+      else if(this.details.data.trim().length>=0){
+        //Errore nell'inserimento della data
+        error.titleError=""
+      }
+      else if(this.details.max_subscribers>=0){
+        //Errore nell'inserimento del numero massimo di partecipanti
+        error.titleError=""
+      }
+      
+
+      if(this.details.author.trim().length<=0){
+        console.log("Errore nel prendere l'autore")
+      }
+      else if(this.details.title.trim().length<=0){
+        //Errore nell'inserimento del titolo
+        error.titleError="Errore titolo non valido"
+      }
+      else if(this.details.brief_descr.trim().length<=0){
+        //Errore nell'inserimento della descrizione breve
+        error.titleError="Errore descrizione non valida"
+      }
+      else if(this.details.detailed_descr.trim().length<=0){
+        //Errore nell'inserimento della descrizione completa
+        error.titleError="Errore descrizione non valida"
+      }
+      else if(this.details.requirements.trim().length<=0){
+        //Errore nell'inserimento dei requisiti
+        error.titleError="Errore requisiti non validi"
+      }
+      else if(this.details.key_words.trim().length<=0){
+        //Errore nell'inserimento delle parole chiave
+        error.titleError="Errore parole chiave non valide"
+      }
+      else if(this.details.location_name.trim().length<=0){
+        //Errore nell'inserimento nel nome del posto
+        error.titleError="Errore nome location non valida"
+      }
+      else if(this.details.address.trim().length<=0){
+        //Errore nell'inserimento nell'indirizzo
+        error.titleError="Errore indirizzo non valido"
+      }
+      else if(this.details.data.trim().length<=0){
+        //Errore nell'inserimento della data
+        error.titleError="Errore data non valida"
+      }
+      else if(this.details.max_subscribers<=0){
+        //Errore nell'inserimento del numero massimo di partecipanti
+        error.titleError="Errore numero massimo iscritti non valido"
+      }
+    }
   },
   mounted(){
     this.handleAuth()
@@ -311,5 +437,9 @@ export default {
   }
   .space{
     min-height: 10px;
+  }
+  .error{
+    color: red;
+    font-style: bold;
   }
 </style>
