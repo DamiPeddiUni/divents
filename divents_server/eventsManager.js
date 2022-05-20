@@ -3,8 +3,6 @@ const Reservation = require('./models/Reservation')
 const User = require('./models/User')
 
 function createEvent (req, res) {
-    // da auth_id a id utente
-    User.findOne({auth_id :req.params.id})
     const event = new Event({
         author: req.body.author,
         title: req.body.title,
@@ -22,6 +20,23 @@ function createEvent (req, res) {
         subscriber: req.body.subscriber,
         partecipants: req.body.partecipants
     })
+
+    // da auth_id a id utente
+    User.findOne({auth_id :req.params.author})
+    .then((result) => {
+        if(result){
+            console.log("Id trovato correttamente")
+            event.author=result._id
+        }
+        else{
+            console.log("Id non trovato")
+        }
+    })
+    .catch((err) => {
+        console.log(err)
+        res.send(err)
+    })
+
     event.save() // inserisco nel database
     .then((result) => {
         res.send(result);
