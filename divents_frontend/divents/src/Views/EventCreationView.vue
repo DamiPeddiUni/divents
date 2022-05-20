@@ -78,16 +78,18 @@
                     </tr>
                     <tr>
                       <td>
-                        <button @click="print">Stampa!</button>
+                        <button class="button" @click="createEvent">Crea Evento!</button>
                       </td>
                     </tr>
                 </table>
             </div>
             <div>
-              <input id="event-image-file" type="file" ref="fileInput">
-              <button id="event-image-btn" @click="saveImage">Salva immagine</button>
+              <input class="button" id="event-image-file" type="file" ref="fileInput">
+              <div class="space"></div>
+              <button class="button" id="event-image-btn" @click="saveImage">Salva immagine</button>
             </div>
         </div>
+        <div class="space"></div>
     </div>
 </template>
 
@@ -122,14 +124,11 @@ export default {
     createEvent(){
       //{author, title, brief_descr, detailed_descr, requirements, key_words, location_name, address,
       // latitude, longitude, date, photos, max_subscribers}
-      details.latitude=null //devo prenderla da delle mappe??
-      details.longitude=null //devo prenderla da delle mappe??
-      DataService.createEvent(details)
-      
+      this.details.latitude=null //devo prenderla da delle mappe??
+      this.details.longitude=null //devo prenderla da delle mappe??
       //Controllo che tutti i dati inseriti siano validi
-      if(this.details.author.trim().length<=0){
+      /*if(this.details.author.trim().length<=0){
         console.log("Errore nel prendere l'autore")
-
       }
       else if(this.details.title.trim().length<=0){
         //Errore nell'inserimento del titolo
@@ -152,10 +151,10 @@ export default {
       else if(this.details.address.trim().length<=0){
         //Errore nell'inserimento nell'indirizzo
       }
-      else if(false/*this.details.latitude.trim().length<=0*/){
+      else if(false/*this.details.latitude.trim().length<=0*//*){
         //Errore nell'inserimento della latitudine
       }
-      else if(false/*this.details.longitude.trim().length<=0*/){
+      else if(false/*this.details.longitude.trim().length<=0*//*){
         //Errore nell'inserimento della longitudine
       }
       else if(this.details.data.trim().length<=0){
@@ -169,7 +168,7 @@ export default {
       }
       //{author, title, brief_descr, detailed_descr, requirements, key_words, location_name, address,
       // latitude, longitude, date, photos, max_subscribers}
-      else{
+      else{*/
         DataService.createEvent(JSON.stringify({
           author: this.details.author,
           title: this.details.title,
@@ -194,7 +193,7 @@ export default {
         .catch(error => {
           console.log(error)
         })
-      }
+      //}
     },
     print(){
       console.log(this.details.title)
@@ -202,7 +201,7 @@ export default {
     saveImage(){
       this.image = this.$refs.fileInput.files[0]
       console.log(this.image)
-      images.push(this.getBase64(this.image))
+      this.images.push(this.getBase64(this.image))
     },
     getBase64(file) {
       var reader = new FileReader();
@@ -301,5 +300,16 @@ export default {
     min-height: auto;
     text-align: center;
     padding: 10px;
+  }
+  .button{
+    background-color:rgb(240, 240, 240);
+    border:0px;
+    border-radius: 10px;
+    min-height: auto;
+    text-align: center;
+    padding: 10px;
+  }
+  .space{
+    min-height: 10px;
   }
 </style>

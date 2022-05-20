@@ -22,11 +22,18 @@ function createEvent (req, res) {
     })
 
     // da auth_id a id utente
-    User.findOne({auth_id :req.params.author})
+    User.findOne({auth_id :req.body.author})
     .then((result) => {
         if(result){
             console.log("Id trovato correttamente")
-            event.author=result._id
+            event.author=new String(result._id)
+            .then((result) => {
+                res.send(result);
+            })
+            .catch((err) => {
+                res.send(err)
+            })
+            event.save() // inserisco nel database
         }
         else{
             console.log("Id non trovato")
@@ -34,14 +41,6 @@ function createEvent (req, res) {
     })
     .catch((err) => {
         console.log(err)
-        res.send(err)
-    })
-
-    event.save() // inserisco nel database
-    .then((result) => {
-        res.send(result);
-    })
-    .catch((err) => {
         res.send(err)
     })
 }
