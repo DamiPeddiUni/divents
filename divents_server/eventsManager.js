@@ -33,6 +33,7 @@ function createEvent (req, res) {
 
 function getEventsList (req, res) {  
     Event.find() // trova gli eventi nel db
+    .limit(req.body.num_result)
     .then((result) => { // result è un array di eventi
         
         var dataOggi = new Date();
