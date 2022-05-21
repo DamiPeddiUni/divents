@@ -170,6 +170,7 @@ paths:
                     type: boolean
                     description: "Contain the information about the completeness of the profile"
   
+  
   /registerUser:
     post:
       summary: Register a new user
@@ -214,8 +215,48 @@ paths:
                 properties:
                   profile_completed:
                     type: boolean
-                    description: "Contain the information about the completeness of the profile"
-      
+                    description: "Information about the completeness of the profile."
+    
+  /checkReservation/{eventID}:
+    get:
+      summary: Check the reservation
+      description: >-
+        Verifies if a reservation is correct or not.
+      parameters:
+      - name: "eventID"
+        in: "path"
+        description: "ID of the Event"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - auth_id
+                - qrCode
+              properties:
+                auth_id:
+                  type: integer
+                  description: 'Authentication token'
+                qrCode: 
+                  type: string
+                  description: "QR code of the reservation"
+      responses:
+        '200':
+          description: 'Succesfully verified.'
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - success
+                properties:
+                  success:
+                    type: boolean
+                    description: "Contains the information about the check result"
+                    
+                    
 components:
   schemas:
     Event:
@@ -294,9 +335,9 @@ components:
         - location
         - profile_completed
       properties:
-        auth_id: 
+        auth_id:
           type: string
-          description: "ID of the user given after the authentication"
+          description: "Authentication token"
         name:
           type: string
           description: "Name of the user"
