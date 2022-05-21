@@ -39,7 +39,7 @@
           <div class="partecipants-number light-blue-text">{{event.subscribers.length}} take part</div>
           <div class="event-button-takepart">
             <button v-if="isLoggedIn" class="button" id="take-part-button" @click="takePartButton">Take part</button>
-            <a v-if="loggedInUser.uid == user.auth_id" class="verifyButton" id="take-part-button">Verify subscribers</a>
+            <a v-if="loggedInUser.uid == user.auth_id" class="verifyButton" id="take-part-button" :href="'/validate/' + this.$route.params.id">Verify subscribers</a>
           </div>
         </div>
       </div>
@@ -200,6 +200,8 @@ export default {
     margin-top: 20px;
     cursor: pointer;
     font-size: 12px;
+    text-decoration: none;
+    color: black;
   }
   .event-brief-description{
     font-size: 20px;
