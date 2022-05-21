@@ -9,7 +9,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <textarea id="title" v-on:input="update" class="input-text" v-model="details.title" placeholder="Title">  </textarea>
+                            <textarea id="title" @change="update(1)" class="input-text" v-model="details.title" placeholder="Title">  </textarea>
                             <div class="error">{{error.titleError}}</div>
                         </td>
                     </tr>
@@ -18,7 +18,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <textarea v-on:input="update" id="shortDescription" class="input-text" v-model="details.brief_descr" placeholder="Brief description">  </textarea>
+                            <textarea @change="update(2)" id="shortDescription" class="input-text" v-model="details.brief_descr" placeholder="Brief description">  </textarea>
                             <div class="error">{{error.shortDescriError}}</div>
                         </td>
                     </tr>
@@ -27,7 +27,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <textarea v-on:input="update" id="completeDescription" class="input-text" v-model="details.detailed_descr" placeholder="Complete description">  </textarea>
+                            <textarea @change="update(3)" id="completeDescription" class="input-text" v-model="details.detailed_descr" placeholder="Complete description">  </textarea>
                             <div class="error">{{error.completeDescrError}}</div>
                         </td>
                     </tr>
@@ -36,7 +36,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <textarea v-on:input="update" id="requirements" class="input-text" v-model="details.requirements" placeholder="Requirements">  </textarea>
+                            <textarea @change="update(4)" id="requirements" class="input-text" v-model="details.requirements" placeholder="Requirements">  </textarea>
                             <div class="error">{{error.reqError}}</div>
                         </td>
                     </tr>
@@ -45,7 +45,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <textarea v-on:input="update" id="keyWords" class="input-text" v-model="details.key_words" placeholder="Separated by ','">  </textarea>
+                            <textarea @change="update(5)" id="keyWords" class="input-text" v-model="details.key_words" placeholder="Separated by ','">  </textarea>
                             <div class="error">{{error.keyWordsError}}</div>
                         </td>
                     </tr>
@@ -54,7 +54,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <textarea v-on:input="update" id="locationName" class="input-text" v-model="details.location_name" placeholder="Location name">  </textarea>
+                            <textarea @change="update(6)" id="locationName" class="input-text" v-model="details.location_name" placeholder="Location name">  </textarea>
                             <div class="error">{{error.locationError}}</div>
                         </td>
                     </tr>
@@ -63,7 +63,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <textarea v-on:input="update" id="addres" class="input-address" v-model="details.address" placeholder="Address: 'Via Mario Rossi 25 b'">  </textarea>
+                            <textarea @change="update(7)" id="addres" class="input-address" v-model="details.address" placeholder="Address: 'Via Mario Rossi 25 b'">  </textarea>
                             <div class="error">{{error.addressError}}</div>
                         </td>
                     </tr>
@@ -72,7 +72,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <input v-on:input="update" type="date" id="data" class="input-date" v-model="details.date">
+                            <input @change="update(8)" type="date" id="data" class="input-date" v-model="details.date">
                             <div class="error">{{error.dateError}}</div>
                         </td>
                     </tr>
@@ -81,7 +81,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <input v-on:input="update" type="number" min="1" max="10000" id="maxsub" class="input-maxsub" v-model="details.max_subscribers" placeholder="100">
+                            <input @change="update(9)" type="number" min="1" max="10000" id="maxsub" class="input-maxsub" v-model="details.max_subscribers" placeholder="100">
                             <div class="error">{{error.maxSubError}}</div>
                         </td>
                     </tr>
@@ -93,9 +93,10 @@
                 </table>
             </div>
             <div>
-              <input class="button" id="event-image-file" type="file" ref="fileInput">
+              <input @change="update(10)" class="button" id="event-image-file" type="file" ref="fileInput">
               <div class="space"></div>
               <button class="button" id="event-image-btn" @click="saveImage">Salva immagine</button>
+              <div class="error">{{error.photosError}}</div>
             </div>
         </div>
         <div class="space"></div>
@@ -104,7 +105,7 @@
 
 <script>
 import DataService from '@/services/DataService';
-import {getAuth, onAuthStateonchanged} from 'firebase/auth';
+import {getAuth, onAuthStateChanged} from 'firebase/auth';
 
 export default {
   name: 'CreateEventView',
@@ -135,80 +136,26 @@ export default {
         locationError:"",
         addressError:"",
         dateError:"",
-        maxSubError:""
+        maxSubError:"",
+        photosError:""
       }
     };
   },
   methods: {
     createEvent(){
-      //{author, title, brief_descr, detailed_descr, requirements, key_words, location_name, address,
-      // latitude, longitude, date, photos, max_subscribers}
       //this.details.latitude="" //devo prenderla da delle mappe??
       //this.details.longitude="" //devo prenderla da delle mappe??
       //Controllo che tutti i dati inseriti siano validi
-      if(this.details.author.trim().length<=0){
-        console.log("Errore nel prendere l'autore")
-        return
-      }
-      else if(this.details.title.trim().length<=0){
-        //Errore nell'inserimento del titolo
-        error.titleError="Errore titolo non valido"
-        return
-      }
-      else if(this.details.brief_descr.trim().length<=0){
-        //Errore nell'inserimento della descrizione breve
-        error.titleError="Errore descrizione non valida"
-        return
-      }
-      else if(this.details.detailed_descr.trim().length<=0){
-        //Errore nell'inserimento della descrizione completa
-        error.titleError="Errore descrizione non valida"
-      }
-      else if(this.details.requirements.trim().length<=0){
-        //Errore nell'inserimento dei requisiti
-        return
-        error.titleError="Errore requisiti non validi"
-      }
-      else if(this.details.key_words.trim().length<=0){
-        //Errore nell'inserimento delle parole chiave
-        error.titleError="Errore parole chiave non valide"
-        return
-      }
-      else if(this.details.location_name.trim().length<=0){
-        //Errore nell'inserimento nel nome del posto
-        error.titleError="Errore nome location non valida"
-        return
-      }
-      else if(this.details.address.trim().length<=0){
-        //Errore nell'inserimento nell'indirizzo
-        error.titleError="Errore indirizzo non valido"
-        return
-      }
-      else if(false/*this.details.latitude.trim().length<=0*/){
-        //Errore nell'inserimento della latitudine
-        return
-      }
-      else if(false/*this.details.longitude.trim().length<=0*/){
-        return
-        //Errore nell'inserimento della longitudine
-      }
-      else if(this.details.data.trim().length<=0){
-        //Errore nell'inserimento della data
-        error.titleError="Errore data non valida"
-        return
-      }
-      else if(this.details.photos=null){
-        //Errore nell'inserimento delle foto
-        return
-      }
-      else if(this.details.max_subscribers<=0){
-        //Errore nell'inserimento del numero massimo di partecipanti
-        error.titleError="Errore numero massimo iscritti non valido"
-        return
-      }
-      //{author, title, brief_descr, detailed_descr, requirements, key_words, location_name, address,
-      // latitude, longitude, date, photos, max_subscribers}
-      else{
+      this.update(1)
+      this.update(2)
+      this.update(3)
+      this.update(4)
+      this.update(5)
+      this.update(6)
+      this.update(7)
+      this.update(8)
+      this.update(9)
+      this.update(10)
       var data = {
           author: this.details.author,
           title: this.details.title,
@@ -236,7 +183,6 @@ export default {
         .catch(error => {
           console.log(error)
         })
-      }
     },
     print(){
       console.log(this.details.title)
@@ -260,7 +206,7 @@ export default {
       };
     },
     handleAuth(){
-      onAuthStateonchanged(getAuth(), (user) => {
+      onAuthStateChanged(getAuth(), (user) => {
         if (user) {
           console.log("Logged in as: " + user.displayName)
           this.details.author = user.uid
@@ -278,83 +224,97 @@ export default {
         }
       });
     },
-    update(){
-      if(this.details.title.trim().length>=0){
-        //Errore nell'inserimento del titolo
-        error.titleError=""
-      }
-      else if(this.details.brief_descr.trim().length>=0){
-        //Errore nell'inserimento della descrizione breve
-        error.titleError=""
-      }
-      else if(this.details.detailed_descr.trim().length>=0){
-        //Errore nell'inserimento della descrizione completa
-        error.titleError=""
-      }
-      else if(this.details.requirements.trim().length>=0){
-        //Errore nell'inserimento dei requisiti
-        error.titleError=""
-      }
-      else if(this.details.key_words.trim().length>=0){
-        //Errore nell'inserimento delle parole chiave
-        error.titleError=""
-      }
-      else if(this.details.location_name.trim().length>=0){
-        //Errore nell'inserimento nel nome del posto
-        error.titleError=""
-      }
-      else if(this.details.address.trim().length>=0){
-        //Errore nell'inserimento nell'indirizzo
-        error.titleError=""
-      }
-      else if(this.details.data.trim().length>=0){
-        //Errore nell'inserimento della data
-        error.titleError=""
-      }
-      else if(this.details.max_subscribers>=0){
-        //Errore nell'inserimento del numero massimo di partecipanti
-        error.titleError=""
-      }
-      
-
-      if(this.details.author.trim().length<=0){
-        console.log("Errore nel prendere l'autore")
-      }
-      else if(this.details.title.trim().length<=0){
-        //Errore nell'inserimento del titolo
-        error.titleError="Errore titolo non valido"
-      }
-      else if(this.details.brief_descr.trim().length<=0){
-        //Errore nell'inserimento della descrizione breve
-        error.titleError="Errore descrizione non valida"
-      }
-      else if(this.details.detailed_descr.trim().length<=0){
-        //Errore nell'inserimento della descrizione completa
-        error.titleError="Errore descrizione non valida"
-      }
-      else if(this.details.requirements.trim().length<=0){
-        //Errore nell'inserimento dei requisiti
-        error.titleError="Errore requisiti non validi"
-      }
-      else if(this.details.key_words.trim().length<=0){
-        //Errore nell'inserimento delle parole chiave
-        error.titleError="Errore parole chiave non valide"
-      }
-      else if(this.details.location_name.trim().length<=0){
-        //Errore nell'inserimento nel nome del posto
-        error.titleError="Errore nome location non valida"
-      }
-      else if(this.details.address.trim().length<=0){
-        //Errore nell'inserimento nell'indirizzo
-        error.titleError="Errore indirizzo non valido"
-      }
-      else if(this.details.data.trim().length<=0){
-        //Errore nell'inserimento della data
-        error.titleError="Errore data non valida"
-      }
-      else if(this.details.max_subscribers<=0){
-        //Errore nell'inserimento del numero massimo di partecipanti
-        error.titleError="Errore numero massimo iscritti non valido"
+    update(z){
+      switch (z){
+        case 1: console.log("caso 1")
+          if(this.details.title==""){
+            //Errore nell'inserimento del titolo
+            this.error.titleError="Errore titolo non valido"
+            }
+            else{
+              this.error.titleError=""
+            }
+            break;
+        case 2: 
+          if(this.details.brief_descr==""){
+            //Errore nell'inserimento della descrizione breve
+            this.error.shortDescriError="Errore descrizione non valida"
+          }
+          else{
+            this.error.shortDescriError=""
+          }
+          break;
+        case 3:
+          if(this.details.detailed_descr==""){
+            //Errore nell'inserimento della descrizione completa
+            this.error.completeDescrError="Errore descrizione non valida"
+          }
+          else{
+            this.error.completeDescrError=""
+          }
+          break;
+        case 4:
+          if(this.details.requirements==""){
+            //Errore nell'inserimento dei requisiti
+            this.error.reqError="Errore requisiti non validi"
+          }
+          else{
+            this.error.reqError=""
+          }
+          break;
+        case 5:
+          if(this.details.key_words==""){
+            //Errore nell'inserimento delle parole chiave
+            this.error.keyWordsError="Errore parole chiave non valide"
+          }
+          else{
+            this.error.keyWordsError=""
+          }
+          break;
+        case 6:
+          if(this.details.location_name==""){
+            //Errore nell'inserimento nel nome del posto
+            this.error.locationError="Errore nome location non valida"
+          }
+          else{
+            this.error.locationError=""
+          }
+          break;
+        case 7:
+          if(this.details.address==""){
+            //Errore nell'inserimento nell'indirizzo
+            this.error.addressError="Errore indirizzo non valido"
+          }
+          else{
+            this.error.addressError=""
+          }
+          break;
+        case 8:
+          if(this.details.data==""){
+            //Errore nell'inserimento della data
+            this.error.dateError="Errore data non valida"
+          }
+          else{
+            this.error.dateError=""
+          }
+          break;
+        case 9:
+          if(this.details.max_subscribers<=0){
+            //Errore nell'inserimento del numero massimo di partecipanti
+            this.error.maxSubError="Errore numero massimo iscritti non valido"
+          }
+          else{
+            this.error.maxSubError=""
+          }
+          break;
+        case 10:
+          if(this.details.photos.length==0){
+            this.error.photosError="Errore non sono state inserite delle foto"
+          }
+          else{
+            this.error.photosError=""
+          }
+          break;
       }
     }
   },
