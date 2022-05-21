@@ -23,6 +23,19 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Event'
+    get:
+      summary: getEventDetails
+      description: >-
+        Get the event details.
+      responses:
+        '200':
+          description: 'Collection of the details of the event'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Event'
     post:
       summary: createEvent
       description: >-
@@ -46,8 +59,6 @@ paths:
                 - date
                 - photos
                 - max_subscribers
-                - subscribers
-                - partecipants
               properties:
                 author:
                   type: string
@@ -88,12 +99,6 @@ paths:
                 max_subscribers:
                   type: integer
                   description: 'Numbers of allowed partecipants to the event'
-                subscribers:
-                  type: array
-                  description: 'List of users who have registered for the event'
-                partecipants:
-                  type: array
-                  description: 'List of users who have joined the event'
       responses:
         '201':
           description: "Event created successfully."
