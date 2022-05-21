@@ -51,9 +51,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                items:
-                  $ref: '#/components/schemas/Event'
+                $ref: '#/components/schemas/Event'
   /createEvent:
     post:
       summary: Create a new event
@@ -148,7 +146,30 @@ paths:
         '201':
           description: "Reservation added successfully"
     
-          
+  /checkUserAuth/{userID}:
+    get:
+      summary: Check the user's authentication status
+      description: >-
+        Verifies if the user's profile is completed or not.
+      parameters:
+      - name: "userID"
+        in: "path"
+        description: "ID of the User"
+        required: true
+      responses:
+        '200':
+          description: 'Succesfully verified.'
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - profile_completed
+                properties:
+                  profile_completed:
+                    type: boolean
+                    description: "Contain the information about the completeness of the profile"
+  
   /registerUser:
     post:
       summary: Register a new user
@@ -184,6 +205,16 @@ paths:
       responses:
         '201':
           description: "Information compiled successfully."
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - profile_completed
+                properties:
+                  profile_completed:
+                    type: boolean
+                    description: "Contain the information about the completeness of the profile"
       
 components:
   schemas:
