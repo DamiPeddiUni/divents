@@ -24,6 +24,12 @@ class DataService {
     createEvent(details){
         return http.post('/api/v1/createEvent', details);
     }
+    addReservation(id, data){
+        return http.post('/api/v1/addReservation/' + id, data)
+    }
+    getUserTakingPart(id, data){
+        return http.post('/api/v1/getUserTakingPart/' + id, data)
+    }
 }
 
 export default new DataService();
