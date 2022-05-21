@@ -80,7 +80,7 @@ app.get('/api/v1/getUserDetails/:id', (req, res) =>{
     getUserDetails(req, res);
 })
 
-app.get('/api/v1/checkReservation/:id', (req, res) => {
+app.post('/api/v1/checkReservation/:id', (req, res) => {
     checkReservation(req, res);
 })
 

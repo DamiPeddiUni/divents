@@ -30,6 +30,9 @@ class DataService {
     getUserTakingPart(id, data){
         return http.post('/api/v1/getUserTakingPart/' + id, data)
     }
+    checkReservation(id, data){
+        return http.post('/api/v1/checkReservation/' + id, data)
+    }
 }
 
 export default new DataService();

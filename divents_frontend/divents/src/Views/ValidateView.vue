@@ -4,7 +4,7 @@
     <div class="check-panel">
       <button class="check-button" @click="toggleScanning">Scan QR code</button>
     </div>
-    <div class="">
+    <div class="" hidden>
       <div class="partecipants-title">{{partecipants.length}} <span>partecipants</span> so far</div>
       <div class="partecipants-list">
         <div class="partecipant">
@@ -22,6 +22,7 @@
 <script>
 import DataService from '@/services/DataService';
 import QrScanner from 'qr-scanner'
+import {getAuth, onAuthStateChanged} from 'firebase/auth';
 
 export default {
   name: 'CreateEventView',
@@ -30,9 +31,28 @@ export default {
       partecipants: [],
       scanning: false,
       qrscanner: null,
+      user: null,
     };
   },
   methods: {
+    handleAuth(){
+      onAuthStateChanged(getAuth(), (loggedInUser) => {
+        if (loggedInUser) {
+          this.user = loggedInUser;
+
+          /*
+          {
+            uid: user.uid,
+            name: user.displayName,
+            email: user.email,
+            photoURL: user.photoURL
+          };
+          */
+        } else {
+          console.log("User is not authenticated")
+        }
+      });
+    },
     toggleScanning(){
       this.scanning = !this.scanning
       if (this.scanning){
@@ -43,10 +63,30 @@ export default {
     },
     scannedQrCodeResult(result){
       this.toggleScanning()
+      DataService.checkReservation(this.$route.params.id, JSON.stringify({
+        auth_id: this.user.uid,
+        qrCode: result
+      }))
+      .then(result => {
+        if (result && result.data){
+          if (result.data.success){
+            
+            alert("Codice prenotazione accettato con successo")
+          }else{
+            alert("Codice prenotazione non valido")
+          }
+        }
+      })
+      .catch(err => {
+        console.log(err)
+      }) 
+
+      
     }
   },
   mounted(){
     var self = this
+    this.handleAuth()
     this.qrscanner = new QrScanner(document.getElementById("scan-video"), result => self.scannedQrCodeResult(result))
   }
 }
