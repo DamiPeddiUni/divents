@@ -103,6 +103,32 @@ paths:
         '201':
           description: "Event created successfully."
           
+  /addReservation/{eventID}:
+    post:
+      summary: Add a reservation for an event
+      description: >-
+        Add a reservation mapping a user to an event with a unique code.
+      parameters:
+      - name: "eventID"
+        in: "path"
+        description: "ID of the Event"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - auth_id
+              properties:
+                auth_id:
+                  type: string
+                  description: "Authentication token"
+                
+      responses:
+        '201':
+          description: "Reservation added successfully"
+    
           
   /users:
     x-summary: Users Manager
