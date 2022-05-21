@@ -8,12 +8,22 @@ info:
 servers:
   - url: http://localhost:3000/
 paths:
-  /events:
-    x-summary: Events Manager
+  /getEventsList:
     get:
-      summary: getEventsList
+      summary: Get the events list
       description: >-
-        Get the events list.
+        Gets the events list.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - num_result
+              properties:
+                num_result:
+                  type: integer
+                  description: 'Number of events required'
       responses:
         '200':
           description: 'Collection of events'
@@ -23,23 +33,32 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Event'
+                  
+                  
+  /getEventDetails/{eventID}:
     get:
-      summary: getEventDetails
+      summary: Get the event details.
       description: >-
-        Get the event details.
+        Gets more details about an Event
+      parameters:
+      - name: "eventID"
+        in: "path"
+        description: "ID of the Event"
+        required: true
       responses:
         '200':
-          description: 'Collection of the details of the event'
+          description: 'Details of the event'
           content:
             application/json:
               schema:
-                type: array
+                type: object
                 items:
                   $ref: '#/components/schemas/Event'
+  /createEvent:
     post:
-      summary: createEvent
+      summary: Create a new event
       description: >-
-        Create an event.
+        Creates and publishes a new event.
       requestBody:
         content:
           application/json:
@@ -130,10 +149,9 @@ paths:
           description: "Reservation added successfully"
     
           
-  /users:
-    x-summary: Users Manager
+  /registerUser:
     post:
-      summary: registerUser
+      summary: Register a new user
       description: >-
         Complete the profile of the user.
       requestBody:
@@ -147,7 +165,6 @@ paths:
                 - profile_photo
                 - brief_presentation
                 - location
-                - profile_completed
               properties:
                 name:
                   type: string
@@ -164,9 +181,6 @@ paths:
                 location :
                   type: string
                   description: "Name of the location where the event takes place"
-                profile_completed:
-                  type: boolean
-                  description: "Information about the completeness of the profile"
       responses:
         '201':
           description: "Information compiled successfully."
@@ -273,3 +287,19 @@ components:
         profile_completed:
           type: boolean
           description: "Information about the completeness of the profile"
+    Reservation:
+      type: object
+      required:
+        - user
+        - event
+        - qrCode
+      properties:
+        user: 
+          type: string
+          description: "ID that uniquely identifies the user in the database"
+        event: 
+          type: string
+          description: "ID that uniquely identifies the event in the database"
+        qrCode: 
+          type: string
+          description: "QR code of the reservation"
