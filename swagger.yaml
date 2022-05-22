@@ -165,7 +165,7 @@ paths:
                 - auth_id
               properties:
                 auth_id:
-                  type: stringmen
+                  type: string
                   description: "Authentication token"
                 
       responses:
