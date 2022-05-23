@@ -13,17 +13,11 @@ paths:
       summary: Get the events list
       description: >-
         Gets the events list.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - num_result
-              properties:
-                num_result:
-                  type: integer
-                  description: 'Number of events required'
+      parameters:
+      - name: "num_result"
+        in: "query"
+        description: "Number of events to display"
+        required: true
       responses:
         '200':
           description: 'Collection of events'
