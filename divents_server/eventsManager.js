@@ -259,7 +259,6 @@ function getUserTakingPart(req, res){
         if (result){
             var userID = result._id;
 
-            // check se non esiste già una reservation uguale
             var userReservation = Reservation.findOne({
                 user: userID,
                 event: req.params.id,
