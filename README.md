@@ -7,6 +7,9 @@ __A web application to manage and subscribe to events.__
 - Erica Sofia Melotti
 - Riccardo Monticello
 
+### Project Wiki
+The project Wiki is available [here](https://github.com/DamiPeddiUni/divents/wiki)
+
 ### API Documentation
 A complete API Documentation can be found on [Apiary](https://divents.docs.apiary.io/#reference/0).
 
