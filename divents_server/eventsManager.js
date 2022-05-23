@@ -57,7 +57,7 @@ function createEvent (req, res) {
 
 function getEventsList (req, res) {  
     Event.find() // trova gli eventi nel db
-    .limit(req.body.num_result)
+    .limit(req.query.num_result)
     .then((result) => { // result è un array di eventi
         var dataOggi = new Date();
         var daRit = [];
@@ -254,7 +254,7 @@ async function sendEmail(userEmail, reservationCode){
 
 function getUserTakingPart(req, res){
     var eventID = req.params.id;
-    User.findOne({auth_id :req.body.auth_id})
+    User.findOne({auth_id : req.query.auth_id})
     .then((result) => {
         if (result){
             var userID = result._id;
@@ -277,7 +277,6 @@ function getUserTakingPart(req, res){
     })
     .catch((err) => {
         console.log(err)
-        res.send(err)
     })
 }
 

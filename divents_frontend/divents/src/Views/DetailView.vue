@@ -131,9 +131,7 @@ export default {
       });
     },
     checkUserTakingPart(){
-      DataService.getUserTakingPart(this.$route.params.id, JSON.stringify({
-        auth_id: this.loggedInUser.uid
-      }))
+      DataService.getUserTakingPart(this.$route.params.id, this.loggedInUser.uid)
       .then((result) => {
         var userTakePart = result.data.userTakePart;
         if (userTakePart){
