@@ -188,6 +188,7 @@ export default {
       console.log(this.details.title)
     },
     async saveImage(){
+      this.update(10)
       this.image = this.$refs.fileInput.files[0]
       var self = this;
       this.getBase64(this.image, function(e){
