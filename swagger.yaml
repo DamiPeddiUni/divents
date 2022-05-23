@@ -13,17 +13,11 @@ paths:
       summary: Get the events list
       description: >-
         Gets the events list.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - num_result
-              properties:
-                num_result:
-                  type: integer
-                  description: 'Number of events required'
+      parameters:
+      - name: "num_result"
+        in: "query"
+        description: "Number of events to display"
+        required: true
       responses:
         '200':
           description: 'Collection of events'
@@ -147,7 +141,7 @@ paths:
           description: "Reservation added successfully"
           
   /getUserTakingPart/{eventID}:
-    post:
+    get:
       summary: Check if a user is taking part to an event
       description: >-
         Checking if a user is taking part to an event.
@@ -156,20 +150,13 @@ paths:
         in: "path"
         description: "ID of the Event"
         required: true
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - auth_id
-              properties:
-                auth_id:
-                  type: string
-                  description: "Authentication token"
-                
+      - name: "auth_id"
+        in: "query"
+        description: "Authentication token"
+        required: true
+      
       responses:
-        '201':
+        '200':
           description: "Reservation added successfully"
     
   /checkUserAuth/{userID}:
