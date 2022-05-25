@@ -64,6 +64,15 @@ const routes = [
       onlyNotAuth: false,
     }
   },
+  {
+    path: '/profile/mySubscriptions',
+    name: 'My Subscription',
+    component: subscriptionView,
+    meta:{
+      requiresAuth: true,
+      onlyNotAuth: false,
+    }
+  },
 ]
 
 const router = createRouter({
