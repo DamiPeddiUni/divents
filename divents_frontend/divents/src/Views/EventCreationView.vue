@@ -146,16 +146,9 @@ export default {
       //this.details.latitude="" //devo prenderla da delle mappe??
       //this.details.longitude="" //devo prenderla da delle mappe??
       //Controllo che tutti i dati inseriti siano validi
-      this.update(1)
-      this.update(2)
-      this.update(3)
-      this.update(4)
-      this.update(5)
-      this.update(6)
-      this.update(7)
-      this.update(8)
-      this.update(9)
-      this.update(10)
+      for(var i=1;i<11;i++){
+        this.update(i)
+      }
       var data = {
           author: this.details.author,
           title: this.details.title,
@@ -291,8 +284,9 @@ export default {
           }
           break;
         case 8:
-          if(this.details.data==""){
+          if(this.details.date==null){
             //Errore nell'inserimento della data
+            console.log(this.details.date)
             this.error.dateError="Errore data non valida"
           }
           else{
