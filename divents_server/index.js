@@ -84,6 +84,6 @@ app.post('/api/v1/checkReservation/:id', (req, res) => {
     checkReservation(req, res);
 })
 
-app.post('/api/v1/getUserTakingPart/:id', (req, res) => {
+app.get('/api/v1/getUserTakingPart/:id', (req, res) => {
     getUserTakingPart(req, res);
 })

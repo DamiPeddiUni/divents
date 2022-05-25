@@ -45,7 +45,7 @@ export default {
   },
   methods: {
     getEventsList(){
-      DataService.getEvents()
+      DataService.getEvents(10)
       .then(response => {
         this.events = response.data
       })
