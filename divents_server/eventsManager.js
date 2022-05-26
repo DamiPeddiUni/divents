@@ -279,4 +279,85 @@ function getUserTakingPart(req, res){
     })
 }
 
-module.exports = { createEvent, getEventsList, getEventDetails, addReservation, checkReservation, getUserTakingPart }
+
+// API 
+function isEventManager(req, res){
+    Event.findById(req.params.id)
+    .then((eventObj) => {
+        if (eventObj){ // se trova l'evento di riferimento
+            User.findOne({auth_id : req.body.auth_id}) 
+            .then((userObj) => {
+                if (result){ // se trova l'utente
+                    if (userObj._id == eventObj.author){ // se il creatore dell'evento è l'utente che vuole eliminare l'evento
+                        var response = {
+                            isCreator : true
+                        }
+                    }else{
+                        var response = {
+                            isCreator : false
+                        }
+                    }
+                    res.send(response)
+                }else{
+                    var response = {
+                        isCreator : false
+                    }
+                    res.send(response)
+                }
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+        }else{
+            var response = {
+                isCreator : false
+            }
+            res.send(response)
+        }
+    })
+    .catch((err) => {
+        console.log(err)
+    })
+}
+
+
+function isEventManagerFunction(eventID, userID){
+    Event.findById(eventID)
+    .then((eventObj) => {
+        if (eventObj){ // se trova l'evento di riferimento
+            User.findOne({auth_id : userID}) 
+            .then((userObj) => {
+                if (result){ // se trova l'utente
+                    if (userObj._id == eventObj.author){ // se il creatore dell'evento è l'utente che vuole eliminare l'evento
+                        return true
+                    }
+                    return false
+                }else{ // se non trova l'utente
+                    return false 
+                }
+            })
+            .catch((err) => {
+                console.log(err)
+                return false
+            })
+        }else{
+            return false
+        }
+    })
+    .catch((err) => {
+        console.log(err)
+        return false
+    })
+}
+//id Evento nei params, id User nel body
+function deleteEvent(req, res){
+
+    Event.findById(req.params.id)
+    .then((eventObj) => {
+
+    })
+}
+
+
+
+module.exports = { createEvent, getEventsList, getEventDetails, addReservation, checkReservation, getUserTakingPart, isEventManager, deleteEvent }
