@@ -270,8 +270,6 @@ function getUserTakingPart(req, res){
                 res.send(JSON.stringify(response))
             })
             
-
-            
         }
     })
     .catch((err) => {
@@ -279,4 +277,69 @@ function getUserTakingPart(req, res){
     })
 }
 
-module.exports = { createEvent, getEventsList, getEventDetails, addReservation, checkReservation, getUserTakingPart }
+// funzione che verifica se l'utente è il creatore dell'evento
+function isEventManagerFunction(eventID, userID){
+    Event.findById(eventID)
+    .then((eventObj) => {
+        if (eventObj){ // se trova l'evento di riferimento
+            User.findOne({auth_id : userID})
+            .then((userObj) => {
+                if (result){ // se trova l'utente
+                    if (userObj._id == eventObj.author){ // se il creatore dell'evento è l'utente che vuole eliminare l'evento
+                        return true
+                    }
+                    return false
+                }else{ // se non trova l'utente
+                    return false 
+                }
+            })
+            .catch((err) => {
+                console.log(err)
+                return false
+            })
+        }else{
+            return false
+        }
+    })
+    .catch((err) => {
+        console.log(err)
+        return false
+    })
+}
+
+// API 
+function isEventManager(req, res){
+    if (isEventManagerFunction(req.params.id, req.body.auth_id)){
+        var response = {
+            isCreator : true
+        }
+        res.send(response)
+    }else{
+        var response = {
+            isCreator : false
+        }
+        res.send(response)
+    }
+}
+
+
+
+//id Evento nei params, id User nel body
+function deleteEvent(req, res){
+    if (isEventManagerFunction(req.params.id, req.body.auth_id)){
+        Event.findOneAndDelete(req.params.id)
+        .then((eventObj) => {
+            console.log("Deleted : ", docs);
+        })
+        .catch((err) => {
+            console.log(err)
+        })
+    }else{
+        console.log("Impossibile eliminare l'evento.")
+    }
+        
+}
+
+
+
+module.exports = { createEvent, getEventsList, getEventDetails, addReservation, checkReservation, getUserTakingPart, isEventManager, deleteEvent }
