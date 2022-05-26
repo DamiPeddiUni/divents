@@ -6,6 +6,7 @@ import AuthView from '@/Views/AuthView'
 import CompleteProfileView from '@/Views/CompleteProfileView'
 import EventCreationView from '@/Views/EventCreationView'
 import ValidateView from '@/Views/ValidateView'
+import subscriptionView from '@/Views/subscriptionView'
 
 import {getAuth, onAuthStateChanged} from 'firebase/auth';
 
