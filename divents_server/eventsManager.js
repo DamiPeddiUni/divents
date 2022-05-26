@@ -282,42 +282,18 @@ function getUserTakingPart(req, res){
 
 // API 
 function isEventManager(req, res){
-    Event.findById(req.params.id)
-    .then((eventObj) => {
-        if (eventObj){ // se trova l'evento di riferimento
-            User.findOne({auth_id : req.body.auth_id}) 
-            .then((userObj) => {
-                if (result){ // se trova l'utente
-                    if (userObj._id == eventObj.author){ // se il creatore dell'evento è l'utente che vuole eliminare l'evento
-                        var response = {
-                            isCreator : true
-                        }
-                    }else{
-                        var response = {
-                            isCreator : false
-                        }
-                    }
-                    res.send(response)
-                }else{
-                    var response = {
-                        isCreator : false
-                    }
-                    res.send(response)
-                }
-            })
-            .catch((err) => {
-                console.log(err)
-            })
-        }else{
-            var response = {
-                isCreator : false
-            }
-            res.send(response)
+
+    if (isEventManagerFunction(req.params.id, req.body.auth_id)){
+        var response = {
+            isCreator : true
         }
-    })
-    .catch((err) => {
-        console.log(err)
-    })
+        res.send(response)
+    }else{
+        var response = {
+            isCreator : false
+        }
+        res.send(response)
+    }
 }
 
 
