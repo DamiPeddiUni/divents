@@ -351,11 +351,16 @@ function isEventManagerFunction(eventID, userID){
 }
 //id Evento nei params, id User nel body
 function deleteEvent(req, res){
-
-    Event.findById(req.params.id)
-    .then((eventObj) => {
-
-    })
+    if (isEventManagerFunction(req.params.id, req.body.auth_id)){
+        Event.findOneAndDelete(req.params.id)
+        .then((eventObj) => {
+            console.log("Deleted : ", docs);
+        })
+        .catch((err) => {
+            console.log(err)
+        })
+    }
+        
 }
 
 
