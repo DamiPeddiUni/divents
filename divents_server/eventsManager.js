@@ -270,8 +270,6 @@ function getUserTakingPart(req, res){
                 res.send(JSON.stringify(response))
             })
             
-
-            
         }
     })
     .catch((err) => {
@@ -279,29 +277,12 @@ function getUserTakingPart(req, res){
     })
 }
 
-
-// API 
-function isEventManager(req, res){
-
-    if (isEventManagerFunction(req.params.id, req.body.auth_id)){
-        var response = {
-            isCreator : true
-        }
-        res.send(response)
-    }else{
-        var response = {
-            isCreator : false
-        }
-        res.send(response)
-    }
-}
-
-
+// funzione che verifica se l'utente è il creatore dell'evento
 function isEventManagerFunction(eventID, userID){
     Event.findById(eventID)
     .then((eventObj) => {
         if (eventObj){ // se trova l'evento di riferimento
-            User.findOne({auth_id : userID}) 
+            User.findOne({auth_id : userID})
             .then((userObj) => {
                 if (result){ // se trova l'utente
                     if (userObj._id == eventObj.author){ // se il creatore dell'evento è l'utente che vuole eliminare l'evento
@@ -325,6 +306,24 @@ function isEventManagerFunction(eventID, userID){
         return false
     })
 }
+
+// API 
+function isEventManager(req, res){
+    if (isEventManagerFunction(req.params.id, req.body.auth_id)){
+        var response = {
+            isCreator : true
+        }
+        res.send(response)
+    }else{
+        var response = {
+            isCreator : false
+        }
+        res.send(response)
+    }
+}
+
+
+
 //id Evento nei params, id User nel body
 function deleteEvent(req, res){
     if (isEventManagerFunction(req.params.id, req.body.auth_id)){
@@ -335,6 +334,8 @@ function deleteEvent(req, res){
         .catch((err) => {
             console.log(err)
         })
+    }else{
+        console.log("Impossibile eliminare l'evento.")
     }
         
 }
