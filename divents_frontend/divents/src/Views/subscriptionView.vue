@@ -23,21 +23,61 @@
 </template>
 <script>
 import DataService from '@/services/DataService';
+import {getAuth, onAuthStateChanged} from 'firebase/auth';
 
 export default ({
     name: 'subscriptionView',
     data() {
       return{
-        events: {},
+        events_id: [],
+        events: [],
+        user_id: ""
       };
     },
     methods: {
-      getSubEvent(){
-        
-      }
+      getEventsList(){ //prendo gli evneti a cui un certo id è iscritto
+        console.log("getEventList()")
+        console.log("ho chiamato handle auth")
+        console.log("Login id:")
+        console.log(this.user_id)
+        DataService.getSubscriptionsEvents(JSON.stringify(this.user_id))
+        .then(response => {
+          console.log("risposta ricevuta")
+          this.events_id = response.data
+          console.log(this.events_id)
+          console.log(this.events_id[0])
+          for(var i=0; i<this.events_id.length; i++)
+          {
+            DataService.getEventDetailsByID(this.events_id[i])
+            .then(response =>{
+              this.events[i]=response.data
+              console.log(this.events[i])
+            })
+            .catch(err =>{
+              console.log("errore nel reperimento dei dati di un evento (dall'id)")
+            })
+          }
+        })
+        .catch(error => {
+          console.log("errore")
+          console.log(error)
+        })
+        console.log("fine getEventList")
+    },
+    async handleAuth(){
+      onAuthStateChanged(getAuth(), (user) => {
+        if (user) {
+          this.user_id = user.uid
+          this.getEventsList()
+        } else {
+          console.log("User is not authenticated")
+        }
+      });
+    },
+
     },
     mounted(){
-
+      this.handleAuth()
   }
 })
 </script>

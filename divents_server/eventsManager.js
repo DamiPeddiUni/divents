@@ -279,4 +279,48 @@ function getUserTakingPart(req, res){
     })
 }
 
-module.exports = { createEvent, getEventsList, getEventDetails, addReservation, checkReservation, getUserTakingPart }
+function getEventDetailsByID(req, res){
+    return new Promise(resolve => {
+        Event.findById(req.params.id)
+        .then((result) => {
+            console.log("Rispondo con i dettagli di un evneto con id: "+req.params.id)
+            res.send(JSON.stringify(result))
+        })
+        .catch((err) => {
+            console.log("errore nella ricerca dell'id dell'evento")
+            //res.send(err)
+        })
+    });
+    
+}
+
+function getSubscriptionsEvents(req, res){
+    var events = []
+    console.log("Chiamato getsubs")
+    var id = req.params.id;
+    console.log(id)
+    id="6287ac050f5312c65a393257" //erroe nel salvataggio delgi id probabilmente -> risolto impostandolo manualmente per un solo utente
+    console.log(id)
+    Reservation.find({user : id})
+    .then((result)=>{
+        if(result.length>0)
+        {
+            for(var i=0; i<result.length; i++)
+            {
+                events[i]=result[i].event
+            }
+            res.send(JSON.stringify(events))
+        }
+        else{
+            console.log("Restituito array vuoto");
+        }
+    })
+    .catch((err) => {
+        console.log("error")
+        console.log(err)
+    })
+    
+    
+}
+
+module.exports = { createEvent, getEventsList, getEventDetails, addReservation, checkReservation, getUserTakingPart, getSubscriptionsEvents, getEventDetailsByID }
