@@ -284,7 +284,7 @@ function isEventManagerFunction(eventID, userID){
         if (eventObj){ // se trova l'evento di riferimento
             User.findOne({auth_id : userID})
             .then((userObj) => {
-                if (result){ // se trova l'utente
+                if (userObj){ // se trova l'utente
                     if (userObj._id == eventObj.author){ // se il creatore dell'evento è l'utente che vuole eliminare l'evento
                         return true
                     }
@@ -309,7 +309,7 @@ function isEventManagerFunction(eventID, userID){
 
 // API 
 function isEventManager(req, res){
-    if (isEventManagerFunction(req.params.id, req.body.auth_id)){
+    if (isEventManagerFunction(req.params.id, req.query.auth_id)){
         var response = {
             isCreator : true
         }

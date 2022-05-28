@@ -155,6 +155,15 @@ export default {
         console.log(error)
       })
     },
+    getEventManagerControls(){
+      DataService.isEventManager(this.$route.params.id, this.loggedInUser.uid)
+      .then((result) => {
+        console.log("IS CREATOR: " + result.data.isCreator)
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+    },
     toggleDeleteModal(){
       this.showingDeleteDialog = !this.showingDeleteDialog
     },
@@ -165,7 +174,7 @@ export default {
   },
   mounted(){
     this.getEventDetails()
-    
+    this.getEventManagerControls()
     this.handleAuth()
   }
 }
