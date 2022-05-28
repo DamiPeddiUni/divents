@@ -49,7 +49,7 @@
     <div class="modal-container" id="delete-modal" v-show="showingDeleteDialog">
       <div class="modal-body">
         <div class="modal-text">Are you sure you want to delete this event?</div>
-        <div class="modal-text">All the users subscribed will be notified.</div>
+        <div class="modal-text">Everyone subscribed to this event will be notified.</div>
         <div class="modal-buttons-container">
           <button class="modal-button modal-delete" @click="deleteEvent">Delete Event</button>
           <button class="modal-button modal-cancel" @click="toggleDeleteModal">Cancel</button>
@@ -160,6 +160,7 @@ export default {
     },
     deleteEvent(){
       console.log("Delete")
+      this.toggleDeleteModal();
     }
   },
   mounted(){
