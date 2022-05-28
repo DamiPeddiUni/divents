@@ -40,10 +40,21 @@
           <div class="event-button-takepart">
             <button v-if="isLoggedIn" class="button" id="take-part-button" @click="takePartButton">Take part</button>
             <a v-if="loggedInUser.uid == user.auth_id" class="verifyButton" id="take-part-button" :href="'/validate/' + this.$route.params.id">Verify subscribers</a>
+            <button v-if="loggedInUser.uid == user.auth_id" class="delete-button" id="delete-button" @click="toggleDeleteModal">Delete event 🥺</button>
           </div>
         </div>
       </div>
       
+    </div>
+    <div class="modal-container" id="delete-modal" v-show="showingDeleteDialog">
+      <div class="modal-body">
+        <div class="modal-text">Are you sure you want to delete this event?</div>
+        <div class="modal-text">Everyone subscribed to this event will be notified.</div>
+        <div class="modal-buttons-container">
+          <button class="modal-button modal-delete" @click="deleteEvent">Delete Event</button>
+          <button class="modal-button modal-cancel" @click="toggleDeleteModal">Cancel</button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -68,6 +79,7 @@ export default {
         uid: ""
       },
       isLoggedIn: false,
+      showingDeleteDialog: false,
     };
   },
   methods: {
@@ -142,6 +154,13 @@ export default {
       .catch((error) => {
         console.log(error)
       })
+    },
+    toggleDeleteModal(){
+      this.showingDeleteDialog = !this.showingDeleteDialog
+    },
+    deleteEvent(){
+      console.log("Delete")
+      this.toggleDeleteModal();
     }
   },
   mounted(){
@@ -262,5 +281,58 @@ export default {
   }
   .author-description{
     font-size: 12px;
+  }
+  .delete-button{
+    background-color: #d04c2e;
+    border-radius: 5px;
+    width: 100%;
+    height: 40px;
+    border-width: 0px;
+    color: white;
+    cursor: pointer;
+    display: block;
+    margin-top: 20px;
+  }
+  .modal-container{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.166);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .modal-body{
+    width: calc(100% - 80px);
+    max-width: 300px;
+    padding: 20px;
+    border-radius: 20px;
+    background-color: white;
+  }
+  .modal-text{
+    margin-bottom: 5px;
+  }
+  .modal-buttons-container{
+    margin-top: 40px;
+  }
+  .modal-button{
+    border-radius: 5px;
+    width: 100%;
+    height: 40px;
+    border-width: 0px;
+    color: white;
+    cursor: pointer;
+    display: block;
+    margin-top: 5px;
+  }
+  .modal-cancel{
+    background-color: #F7F7F7;
+    color: black;
+  }
+  .modal-delete{
+    background-color: #d04c2e;
   }
 </style>
