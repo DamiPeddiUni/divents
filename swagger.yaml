@@ -328,6 +328,31 @@ paths:
           '201':
             description: "Event deleted successfully."
   
+  /getPartecipantsList/{eventID}:
+    get:
+      summary: Get the partecipants list
+      description: Return the list of partecipants of a specific event
+      parameters:
+      - name: "eventID"
+        in: "path"
+        description: "ID of the Event"
+        required: true
+
+      responses:
+        '200':
+          description: 'Array of partecipants'
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - partecipantsList
+                properties:
+                  partecipantsList:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+  
 components:
   schemas:
     Event:
