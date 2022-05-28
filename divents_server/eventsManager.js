@@ -397,6 +397,20 @@ function deleteEvent(req, res){
         
 }
 
+function getPartecipantsList(req, res){
+    Event.findById(req.params.id)
+    .then((result) => {
+        if (result){
+            var response = {
+                partecipantsList : result.partecipants
+            }
+            res.send(response)
+        }
+    })
+    .catch((err) => {
+        console.log(err)
+    })
+}
 
 
-module.exports = { createEvent, getEventsList, getEventDetails, addReservation, checkReservation, getUserTakingPart, isEventManager, deleteEvent }
+module.exports = { createEvent, getEventsList, getEventDetails, addReservation, checkReservation, getUserTakingPart, isEventManager, deleteEvent, getPartecipantsList }
