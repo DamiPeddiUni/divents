@@ -38,9 +38,9 @@
           <div class="event-date">{{data}}</div>
           <div class="partecipants-number light-blue-text">{{event.subscribers.length}} take part</div>
           <div class="event-button-takepart">
-            <button v-if="isLoggedIn" class="button" id="take-part-button" @click="takePartButton">Take part</button>
-            <a v-if="loggedInUser.uid == user.auth_id" class="verifyButton" id="take-part-button" :href="'/validate/' + this.$route.params.id">Verify subscribers</a>
-            <button v-if="loggedInUser.uid == user.auth_id" class="delete-button" id="delete-button" @click="toggleDeleteModal">Delete event 🥺</button>
+            <button v-if="isLoggedIn && !isOwner" class="button" id="take-part-button" @click="takePartButton">Take part</button>
+            <a v-if="isOwner" class="verifyButton" id="take-part-button" :href="'/validate/' + this.$route.params.id">Verify subscribers</a>
+            <button v-if="isOwner" class="delete-button" id="delete-button" @click="toggleDeleteModal">Delete event 🥺</button>
           </div>
         </div>
       </div>
@@ -80,6 +80,7 @@ export default {
       },
       isLoggedIn: false,
       showingDeleteDialog: false,
+      isOwner: false,
     };
   },
   methods: {
@@ -128,6 +129,7 @@ export default {
           this.loggedInUser = loggedInUser;
           this.isLoggedIn = true;
           this.checkUserTakingPart();
+          this.getEventManagerControls()
           /*
           {
             uid: user.uid,
@@ -158,7 +160,7 @@ export default {
     getEventManagerControls(){
       DataService.isEventManager(this.$route.params.id, this.loggedInUser.uid)
       .then((result) => {
-        console.log("IS CREATOR: " + result.data.isCreator)
+        this.isOwner = result.data.isCreator
       })
       .catch((error) => {
         console.log(error)
@@ -168,13 +170,20 @@ export default {
       this.showingDeleteDialog = !this.showingDeleteDialog
     },
     deleteEvent(){
-      console.log("Delete")
+      DataService.deleteEvent(this.$route.params.id, JSON.stringify({auth_id: this.loggedInUser.uid}))
+      .then((result) => {
+        if (result.data.deleted){
+          this.$router.push('/');
+        }
+      })
+      .catch((error) => {
+        console.log(error)
+      })
       this.toggleDeleteModal();
     }
   },
   mounted(){
     this.getEventDetails()
-    this.getEventManagerControls()
     this.handleAuth()
   }
 }

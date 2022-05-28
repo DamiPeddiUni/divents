@@ -40,6 +40,10 @@ class DataService {
     isEventManager(id, auth_id){
         return http.get('/api/v1/isEventManager/' + id, { params: { auth_id: auth_id } })
     }
+
+    deleteEvent(id, data){
+        return http.post('/api/v1/deleteEvent/' + id, data)
+    }
 }
 
 export default new DataService();

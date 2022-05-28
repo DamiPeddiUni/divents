@@ -277,66 +277,123 @@ function getUserTakingPart(req, res){
     })
 }
 
-// funzione che verifica se l'utente è il creatore dell'evento
-function isEventManagerFunction(eventID, userID){
+// API 
+function isEventManager(req, res){
+    var eventID = req.params.id
+    var userID = req.query.auth_id;
+    
     Event.findById(eventID)
     .then((eventObj) => {
         if (eventObj){ // se trova l'evento di riferimento
             User.findOne({auth_id : userID})
             .then((userObj) => {
                 if (userObj){ // se trova l'utente
-                    if (userObj._id == eventObj.author){ // se il creatore dell'evento è l'utente che vuole eliminare l'evento
-                        return true
+                    if (userObj._id.toString() === eventObj.author){ // se il creatore dell'evento è l'utente che vuole eliminare l'evento
+                        var response = {
+                            isCreator : true
+                        }
+                        res.send(response)
+                    }else{
+                        var response = {
+                            isCreator : false
+                        }
+                        res.send(response)
                     }
-                    return false
+                    
                 }else{ // se non trova l'utente
-                    return false 
+                    var response = {
+                        isCreator : false
+                    }
+                    res.send(response) 
                 }
             })
             .catch((err) => {
                 console.log(err)
-                return false
+                var response = {
+                    isCreator : false
+                }
+                res.send(response)
             })
         }else{
-            return false
+            var response = {
+                isCreator : false
+            }
+            res.send(response)
         }
     })
     .catch((err) => {
         console.log(err)
-        return false
-    })
-}
-
-// API 
-function isEventManager(req, res){
-    if (isEventManagerFunction(req.params.id, req.query.auth_id)){
-        var response = {
-            isCreator : true
-        }
-        res.send(response)
-    }else{
         var response = {
             isCreator : false
         }
         res.send(response)
-    }
+    })
 }
 
 
 
 //id Evento nei params, id User nel body
 function deleteEvent(req, res){
-    if (isEventManagerFunction(req.params.id, req.body.auth_id)){
-        Event.findOneAndDelete(req.params.id)
-        .then((eventObj) => {
-            console.log("Deleted : ", docs);
-        })
-        .catch((err) => {
-            console.log(err)
-        })
-    }else{
-        console.log("Impossibile eliminare l'evento.")
-    }
+
+    var eventID = req.params.id
+    var userID = req.body.auth_id;
+
+    Event.findById(eventID)
+    .then((eventObj) => {
+        if (eventObj){ // se trova l'evento di riferimento
+            User.findOne({auth_id : userID})
+            .then((userObj) => {
+                if (userObj){ // se trova l'utente
+                    if (userObj._id.toString() === eventObj.author){ // se il creatore dell'evento è l'utente che vuole eliminare l'evento
+                        Event.findByIdAndDelete(req.params.id)
+                        .then((eventObj) => {
+                            var response = {
+                                deleted : true
+                            }
+                            res.send(response)
+                        })
+                        .catch((err) => {
+                            console.log(err)
+                            var response = {
+                                deleted : false
+                            }
+                            res.send(response)
+                        })
+                    }else{
+                        var response = {
+                            deleted : false
+                        }
+                        res.send(response)
+                    }
+                    
+                }else{ // se non trova l'utente
+                    var response = {
+                        deleted : false
+                    }
+                    res.send(response) 
+                }
+            })
+            .catch((err) => {
+                console.log(err)
+                var response = {
+                    deleted : false
+                }
+                res.send(response)
+            })
+        }else{
+            var response = {
+                deleted : false
+            }
+            res.send(response)
+        }
+    })
+    .catch((err) => {
+        console.log(err)
+        var response = {
+            deleted : false
+        }
+        res.send(response)
+    })
         
 }
 
