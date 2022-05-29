@@ -4,7 +4,7 @@
         My <span>Subs</span>.
       </div>
       <div class="events-container">
-        <div v-for="(event, index) in events" :key="index">
+        <div v-for="(event, index) in events[0]" :key="index">
           <a :href="'/event/' + event._id" class="event-card">
             <div class="event-card-image" :style="{ 'background-image': 'url(' + event.photos[0] + ')' }"></div>
             <div class="event-card-text">
