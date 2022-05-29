@@ -24,20 +24,29 @@ class DataService {
     createEvent(details){
         return http.post('/api/v1/createEvent', details);
     }
+
     addReservation(id, data){
         return http.post('/api/v1/addReservation/' + id, data)
     }
+
     getUserTakingPart(id, auth_id){
         return http.get('/api/v1/getUserTakingPart/' + id, { params: { auth_id: auth_id } })
     }
+
     checkReservation(id, data){
         return http.post('/api/v1/checkReservation/' + id, data)
     }
+
     getSubscriptionsEvents(id){
         return http.get('/api/v2/getSubscriptionsEvents/'+id)
     }
+
     getEventDetailsByID(id){
         return http.get('/api/v2/getEventDetailsByID/'+id)
+    }
+
+    getIDFromAuthID(id){
+        return http.get('/api/v2/getIDFromAuthID/'+id)
     }
 }
 
