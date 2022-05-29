@@ -270,8 +270,6 @@ function getUserTakingPart(req, res){
                 res.send(JSON.stringify(response))
             })
             
-
-            
         }
     })
     .catch((err) => {
@@ -279,4 +277,140 @@ function getUserTakingPart(req, res){
     })
 }
 
-module.exports = { createEvent, getEventsList, getEventDetails, addReservation, checkReservation, getUserTakingPart }
+// API 
+function isEventManager(req, res){
+    var eventID = req.params.id
+    var userID = req.query.auth_id;
+    
+    Event.findById(eventID)
+    .then((eventObj) => {
+        if (eventObj){ // se trova l'evento di riferimento
+            User.findOne({auth_id : userID})
+            .then((userObj) => {
+                if (userObj){ // se trova l'utente
+                    if (userObj._id.toString() === eventObj.author){ // se il creatore dell'evento è l'utente che vuole eliminare l'evento
+                        var response = {
+                            isCreator : true
+                        }
+                        res.send(response)
+                    }else{
+                        var response = {
+                            isCreator : false
+                        }
+                        res.send(response)
+                    }
+                    
+                }else{ // se non trova l'utente
+                    var response = {
+                        isCreator : false
+                    }
+                    res.send(response) 
+                }
+            })
+            .catch((err) => {
+                console.log(err)
+                var response = {
+                    isCreator : false
+                }
+                res.send(response)
+            })
+        }else{
+            var response = {
+                isCreator : false
+            }
+            res.send(response)
+        }
+    })
+    .catch((err) => {
+        console.log(err)
+        var response = {
+            isCreator : false
+        }
+        res.send(response)
+    })
+}
+
+
+
+//id Evento nei params, id User nel body
+function deleteEvent(req, res){
+
+    var eventID = req.params.id
+    var userID = req.body.auth_id;
+
+    Event.findById(eventID)
+    .then((eventObj) => {
+        if (eventObj){ // se trova l'evento di riferimento
+            User.findOne({auth_id : userID})
+            .then((userObj) => {
+                if (userObj){ // se trova l'utente
+                    if (userObj._id.toString() === eventObj.author){ // se il creatore dell'evento è l'utente che vuole eliminare l'evento
+                        Event.findByIdAndDelete(req.params.id)
+                        .then((eventObj) => {
+                            var response = {
+                                deleted : true
+                            }
+                            res.send(response)
+                        })
+                        .catch((err) => {
+                            console.log(err)
+                            var response = {
+                                deleted : false
+                            }
+                            res.send(response)
+                        })
+                    }else{
+                        var response = {
+                            deleted : false
+                        }
+                        res.send(response)
+                    }
+                    
+                }else{ // se non trova l'utente
+                    var response = {
+                        deleted : false
+                    }
+                    res.send(response) 
+                }
+            })
+            .catch((err) => {
+                console.log(err)
+                var response = {
+                    deleted : false
+                }
+                res.send(response)
+            })
+        }else{
+            var response = {
+                deleted : false
+            }
+            res.send(response)
+        }
+    })
+    .catch((err) => {
+        console.log(err)
+        var response = {
+            deleted : false
+        }
+        res.send(response)
+    })
+        
+}
+
+function getPartecipantsList(req, res){
+    Event.findById(req.params.id)
+    .then((result) => {
+        if (result){
+            var response = {
+                partecipantsList : result.partecipants
+            }
+            res.send(response)
+        }
+    })
+    .catch((err) => {
+        console.log(err)
+    })
+}
+
+
+module.exports = { createEvent, getEventsList, getEventDetails, addReservation, checkReservation, getUserTakingPart, isEventManager, deleteEvent, getPartecipantsList }

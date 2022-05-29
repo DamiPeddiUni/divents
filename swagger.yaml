@@ -268,8 +268,108 @@ paths:
                   success:
                     type: boolean
                     description: "Contains the information about the check result"
+  
+  /isEventManager/{eventID}:
+    get:
+      summary: Return if the user is the event manager
+      description: Check if the user is the creator of the event.
+      parameters:
+      - name: "eventID"
+        in: "path"
+        description: "ID of the Event"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - auth_id
+              properties:
+                auth_id:
+                  type: integer
+                  description: 'Authentication token'
+      responses:
+        '200':
+          description: 'Succesfully verified.'
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - isCreator
+                properties:
+                  isCreator:
+                    type: boolean
+                    description: "Contains the information about the check result"
                     
-                    
+  /deleteEvent/{eventID}:
+    post:
+      summary: Delete Event
+      description: >-
+        Deletes an event if the user is the event creator.
+      parameters:
+      - name: "eventID"
+        in: "path"
+        description: "ID of the Event"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - auth_id
+              properties:
+                auth_id:
+                  type: integer
+                  description: 'Authentication token'
+      responses:
+          '201':
+            description: "Event deleted successfully."
+  
+  /getPartecipantsList/{eventID}:
+    get:
+      summary: Get the partecipants list
+      description: Returns the list of partecipants of a specific event
+      parameters:
+      - name: "eventID"
+        in: "path"
+        description: "ID of the Event"
+        required: true
+
+      responses:
+        '200':
+          description: 'Array of partecipants'
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - partecipantsList
+                properties:
+                  partecipantsList:
+                    type: array
+                    items: 
+                      type: string
+                      
+  /getUserDetails/{userID}:
+    get:
+      summary: Get the user's details
+      description: Returns a user and it's informations.
+      parameters:
+      - name: "userID"
+        in: "path"
+        description: "ID of the User"
+        required: true
+      responses:
+        '200':
+          description: 'User found succesfully.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+    
 components:
   schemas:
     Event:
