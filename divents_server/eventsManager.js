@@ -154,7 +154,7 @@ function checkReservation (req, res) { //req.body.auth_id del creatore dell'even
                         .then( (result) => {
                             if (result){
                                 // aggiungo user id alla lista di partecipanti
-                                Event.findByIdAndUpdate(req.params.id,{$push : {partecipants : result.user}})
+                                Event.findByIdAndUpdate(req.params.id,{$addToSet : {partecipants : result.user}})
                                 .then((result) => {
                                     var response = {
                                         success : true

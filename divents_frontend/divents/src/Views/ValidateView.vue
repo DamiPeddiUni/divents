@@ -4,11 +4,11 @@
     <div class="check-panel">
       <button class="check-button" @click="toggleScanning">Scan QR code</button>
     </div>
-    <div class="" hidden>
+    <div class="">
       <div class="partecipants-title">{{partecipants.length}} <span>partecipants</span> so far</div>
       <div class="partecipants-list">
-        <div class="partecipant">
-          <div class="partecipant-name">Partecipant Name</div>
+        <div class="partecipant" v-for="(user, index) in partecipants" :key="index">
+          <div class="partecipant-name">{{user.name}}</div>
         </div>
       </div>
     </div>
@@ -28,6 +28,7 @@ export default {
   name: 'CreateEventView',
   data() {
     return {
+      partecipantsID: [],
       partecipants: [],
       scanning: false,
       qrscanner: null,
@@ -72,6 +73,7 @@ export default {
           if (result.data.success){
             
             alert("Codice prenotazione accettato con successo")
+            this.getPartecipants()
           }else{
             alert("Codice prenotazione non valido")
           }
@@ -82,12 +84,33 @@ export default {
       }) 
 
       
+    },
+    getPartecipants(){
+      this.partecipantsID = []
+      this.partecipants = []
+      DataService.getPartecipantsList(this.$route.params.id)
+      .then(result => {
+        if (result && result.data){
+          this.partecipantsID = result.data.partecipantsList;
+          for (var p=0; p < (this.partecipantsID).length; p++){
+            console.log("id utente partecipante: ", this.partecipantsID[p])
+            DataService.getUserDetails(this.partecipantsID[p])
+            .then((response) => {
+              if (response && response.data){
+                this.partecipants.push(response.data)
+              }
+              
+            })
+          }
+        }
+      })
     }
   },
   mounted(){
     var self = this
     this.handleAuth()
     this.qrscanner = new QrScanner(document.getElementById("scan-video"), result => self.scannedQrCodeResult(result))
+    this.getPartecipants()
   }
 }
 </script>
@@ -133,6 +156,8 @@ export default {
     margin-top: 20px;
   }
   .partecipant{
+    background-color: whitesmoke;
+    border-radius: 10px;
     width: calc(100% - 40px);
     padding: 15px 20px;
     box-shadow: #f2f2f2 0 0 5px;
