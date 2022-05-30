@@ -428,23 +428,6 @@ function getEventDetailsByID(req, res){
     
 }
 
-
-function getEventDetailsByID(req, res){
-    return new Promise(resolve => {
-        Event.findById(req.params.id)
-        .then((result) => {
-            console.log("Rispondo con i dettagli di un evneto con id: "+req.params.id)
-            console.log(result)
-            res.send(JSON.stringify(result))
-        })
-        .catch((err) => {
-            console.log("errore nella ricerca dell'id dell'evento")
-            //res.send(err)
-        })
-    });
-    
-}
-
 function getSubscriptionsEvents(req, res){
     var events = []
     console.log("Chiamato getsubs")
