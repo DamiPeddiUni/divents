@@ -369,6 +369,26 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
+                
+  /getSubscriptionsEvents/{userID}:
+    get:
+      summary: Get the subscriptions list of the user
+      description: Returns a list of events id where the user has subscibed
+      parameters:
+      - name: "userID"
+        in: "path"
+        description: "ID of the User"
+        required: true
+      responses:
+        '200':
+          description: "List returned succesfully"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                
     
 components:
   schemas:
