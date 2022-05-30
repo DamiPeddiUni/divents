@@ -44,6 +44,12 @@ class DataService {
     deleteEvent(id, data){
         return http.post('/api/v1/deleteEvent/' + id, data)
     }
+    getSubscriptionsEvents(id){
+        return http.get('/api/v2/getSubscriptionsEvents/'+id)
+    }
+    getEventDetailsByID(id){
+        return http.get('/api/v2/getEventDetailsByID/'+id)
+    }
 }
 
 export default new DataService();
