@@ -24,7 +24,7 @@
       </div>
     </div>
     <div class="load-more-container">
-      <button class="load-more-button">Load more events</button>
+      <button class="load-more-button" @click="getEventsList">Load more events</button>
     </div>
   </div>
   
@@ -41,13 +41,15 @@ export default {
     return {
       isLoggedIn: false,
       events: {},
+      numEvents : 5,
     };
   },
   methods: {
     getEventsList(){
-      DataService.getEvents(10)
+      DataService.getEvents(this.numEvents)
       .then(response => {
         this.events = response.data
+        this.numEvents = this.numEvents + 3
       })
       .catch(error => {
         console.log(error)
