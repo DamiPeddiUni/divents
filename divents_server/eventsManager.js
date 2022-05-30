@@ -412,19 +412,10 @@ function getPartecipantsList(req, res){
     })
 }
 
-function getEventDetailsByID(req, res){
-    return new Promise(resolve => {
-        Event.findById(req.params.id)
-        .then((result) => {
-            console.log(result)
-            console.log("Rispondo con i dettagli di un evneto con id: "+req.params.id)
-            res.send(JSON.stringify(result))
-        })
-        .catch((err) => {
-            console.log("errore nella ricerca dell'id dell'evento")
-            //res.send(err)
-        })
-    });
+async function getEventDetailsByID(id){
+    id=id+""
+    console.log(id)
+    return await Event.findById(id);
     
 }
 
@@ -443,17 +434,26 @@ function getSubscriptionsEvents(req, res){
     })*/
     
     var id = req.params.id;
+    var events_complete= [];
+    var events= [];
     console.log(id)
     id="6287ac050f5312c65a393257" //è un auth_id non un id utente
     Reservation.find({user : id})
-    .then((result)=>{
+    .then(async (result)=>{
         if(result.length>0)
         {
+            //prendo gli id
             for(var i=0; i<result.length; i++)
             {
                 events[i]=result[i].event
             }
-            res.send(JSON.stringify(events))
+
+            for(var i=0; i<events.length; i++)
+            {
+                let data = await getEventDetailsByID(events[i])
+                events_complete.push(data)
+            }
+            res.send(JSON.stringify(events_complete))
         }
         else{
             console.log("Restituito array vuoto");

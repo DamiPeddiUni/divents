@@ -38,17 +38,8 @@ export default ({
       getEventsList(){ //prendo gli evneti a cui un certo id è iscritto
         DataService.getSubscriptionsEvents(JSON.stringify(this.user_id))
         .then(response => {
-          this.events_id = response.data
-          for(var i=0; i<this.events_id.length; i++)
-          {
-            DataService.getEventDetailsByID(this.events_id[i])
-            .then(response =>{
-              this.events.push(response.data)
-            })
-            .catch(err =>{
-              console.log("errore nel reperimento dei dati di un evento (dall'id)")
-            })
-          }
+          console.log(response.data)
+          this.events = response.data
         })
         .catch(error => {
           console.log("errore")
