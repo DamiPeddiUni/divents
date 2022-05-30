@@ -95,6 +95,8 @@
             <div>
               <input @change="update(10)" class="button" id="event-image-file" type="file" ref="fileInput">
               <div class="space"></div>
+                {{nomi_immagini}}
+              <div class="space"></div>
               <button class="button" id="event-image-btn" @click="saveImage">Salva immagine</button>
               <div class="error">{{error.photosError}}</div>
             </div>
@@ -138,7 +140,8 @@ export default {
         dateError:"",
         maxSubError:"",
         photosError:""
-      }
+      },
+      nomi_immagini:"Foto caricate: "
     };
   },
   methods: {
@@ -183,6 +186,7 @@ export default {
     async saveImage(){
       this.update(10)
       this.image = this.$refs.fileInput.files[0]
+      this.nomi_immagini+=this.image.name+", "
       var self = this;
       this.getBase64(this.image, function(e){
         var b64 = e.target.result;
