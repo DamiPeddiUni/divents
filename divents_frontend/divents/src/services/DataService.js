@@ -47,8 +47,13 @@ class DataService {
     getSubscriptionsEvents(id){
         return http.get('/api/v2/getSubscriptionsEvents/'+id)
     }
+
     getEventDetailsByID(id){
         return http.get('/api/v2/getEventDetailsByID/'+id)
+    }
+
+    getIDFromAuthID(id){
+        return http.get('/api/v2/getIDFromAuthID/'+id)
     }
 }
 

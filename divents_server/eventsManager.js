@@ -416,7 +416,25 @@ function getEventDetailsByID(req, res){
     return new Promise(resolve => {
         Event.findById(req.params.id)
         .then((result) => {
+            console.log(result)
             console.log("Rispondo con i dettagli di un evneto con id: "+req.params.id)
+            res.send(JSON.stringify(result))
+        })
+        .catch((err) => {
+            console.log("errore nella ricerca dell'id dell'evento")
+            //res.send(err)
+        })
+    });
+    
+}
+
+
+function getEventDetailsByID(req, res){
+    return new Promise(resolve => {
+        Event.findById(req.params.id)
+        .then((result) => {
+            console.log("Rispondo con i dettagli di un evneto con id: "+req.params.id)
+            console.log(result)
             res.send(JSON.stringify(result))
         })
         .catch((err) => {
@@ -430,10 +448,20 @@ function getEventDetailsByID(req, res){
 function getSubscriptionsEvents(req, res){
     var events = []
     console.log("Chiamato getsubs")
+    //convertire id
+    console.log("L'id che poi passo è: "+req.params.id)
+    /*getUserIDfromUserAuthID(req.params.id)
+    .then(res =>{
+        console.log("trovato il risultato per l'id:")
+        console.log(res)
+    })
+    .catch(err => {
+        console.log("Errore nel trovare l'id")
+    })*/
+    
     var id = req.params.id;
     console.log(id)
-    id="6287ac050f5312c65a393257" //erroe nel salvataggio delgi id probabilmente -> risolto impostandolo manualmente per un solo utente
-    console.log(id)
+    id="6287ac050f5312c65a393257" //è un auth_id non un id utente
     Reservation.find({user : id})
     .then((result)=>{
         if(result.length>0)
@@ -452,8 +480,6 @@ function getSubscriptionsEvents(req, res){
         console.log("error")
         console.log(err)
     })
-    
-    
 }
 
 module.exports = { createEvent, getEventsList, getEventDetails, addReservation, checkReservation, getUserTakingPart, getSubscriptionsEvents, getEventDetailsByID, isEventManager, deleteEvent, getPartecipantsList }

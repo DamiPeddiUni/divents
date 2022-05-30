@@ -66,5 +66,25 @@ function getUserDetails (req, res){ //cerco un profilo
     })
 }
 
+function getIDFromAuthID(req, res){
+    console.log("Hello World")
+    console.log(req.params.id)
+    //id = id.substring(1,id.length-1)
+    User.findOne({auth_id : req.params.id})
+    .then((result) => {
+        console.log("findone")
+        //console.log(resutl)
+        if(result){
+            res.send(result._id)
+        }
+        else{
+            console.log("Result è null")
+        }
+    })
+    .catch((err) => {
+        console.log("Errore nella conversione dell'id")
+    })
+}
 
-module.exports = { checkUserAuth, registerUser, getUserDetails }
+
+module.exports = { checkUserAuth, registerUser, getUserDetails, getIDFromAuthID }
