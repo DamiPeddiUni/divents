@@ -373,7 +373,7 @@ paths:
   /getSubscriptionsEvents/{userID}:
     get:
       summary: Get the subscriptions list of the user
-      description: Returns a list of events id where the user has subscibed
+      description: Returns a list of events where the user has subscibed
       parameters:
       - name: "userID"
         in: "path"
@@ -387,7 +387,7 @@ paths:
               schema:
                 type: array
                 items:
-                  type: string
+                  $ref: '#/components/schemas/Event'
                 
     
 components:
