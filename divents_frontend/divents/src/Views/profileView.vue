@@ -28,7 +28,7 @@
                         {{user_details.brief_presentation}}
                     </div>
                 </div>
-                <div>Events:(??)</div>
+                <div>Events:</div>
             </div>
         </div>
     </div>
@@ -56,15 +56,10 @@
                 });
             },
             getUserDetails(){
-                console.log(this.$route.params.id)
                 DataService.getIDFromAuthID(this.$route.params.id)
                 .then(result => {
-                    console.log("then")
-                    console.log(result)
                     DataService.getUserDetails(result.data)
                     .then(result =>{
-                        console.log("User Details")
-                        console.log(result.data)
                         this.user_details=result.data
                     })
                     .catch(err =>{
