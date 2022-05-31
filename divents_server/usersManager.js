@@ -94,7 +94,7 @@ function generateToken(req, res){
     var payload = {auth_id: req.body.auth_id}
     var options = {expiresIn: 86400}
     var token = jwt.sign(payload, process.env.SUPER_SECRET, options)
-
+    console.log(token)
     res.send(JSON.stringify(token))
 }
 module.exports = { checkUserAuth, registerUser, getUserDetails, getIDFromAuthID, generateToken }

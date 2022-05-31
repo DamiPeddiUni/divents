@@ -115,6 +115,6 @@ app.get('/api/v2/getIDFromAuthID/:id', (id,res) => {
     getIDFromAuthID(id,res);
 })
 
-app.post('api/v2/generateToken/', (req, res) =>{
+app.post('/api/v2/generateToken', (req, res) =>{
     generateToken(req, res);
 })

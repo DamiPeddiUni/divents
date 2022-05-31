@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="header-container">
     <div class="header-panel" v-if="this.isLoggedIn">
         <div class="header-left-navigation-panel">
             <a href="/">Home</a>
@@ -67,7 +67,7 @@ export default {
 
 
 <style scoped>
-  .container{
+  .header-container{
       background: #F7F7F7;
       width: calc(100% - 20px);
       height: 50px;
@@ -83,7 +83,7 @@ export default {
       justify-content: space-between;
       align-items: center;
   }
-  .container a{
+  .header-container a{
       font-size: 12px;
       text-decoration: none;
       color: black;
