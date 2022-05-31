@@ -58,6 +58,9 @@ class DataService {
     getIDFromAuthID(id){
         return http.get('/api/v2/getIDFromAuthID/'+id)
     }
+    generateToken(data){
+        return http.post('/api/v2/generateToken/', data)
+    }
 }
 
 export default new DataService();

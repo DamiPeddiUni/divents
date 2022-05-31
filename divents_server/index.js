@@ -1,12 +1,15 @@
+require('dotenv').config()
+
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 var http = require('http');
+const jwt = require('jsonwebtoken')
 
 // import funzioni da altri files
 const { getVersion } = require('./version.js')
 const { createEvent, getEventsList, getEventDetails, addReservation, checkReservation, getUserTakingPart, isEventManager, deleteEvent, getPartecipantsList, getSubscriptionsEvents, getEventDetailsByID } = require('./eventsManager')
-const { checkUserAuth, registerUser, getUserDetails, getIDFromAuthID } = require('./usersManager')
+const { checkUserAuth, registerUser, getUserDetails, getIDFromAuthID, generateToken } = require('./usersManager')
 
 // inizializzo il server
 const app = express();
@@ -110,4 +113,8 @@ app.get('/api/v2/getEventDetailsByID/:id', (id,res) =>{
 
 app.get('/api/v2/getIDFromAuthID/:id', (id,res) => {
     getIDFromAuthID(id,res);
+})
+
+app.post('api/v2/generateToken/', (req, res) =>{
+    generateToken(req, res);
 })

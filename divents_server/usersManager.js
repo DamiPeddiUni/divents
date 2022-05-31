@@ -1,4 +1,8 @@
+require('dotenv').config()
+
 const User = require('./models/User')
+const jwt = require('jsonwebtoken')
+
 
 function checkUserAuth (req, res) { // dice se il profilo dell'utente è completo oppure no
     User.findOne({auth_id :req.params.id})
@@ -86,5 +90,11 @@ function getIDFromAuthID(req, res){
     })
 }
 
+function generateToken(req, res){
+    var payload = {auth_id: req.body.auth_id}
+    var options = {expiresIn: 86400}
+    var token = jwt.sign(payload, process.env.SUPER_SECRET, options)
 
-module.exports = { checkUserAuth, registerUser, getUserDetails, getIDFromAuthID }
+    res.send(JSON.stringify(token))
+}
+module.exports = { checkUserAuth, registerUser, getUserDetails, getIDFromAuthID, generateToken }
