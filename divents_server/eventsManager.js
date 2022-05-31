@@ -334,9 +334,8 @@ function isEventManager(req, res){
 
 //id Evento nei params, id User nel body
 function deleteEvent(req, res){
-
     var eventID = req.params.id
-    var userID = req.body.auth_id;
+    var userID = req.body.auth;
 
     Event.findById(eventID)
     .then((eventObj) => {

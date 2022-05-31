@@ -41,9 +41,10 @@ class DataService {
         return http.get('/api/v1/isEventManager/' + id, { params: { auth_id: auth_id } })
     }
 
-    deleteEvent(id, data){
-        return http.post('/api/v1/deleteEvent/' + id, data)
+    deleteEvent(ids){
+        return http.delete('/api/v1/deleteEvent/' + ids.id, { data: { id: ids.id, auth: ids.auth_id } })
     }
+
     getPartecipantsList(id){
         return http.get('/api/v1/getPartecipantsList/'+id)
     }

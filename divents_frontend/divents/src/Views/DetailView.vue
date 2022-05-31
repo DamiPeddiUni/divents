@@ -81,6 +81,10 @@ export default {
       isLoggedIn: false,
       showingDeleteDialog: false,
       isOwner: false,
+      ids: {
+        id:"",
+        auth_id:""
+      },
     };
   },
   methods: {
@@ -170,7 +174,9 @@ export default {
       this.showingDeleteDialog = !this.showingDeleteDialog
     },
     deleteEvent(){
-      DataService.deleteEvent(this.$route.params.id, JSON.stringify({auth_id: this.loggedInUser.uid}))
+      this.ids.id=this.$route.params.id;
+      this.ids.auth_id=this.loggedInUser.uid;
+      DataService.deleteEvent(this.ids)
       .then((result) => {
         if (result.data.deleted){
           this.$router.push('/');
