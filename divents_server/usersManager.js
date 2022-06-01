@@ -67,7 +67,6 @@ function getUserDetails (req, res){ //cerco un profilo
 }
 
 function getIDFromAuthID(req, res){
-    console.log("Hello World")
     console.log(req.params.id)
     //id = id.substring(1,id.length-1)
     User.findOne({auth_id : req.params.id})

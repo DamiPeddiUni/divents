@@ -40,17 +40,27 @@ export default ({
         .then(response => {
           console.log(response.data)
           this.events = response.data
+          console.log(this.events)
         })
         .catch(error => {
           console.log("errore")
           console.log(error)
         })
+        //Correggi la visualizzazione dell'errore se l'array di eventi è vuoto
     },
     async handleAuth(){
       onAuthStateChanged(getAuth(), (user) => {
         if (user) {
-          this.user_id = user.uid
-          this.getEventsList()
+          DataService.getIDFromAuthID(user.uid)
+          .then(response =>{
+            this.user_id=response.data
+            console.log(this.user_id)
+            this.getEventsList()
+          })
+          .catch(err =>{
+            console.log("errore nel tentativo di convertire l'auth id")
+          })
+          
         } else {
           console.log("User is not authenticated")
         }

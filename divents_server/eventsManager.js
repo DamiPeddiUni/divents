@@ -419,24 +419,9 @@ async function getEventDetailsByID(id){
 }
 
 function getSubscriptionsEvents(req, res){
-    var events = []
-    console.log("Chiamato getsubs")
-    //convertire id
-    console.log("L'id che poi passo è: "+req.params.id)
-    /*getUserIDfromUserAuthID(req.params.id)
-    .then(res =>{
-        console.log("trovato il risultato per l'id:")
-        console.log(res)
-    })
-    .catch(err => {
-        console.log("Errore nel trovare l'id")
-    })*/
-    
-    var id = req.params.id;
+    var id = req.params.id.substring(1,req.params.id.length-1);
     var events_complete= [];
     var events= [];
-    console.log(id)
-    id="6287ac050f5312c65a393257" //è un auth_id non un id utente
     Reservation.find({user : id})
     .then(async (result)=>{
         if(result.length>0)
@@ -450,7 +435,10 @@ function getSubscriptionsEvents(req, res){
             for(var i=0; i<events.length; i++)
             {
                 let data = await getEventDetailsByID(events[i])
-                events_complete.push(data)
+                if(data!=null)
+                {
+                    events_complete.push(data)
+                }
             }
             res.send(JSON.stringify(events_complete))
         }
