@@ -521,16 +521,21 @@ function getSubscriptionsEvents(req, res){
 }
 
 async function notifySubscribers(eventID){
-    const event = await Event.findById(eventID).exec();
-    var title = event.title;
-    var text = "<h1>We are sorry for this</h1><p>The event: "+title+" has been canceled.</p><p>Hoping to see you again!</p>"
-    const reservations = await Reservation.find({event: eventID}).exec();
-    for (var i = 0; i < reservations.length; i++){
-        var userID = reservations[i].user;
-        var user = await User.findById(userID).exec();
-        var userEmail = user.email;
-        sendNotificationEmail(userEmail, text)
+    try {
+        const event = await Event.findById(eventID).exec();
+        var title = event.title;
+        var text = "<h1>We are sorry for this</h1><p>The event: "+title+" has been canceled.</p><p>Hoping to see you again!</p>"
+        const reservations = await Reservation.find({event: eventID}).exec();
+        for (var i = 0; i < reservations.length; i++){
+            var userID = reservations[i].user;
+            var user = await User.findById(userID).exec();
+            var userEmail = user.email;
+            sendNotificationEmail(userEmail, text)
+        }
+    }catch(error){
+        console.log(error)
     }
+    
 }
 
 module.exports = { createEvent, getEventsList, getEventDetails, addReservation, checkReservation, getUserTakingPart, getSubscriptionsEvents, getEventDetailsByID, isEventManager, deleteEvent, getPartecipantsList, getEventsListWithPossibleFilters }
