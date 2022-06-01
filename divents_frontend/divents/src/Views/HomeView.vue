@@ -3,7 +3,13 @@
     <div class="search-panel">
       <div class="search-title">Search <span>events</span>.</div>
       <div class="search-input-panel">
-        <input class="search-input" type="text" placeholder="Search">
+        <input class="search-input" type="text" placeholder="Search" v-model="searchString">
+        <div class="filter-button" @click="showingFilters = !showingFilters">Filters</div>
+        <div class="search-button" @click="searchWithParameters">Search</div>
+      </div>
+      <div class="filters-container" v-show="showingFilters">
+        <div class="">Date</div>
+        <input type="date" id="date-filter-input" v-model="searchDate">
       </div>
     </div>
     <div class="order-by-panel">Order by: </div>
@@ -13,18 +19,18 @@
           <div class="event-card-image" :style="{ 'background-image': 'url(' + event.photos[0] + ')' }"></div>
           <div class="event-card-text">
             <div class="event-card-header">
-              <div class="event-card-location">{{event.location}}</div>
+              <div class="event-card-location">{{event.location_name}}</div>
               <div class="event-card-date">{{new Date(event.date).toLocaleDateString("it-IT")}}</div>
             </div>
             <div class="event-card-title">{{event.title}}</div>
-            <div class="event-card-subtitle">{{event.subtitle}}</div>
+            <div class="event-card-subtitle">{{event.brief_descr}}</div>
             <div class="event-card-subscribers">{{event.subscribers.length}} people take part</div>
           </div>
         </a>
       </div>
     </div>
     <div class="load-more-container">
-      <button class="load-more-button" @click="getEventsList">Load more events</button>
+      <button class="load-more-button" @click="showMore">Load more events</button>
     </div>
   </div>
   
@@ -42,6 +48,9 @@ export default {
       isLoggedIn: false,
       events: {},
       numEvents : 5,
+      showingFilters: false,
+      searchString: "",
+      searchDate: null,
     };
   },
   methods: {
@@ -54,6 +63,24 @@ export default {
       .catch(error => {
         console.log(error)
       })
+    },
+    searchWithParameters(){
+      DataService.getEventsListWithPossibleFilters({
+        num_result: this.numEvents,
+        search_string: this.searchString,
+        search_date: this.searchDate,
+      })
+      .then(response => {
+        this.events = response.data
+      })
+      .catch(error => {
+        console.log(error)
+      })
+      
+    },
+    showMore(){
+      this.numEvents += 3; 
+      this.searchWithParameters();
     },
     handleAuth(){
       onAuthStateChanged(getAuth(), (user) => {
@@ -76,7 +103,8 @@ export default {
     }
   },
   mounted(){
-    this.getEventsList()
+    //this.getEventsList()
+    this.searchWithParameters()
     this.handleAuth()
   }
 }
@@ -101,20 +129,33 @@ export default {
     color: #1B98E0;
   }
   .search-input-panel{
+    max-width: 300px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    align-items: center;
     margin-bottom: 40px;
+    gap: 20px;
   }
   .search-input{
     background: transparent;
+    width: 100%;
     border: none;
+    border-bottom: 1px solid #f2f2f2;
     outline: none;
-    padding: 10px 20px;
-    border-radius: 10px;
+    padding: 10px 10px;
   }
-  .search-input:hover{
-    background: #f2f2f2;
+  .filter-button{
+    cursor: pointer;
+    font-size: 12px;
+  }
+  .search-button{
+    cursor: pointer;
+    font-size: 12px;
+  }
+  #date-filter-input{
+    border: none;
+    background: transparent;
   }
   .events-container{
     display: grid;
@@ -208,6 +249,14 @@ export default {
   }
   .order-by-panel{
     margin-bottom: 20px;
+  }
+  .filters-container{
+    margin: 20px 0;
+    max-width: 260px;
+    width: calc(100% - 40px);
+    background-color: #f2f2f2;
+    border-radius: 20px;
+    padding: 20px;
   }
 
   @media screen and (max-width: 1024px){
