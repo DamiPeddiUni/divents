@@ -293,6 +293,32 @@ async function sendEmail(userEmail, reservationCode){
     })
 }
 
+function sendNotificationEmail(userEmail, text){
+
+    //console.log("sending email to " + userEmail + " with content: " + text)
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: process.env.EMAIL_ACCOUNT,
+            pass: process.env.EMAIL_PASSWORD,
+        }
+    })
+    const mailOptions = {
+        from: process.env.EMAIL_ACCOUNT,
+        to: userEmail,
+        subject: 'One event you are subscribed to has been modified!',
+        attachDataUrls: true,
+        html: text
+    }
+    transporter.sendMail(mailOptions, function(error, info){
+        if (error){
+            console.log(error)
+        }else{
+            console.log("Email sent.")
+        }
+    })
+}
+
 function getUserTakingPart(req, res){
     var eventID = req.params.id;
     User.findOne({auth_id : req.query.auth_id})
@@ -385,6 +411,7 @@ function deleteEvent(req, res){
             .then((userObj) => {
                 if (userObj){ // se trova l'utente
                     if (userObj._id.toString() === eventObj.author){ // se il creatore dell'evento è l'utente che vuole eliminare l'evento
+                        notifySubscribers(req.params.id)
                         Event.findByIdAndDelete(req.params.id)
                         .then((eventObj) => {
                             var response = {
@@ -491,6 +518,24 @@ function getSubscriptionsEvents(req, res){
         console.log("error")
         console.log(err)
     })
+}
+
+async function notifySubscribers(eventID){
+    try {
+        const event = await Event.findById(eventID).exec();
+        var title = event.title;
+        var text = "<h1>We are sorry for this</h1><p>The event: "+title+" has been canceled.</p><p>Hoping to see you again!</p>"
+        const reservations = await Reservation.find({event: eventID}).exec();
+        for (var i = 0; i < reservations.length; i++){
+            var userID = reservations[i].user;
+            var user = await User.findById(userID).exec();
+            var userEmail = user.email;
+            sendNotificationEmail(userEmail, text)
+        }
+    }catch(error){
+        console.log(error)
+    }
+    
 }
 
 module.exports = { createEvent, getEventsList, getEventDetails, addReservation, checkReservation, getUserTakingPart, getSubscriptionsEvents, getEventDetailsByID, isEventManager, deleteEvent, getPartecipantsList, getEventsListWithPossibleFilters }
