@@ -5,6 +5,10 @@ class DataService {
         return http.get('/api/v1/getEventsList', { params: { num_result: num } });
     }
 
+    getEventsListWithPossibleFilters(data){
+        return http.get('/api/v2/getEventsList', {params: data})
+    }
+
     getEventDetails(id) {
         return http.get('/api/v1/getEventDetails/'+id);
     }
