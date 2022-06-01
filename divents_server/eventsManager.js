@@ -295,7 +295,7 @@ async function sendEmail(userEmail, reservationCode){
 
 function sendNotificationEmail(userEmail, text){
 
-    console.log("sending email to " + userEmail + " with content: " + text)
+    //console.log("sending email to " + userEmail + " with content: " + text)
     const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
