@@ -4,7 +4,6 @@ import router from './router'
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 
-
 const firebaseConfig = {
     apiKey: "AIzaSyARlt5kMjVw0P-kIXOePwz2xnG_8hqBfrQ",
     authDomain: "divents-3a964.firebaseapp.com",
