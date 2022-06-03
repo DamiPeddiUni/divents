@@ -117,7 +117,17 @@ export default {
       .then(response => {
         console.log(response)
         if (response.status == 200){
-					this.$router.push('/');
+          DataService.generateToken(JSON.stringify({
+            auth_id: this.user.uid
+          }))
+          .then((response) =>{
+            localStorage.setItem('userToken', response.data.token);
+            console.log(response.data.token)
+            this.$router.push('/');
+          })
+          .catch((error) => {
+            console.log("Errore nel controllo token")
+          })
 				}
       })
       .catch(error => {

@@ -17,6 +17,7 @@ const tokenChecker = function(req, res, next) {
         }else{
             console.log("Token valido tokenChecker")
             req.auth_id = decoded.auth_id;
+            req.user_id = decoded.user_id;
             next();
         }
     })

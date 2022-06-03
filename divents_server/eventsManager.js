@@ -3,7 +3,9 @@ const Reservation = require('./models/Reservation')
 const User = require('./models/User')
 const nodemailer = require('nodemailer')
 require('dotenv').config();
+const jwt = require('jsonwebtoken')
 var QRCode = require('qrcode')
+
 
 function createEvent (req, res) {
     const event = new Event({
@@ -179,40 +181,24 @@ function addReservation (req, res) {
 function checkReservation (req, res) { //req.body.auth_id del creatore dell'evento
     // findOne trovo id di chi fa la richiesta
     // cerco id dell'utente che ha creato l'evento findbyid
-    User.findOne({auth_id : req.body.auth_id})
-    .then( (result) => {
+    Event.findById(req.params.id)
+    .then((result) => {
         if (result){
-            var user_id = result._id
-            Event.findById(req.params.id)
-            .then((result) => {
-                if (result){
-                    if (result.author == user_id){
-                        // chi sta facendo la richiesta è il creatore dell'evento
-                        Reservation.findOne({
-                            event : req.params.id, 
-                            qrCode : req.body.qrCode
-                        })
-                        .then( (result) => {
-                            if (result){
-                                // aggiungo user id alla lista di partecipanti
-                                Event.findByIdAndUpdate(req.params.id,{$addToSet : {partecipants : result.user}})
-                                .then((result) => {
-                                    var response = {
-                                        success : true
-                                    }
-                                    res.send(JSON.stringify(response))
-                                })
-                                .catch( (err) => {
-                                    console.log(err)
-                                    res.send(JSON.stringify(err))
-                                })
-                            } else {
-                                var response = {
-                                    success : false
-                                }
-                                res.send(JSON.stringify(response))
+            if (result.author == req.user_id){
+                // chi sta facendo la richiesta è il creatore dell'evento
+                Reservation.findOne({
+                    event : req.params.id, 
+                    qrCode : req.body.qrCode
+                })
+                .then( (result) => {
+                    if (result){
+                        // aggiungo user id alla lista di partecipanti
+                        Event.findByIdAndUpdate(req.params.id,{$addToSet : {partecipants : result.user}})
+                        .then((result) => {
+                            var response = {
+                                success : true
                             }
-                            
+                            res.send(JSON.stringify(response))
                         })
                         .catch( (err) => {
                             console.log(err)
@@ -224,30 +210,29 @@ function checkReservation (req, res) { //req.body.auth_id del creatore dell'even
                         }
                         res.send(JSON.stringify(response))
                     }
-                }else{
-                    var response = {
-                        success : false
-                    }
-                    res.send(JSON.stringify(response))
+                            
+                })
+                .catch( (err) => {
+                    console.log(err)
+                    res.send(JSON.stringify(err))
+                })
+            } else {
+                var response = {
+                    success : false
                 }
-            })
-            .catch( (err) => {
-                console.log(err)
-                res.send(JSON.stringify(err))
-            })
-        } else {
+                res.send(JSON.stringify(response))
+            }
+        }else{
             var response = {
                 success : false
             }
             res.send(JSON.stringify(response))
-
         }
     })
-    .catch((err) => {
+    .catch( (err) => {
         console.log(err)
-        res.send(err)
-    })
-    
+        res.send(JSON.stringify(err))
+    })            
 }
 
 function addSubscriber(userID, eventID){
