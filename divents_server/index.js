@@ -68,7 +68,7 @@ app.post('/api/v1/createEvent', (req, res) => {
     createEvent(req, res);
 })
 
-app.get('/api/v1/getEventsList', tokenChecker, (req, res) => {
+app.get('/api/v1/getEventsList', (req, res) => {
     getEventsList(req, res);
 })
 

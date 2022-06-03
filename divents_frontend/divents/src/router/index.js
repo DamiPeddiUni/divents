@@ -44,7 +44,7 @@ const routes = [
     name: 'completeProfile',
     component: CompleteProfileView,
     meta: {
-      requiresAuth: true,
+      requiresAuth: false,
       onlyNotAuth: false,
     }
   },
