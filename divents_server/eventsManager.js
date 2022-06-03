@@ -178,8 +178,7 @@ function addReservation (req, res) {
 
 // event : req.params.id, 
 // qrCode : req.body.qrCode
-function checkReservation (req, res) { //req.body.auth_id del creatore dell'evento
-    // findOne trovo id di chi fa la richiesta
+function checkReservation (req, res) { //req.user_id creatore dell'evento
     // cerco id dell'utente che ha creato l'evento findbyid
     Event.findById(req.params.id)
     .then((result) => {
@@ -387,7 +386,7 @@ function isEventManager(req, res){
 //id Evento nei params, id User nel body
 function deleteEvent(req, res){
     var eventID = req.params.id
-    var userID = req.body.auth;
+    var userID = req.auth_id;
 
     Event.findById(eventID)
     .then((eventObj) => {
@@ -396,8 +395,8 @@ function deleteEvent(req, res){
             .then((userObj) => {
                 if (userObj){ // se trova l'utente
                     if (userObj._id.toString() === eventObj.author){ // se il creatore dell'evento è l'utente che vuole eliminare l'evento
-                        notifySubscribers(req.params.id)
-                        Event.findByIdAndDelete(req.params.id)
+                        notifySubscribers(eventID)
+                        Event.findByIdAndDelete(eventID)
                         .then((eventObj) => {
                             var response = {
                                 deleted : true

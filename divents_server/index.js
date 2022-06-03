@@ -96,7 +96,7 @@ app.get('/api/v1/isEventManager/:id', (req, res) => {
     isEventManager(req, res);
 })
 
-app.delete('/api/v1/deleteEvent/:id', (req, res) => {
+app.delete('/api/v1/deleteEvent/:id', tokenChecker, (req, res) => {
     deleteEvent(req, res);
 })
 
