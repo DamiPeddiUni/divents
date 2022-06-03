@@ -1,4 +1,8 @@
+require('dotenv').config()
+
 const User = require('./models/User')
+const jwt = require('jsonwebtoken')
+
 
 function checkUserAuth (req, res) { // dice se il profilo dell'utente è completo oppure no
     User.findOne({auth_id :req.params.id})
@@ -85,5 +89,26 @@ function getIDFromAuthID(req, res){
     })
 }
 
-
-module.exports = { checkUserAuth, registerUser, getUserDetails, getIDFromAuthID }
+function generateToken(req, res){
+    User.findOne({auth_id : req.body.auth_id})
+    .then((result) => {
+        if(result){
+            var userID = result._id
+            var payload = {auth_id: req.body.auth_id, user_id: userID}
+            var options = {expiresIn: 5184000000}
+            var token = jwt.sign(payload, process.env.SUPER_SECRET, options)
+            daRit = {
+                token: token
+            }
+            console.log(daRit)
+            res.send(JSON.stringify(daRit))
+        }
+        else{
+            console.log("Utente non trovato")
+        }
+    })
+    .catch((err) => {
+        console.log("Errore User.findOne()")
+    })
+}
+module.exports = { checkUserAuth, registerUser, getUserDetails, getIDFromAuthID, generateToken }

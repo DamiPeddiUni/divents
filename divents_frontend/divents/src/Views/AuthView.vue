@@ -28,7 +28,16 @@ export default {
 			.then((result) => {
 				this.user = result.user;
 				console.log(auth.currentUser);
-
+        DataService.generateToken(JSON.stringify({
+          auth_id: this.user.uid
+        }))
+        .then((response) =>{
+          localStorage.setItem('userToken', response.data.token);
+          console.log(response.data.token)
+        })
+        .catch((error) => {
+          console.log("Errore nel controllo token")
+        })
         this.checkUserAuth();
 			})
 			.catch((error) => {
