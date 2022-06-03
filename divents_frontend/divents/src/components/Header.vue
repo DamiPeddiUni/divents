@@ -52,6 +52,7 @@ export default {
     logOut(){
       getAuth().signOut()
       .then(() => {
+        localStorage.removeItem('userToken');
         this.$router.push('/');
       })
       .catch((err) => {

@@ -10,6 +10,7 @@ const jwt = require('jsonwebtoken')
 const { getVersion } = require('./version.js')
 const { createEvent, getEventsList, getEventDetails, addReservation, checkReservation, getUserTakingPart, isEventManager, deleteEvent, getPartecipantsList, getSubscriptionsEvents, getEventDetailsByID } = require('./eventsManager')
 const { checkUserAuth, registerUser, getUserDetails, getIDFromAuthID, generateToken } = require('./usersManager')
+const { tokenChecker } = require('./tokenChecker')
 
 // inizializzo il server
 const app = express();
@@ -67,7 +68,7 @@ app.post('/api/v1/createEvent', (req, res) => {
     createEvent(req, res);
 })
 
-app.get('/api/v1/getEventsList', (req, res) => {
+app.get('/api/v1/getEventsList', tokenChecker, (req, res) => {
     getEventsList(req, res);
 })
 
@@ -83,7 +84,7 @@ app.get('/api/v1/getUserDetails/:id', (req, res) =>{
     getUserDetails(req, res);
 })
 
-app.post('/api/v1/checkReservation/:id', (req, res) => {
+app.post('/api/v1/checkReservation/:id', tokenChecker, (req, res) => {
     checkReservation(req, res);
 })
 
@@ -118,3 +119,4 @@ app.get('/api/v2/getIDFromAuthID/:id', (id,res) => {
 app.post('/api/v2/generateToken', (req, res) =>{
     generateToken(req, res);
 })
+

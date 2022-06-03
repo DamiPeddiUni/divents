@@ -91,10 +91,25 @@ function getIDFromAuthID(req, res){
 }
 
 function generateToken(req, res){
-    var payload = {auth_id: req.body.auth_id}
-    var options = {expiresIn: 86400}
-    var token = jwt.sign(payload, process.env.SUPER_SECRET, options)
-    console.log(token)
-    res.send(JSON.stringify(token))
+    User.findOne({auth_id : req.body.auth_id})
+    .then((result) => {
+        if(result){
+            var userID = result._id
+            var payload = {auth_id: req.body.auth_id, user_id: userID}
+            var options = {expiresIn: 5184000000}
+            var token = jwt.sign(payload, process.env.SUPER_SECRET, options)
+            daRit = {
+                token: token
+            }
+            console.log(daRit)
+            res.send(JSON.stringify(daRit))
+        }
+        else{
+            console.log("Utente non trovato")
+        }
+    })
+    .catch((err) => {
+        console.log("Errore User.findOne()")
+    })
 }
 module.exports = { checkUserAuth, registerUser, getUserDetails, getIDFromAuthID, generateToken }
