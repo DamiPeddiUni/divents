@@ -79,17 +79,23 @@ function getEventsList (req, res) {
     })
 }
 
-function getEventsListWithPossibleFilters (req, res) {  
+async function getEventsListWithPossibleFilters (req, res) {  
+    
+    
     var num_result = req.query.num_result;
     var search_string = req.query.search_string;
-    
+
     var search_date = null;
     var end_date = null;
     
     var filters = {}
 
-    if (search_string.trim().length > 0){
-        filters.title = { $regex: '.*' + search_string + '.*'}
+    
+
+    if (search_string != null)
+        if(search_string.trim().length > 0){
+            filters.title = { $regex: '.*' + search_string + '.*'
+        }
     }
     
     if (req.query.search_date){
@@ -97,10 +103,10 @@ function getEventsListWithPossibleFilters (req, res) {
         end_date = new Date(req.query.search_date + 'T23:59:59');
         filters.date = { $gte: search_date, $lte: end_date }
     }
-    
-    Event.find(filters) // trova gli eventi nel db
-    .limit(req.query.num_result)
-    .then((result) => { // result è un array di eventi
+
+    try{
+        let result = await Event.find(filters, null, {limit: req.query.num_result});
+
         var dataOggi = new Date();
         var daRit = [];
         var length = result.length;
@@ -110,13 +116,45 @@ function getEventsListWithPossibleFilters (req, res) {
                 daRit.push(result[i]);
             }
         }
-        // console.log(daRit)
-        res.send(JSON.stringify(daRit))
+        
+        res.status(200).send(JSON.stringify(daRit))
+    }catch(error){
+        console.log(error)
+        res.status(500);
+    }
+    
+
+    /*
+    Event.find(filters) // trova gli eventi nel db
+    .then((result) => {
+        console.log(result)
+        res.status(200).send(JSON.stringify(result))
+    })
+    
+    .limit(req.query.num_result)
+    .then((result) => { // result è un array di eventi
+
+        
+
+
+        var dataOggi = new Date();
+        var daRit = [];
+        var length = result.length;
+        for (var i = 0; i < length; i++) {
+            // console.log(i)
+            if (result[i].date >= dataOggi){
+                daRit.push(result[i]);
+            }
+        }
+        console.log(daRit)
+        
+        res.status(200).send(JSON.stringify(daRit))
         
     })
     .catch((err) => {
-        res.send(err)
+        res.send(JSON.stringify(err))
     })
+    */
     
 }
 
