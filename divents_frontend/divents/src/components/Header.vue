@@ -4,6 +4,7 @@
         <div class="header-left-navigation-panel">
             <a href="/">Home</a>
             <a href="/createEvent">Create Event</a>
+            <a href="/profile/mySubscriptions">My Subscriptions</a>
             <a href="#" @click="this.logOut">Logout</a>
         </div>
         <a href="/profile" class="header-profile-pic" :style="{ 'background-image': 'url(' + profilePic + ')' }"></a>

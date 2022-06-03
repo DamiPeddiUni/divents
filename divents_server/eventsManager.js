@@ -473,7 +473,7 @@ async function getEventDetailsByID(id){
 
 function getSubscriptionsEvents(req, res){
     var id = req.params.id.substring(1,req.params.id.length-1);
-    var events_complete= [];
+    var events_complete = [];
     var events= [];
     Reservation.find({user : id})
     .then(async (result)=>{
@@ -487,12 +487,29 @@ function getSubscriptionsEvents(req, res){
 
             for(var i=0; i<events.length; i++)
             {
-                let data = await getEventDetailsByID(events[i])
+                var data = await getEventDetailsByID(events[i])
+                
+                
                 if(data!=null)
                 {
-                    events_complete.push(data)
+                    var eventData = {
+                        _id: data._id,
+                        photos: data.photos,
+                        location: data.location,
+                        date: data.date,
+                        title: data.title,
+                        brief_descr: data.brief_descr,
+                        subscribers: data.subscribers,
+                        reservationCode: result[i].qrCode,
+
+                    }
+
+                
+                    events_complete.push(eventData)
+                    
                 }
             }
+            
             res.send(JSON.stringify(events_complete))
         }
         else{
