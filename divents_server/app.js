@@ -49,7 +49,7 @@ app.get('/api/v1/checkUserAuth/:id', (req, res) => {
     checkUserAuth(req, res);
 })
 
-app.post('/api/v1/registerUser', (req, res) => {
+app.post('/api/v2/registerUser', (req, res) => {
     registerUser(req, res);
 })
 
