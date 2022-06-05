@@ -120,9 +120,7 @@ export default {
       
     },
     takePartButton(){
-      DataService.addReservation(this.$route.params.id, JSON.stringify({
-        auth_id: this.loggedInUser.uid
-      }))
+      DataService.addReservation(this.$route.params.id)
       .then(response => {
         this.$router.go()
       })
@@ -162,9 +160,7 @@ export default {
       })
     },
     getEventManagerControls(){
-      DataService.isEventManager(this.$route.params.id, JSON.stringify({
-        token: localStorage.getItem('userToken')
-      }))
+      DataService.isEventManager(this.$route.params.id)
       .then((result) => {
         this.isOwner = result.data.isCreator
       })

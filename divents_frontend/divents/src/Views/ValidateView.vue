@@ -65,7 +65,6 @@ export default {
     scannedQrCodeResult(result){
       this.toggleScanning()
       DataService.checkReservation(this.$route.params.id, JSON.stringify({
-        token: localStorage.getItem('userToken'),
         qrCode: result
       }))
       .then(result => {
