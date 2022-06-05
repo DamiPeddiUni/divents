@@ -367,57 +367,37 @@ function getUserTakingPart(req, res){
 }
 
 // API 
-function isEventManager(req, res){
+async function isEventManager(req, res){
     var eventID = req.params.id
-    var userID = req.query.auth_id;
-    
-    Event.findById(eventID)
-    .then((eventObj) => {
-        if (eventObj){ // se trova l'evento di riferimento
-            User.findOne({auth_id : userID})
-            .then((userObj) => {
-                if (userObj){ // se trova l'utente
-                    if (userObj._id.toString() === eventObj.author){ // se il creatore dell'evento è l'utente che vuole eliminare l'evento
-                        var response = {
-                            isCreator : true
-                        }
-                        res.send(response)
-                    }else{
-                        var response = {
-                            isCreator : false
-                        }
-                        res.send(response)
-                    }
-                    
-                }else{ // se non trova l'utente
-                    var response = {
-                        isCreator : false
-                    }
-                    res.send(response) 
+    try{
+        let eventFound = await Event.findById(eventID)
+        if (eventFound){
+            if(req.user_id === eventFound.author){
+                var response = {
+                    isCreator : true
                 }
-            })
-            .catch((err) => {
-                console.log(err)
+                res.status(200).send(response)
+            }else{
                 var response = {
                     isCreator : false
                 }
-                res.send(response)
-            })
+                res.status(403).send(response)
+            }
         }else{
             var response = {
                 isCreator : false
             }
-            res.send(response)
+            res.status(400).send(response)
         }
-    })
-    .catch((err) => {
+    }catch(err){
         console.log(err)
         var response = {
             isCreator : false
         }
-        res.send(response)
-    })
+        res.status(500).send(response)
+    }
 }
+
 
 
 

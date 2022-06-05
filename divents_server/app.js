@@ -81,7 +81,7 @@ app.get('/api/v1/getUserTakingPart/:id', (req, res) => {
     getUserTakingPart(req, res);
 })
 
-app.get('/api/v1/isEventManager/:id', (req, res) => {
+app.get('/api/v1/isEventManager/:id', tokenChecker, (req, res) => {
     isEventManager(req, res);
 })
 

@@ -116,7 +116,7 @@ export default {
       }))
       .then(response => {
         console.log(response)
-        if (response.status == 200){
+        if (response.status == 201){
           DataService.generateToken(JSON.stringify({
             auth_id: this.user.uid
           }))

@@ -69,7 +69,6 @@ async function registerUser (req, res) { // inserisco i dati mancanti nel profil
     }else if(!req.body.email || req.body.email.trim().length <= 0){
         res.status(400).send(JSON.stringify({profile_completed: false}))
     }else if(req.body.type > 1 || req.body.type < 0){
-        console.log(req.body.type)
         res.status(400).send(JSON.stringify({profile_completed: false}))
     }else if(!req.body.profile_photo || req.body.profile_photo.trim().length <= 0){
         res.status(400).send(JSON.stringify({profile_completed: false}))
@@ -89,8 +88,8 @@ async function registerUser (req, res) { // inserisco i dati mancanti nel profil
                 location : req.body.location,
                 profile_completed : true
             })
-            let result = user.save()
-            if (result.length > 0){
+            let result = await user.save()
+            if (result){
                 var response = {
                     profile_completed: result.profile_completed
                 }
