@@ -46,7 +46,7 @@ class DataService {
     }
 
     deleteEvent(ids){
-        return http.delete('/api/v2/deleteEvent/' + ids.id, {}, {headers: {'authtoken': localStorage.getItem("userToken")}})
+        return http.delete('/api/v2/deleteEvent/' + ids.id, {headers: {'authtoken': localStorage.getItem("userToken")}})
     }
 
     getPartecipantsList(id){
