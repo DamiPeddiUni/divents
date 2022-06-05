@@ -1,41 +1,69 @@
 const request = require("supertest")
 const app = require("../app")
 
-describe("Test generali", () => {
+describe("Search testing", () => {
 
     var eventSpy;
-    var eventSpyFindById;
 
     beforeAll( () => {
         const Event = require("../models/Event");
-        eventSpy = jest.spyOn(Event, 'find').mockImplementation( (criterias) => {
-            return [{
-                id: 0,
-                author: "aaaa",
-                title: "aaaa",
-                brief_descr: "aaaa",
-                detailed_descr: "aaaa",
-                requirements: "aaaa",
-                key_words: [],
-                location_name: "aaaa", // nome del luogo
-                address : "aaaa",
-                latitude : "aaaa",
-                longitude : "aaaa",
-                date: new Date(),
-                photos: [],
-                max_subscribers: 2,
-                subscribers: [],
-                partecipants: []
-            }];
-        })
-        eventSpyFindById = jest.spyOn(Event, 'findById').mockImplementation((id) => {
-            if (id == 1){
-                return {
-                    id: 0,
-                    title: "Evento 1"
-                };
+        eventSpy = jest.spyOn(Event, 'find').mockImplementation( (filters) => {
+            if (filters && filters.title && filters.title['$regex'] == ".*piscina.*"){
+                return [{
+                    id: 1,
+                    author: "2",
+                    title: "Festa in piscina",
+                    brief_descr: "Bellissima festa in piscina",
+                    detailed_descr: "Bellissima festa in piscina da passare in compagnia",
+                    requirements: "Costume da bagno",
+                    key_words: ["piscina", "festa"],
+                    location_name: "Località paroline", 
+                    address : "Via Piave 12",
+                    latitude : "123.12312",
+                    longitude : "123.12312",
+                    date: new Date("2022-09-17"),
+                    photos: [],
+                    max_subscribers: 10,
+                    subscribers: [],
+                    partecipants: []
+                }];
             }else{
-                return {}
+                return [{
+                    id: 0,
+                    author: "1",
+                    title: "Una focaccia in compagnia",
+                    brief_descr: "Un'occasione d'oro per mangiare una focaccia in compagnia",
+                    detailed_descr: "Venite ad assaggiare la nostra focaccia",
+                    requirements: "",
+                    key_words: [],
+                    location_name: "Focacceria",
+                    address : "Via Limone 1",
+                    latitude : "123.1231",
+                    longitude : "123.1231",
+                    date: new Date("2022-08-12"),
+                    photos: [],
+                    max_subscribers: 2,
+                    subscribers: [],
+                    partecipants: []
+                },
+                {
+                    id: 1,
+                    author: "2",
+                    title: "Festa in piscina",
+                    brief_descr: "Bellissima festa in piscina",
+                    detailed_descr: "Bellissima festa in piscina da passare in compagnia",
+                    requirements: "Costume da bagno",
+                    key_words: ["piscina", "festa"],
+                    location_name: "Località paroline", 
+                    address : "Via Piave 12",
+                    latitude : "123.12312",
+                    longitude : "123.12312",
+                    date: new Date("2022-09-17"),
+                    photos: [],
+                    max_subscribers: 10,
+                    subscribers: [],
+                    partecipants: []
+                }];
             }
             
         })
@@ -43,26 +71,31 @@ describe("Test generali", () => {
 
     afterAll(async () => {
         eventSpy.mockRestore();
-        eventSpyFindById.mockRestore();
     })
 
-    test("Il modulo app deve essere definito", () => {
-        expect(app).toBeDefined();
-    })
-    test("Una chiamata GET ad una API non definita deve restituire codice errore 404", () => {
+    test("A GET request at /api/v2/getEventsList without filters must return an array of events", async () => {
         return request(app)
-        .get('/api/v1/test')
-        .expect(404)
-    })
-    test("Una chiamata GET ad una API definita deve restituire codice 200", () => {
-        return request(app)
-        .get('/api/v1/getVersion')
+        .get('/api/v2/getEventsList')
         .expect(200)
+        .then( (res) => {
+            if (res.text){
+                var data = JSON.parse(res.text);
+                expect(data.length).toEqual(2);
+            }
+        })
     })
-    test("Chiamata GET a /api/v2/getEventsList deve restituire un array di eventi", async () => {
+
+    test("A GET request at /api/v2/getEventsList with filters must return an array of events", async () => {
         return request(app)
-        .get('/api/v2/getEventsList?num_result=5&search_string=a&search_date=2022-06-17')
+        .get('/api/v2/getEventsList?num_result=5&search_string=piscina&search_date=2022-09-17')
         .expect(200)
+        .then( (res) => {
+            if (res.text) {
+                var data = JSON.parse(res.text);
+                expect(data.length).toEqual(1);
+                expect(data[0].id).toEqual(1)
+            }
+        })
     })
 })
 
