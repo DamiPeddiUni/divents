@@ -9,7 +9,7 @@ var QRCode = require('qrcode')
 
 function createEvent (req, res) {
     const event = new Event({
-        author: req.body.author,
+        author: req.user_id,
         title: req.body.title,
         brief_descr: req.body.brief_descr,
         detailed_descr: req.body.detailed_descr,
@@ -26,33 +26,16 @@ function createEvent (req, res) {
         partecipants: []
     })
 
-    
-    // da auth_id a id utente
-    User.findOne({auth_id :req.body.author})
+    event.save() // inserisco nel database
     .then((result) => {
-        
-        if(result){
-            
-            event.author=result._id
-            console.log("Id creatore: " + result._id)
-            event.save() // inserisco nel database
-            .then((result) => {
-                console.log("Inserito correttamente")
-                res.send(result);
-            })
-            .catch((err) => {
-                console.log("Errore riga 39")
-                console.log(err)
-            })
-        }
-        else{
-            console.log("Id non trovato")
-        }
+        console.log("Inserito correttamente")
+        res.send(result);
     })
     .catch((err) => {
-        console.log("Sono nel catch")
+        console.log("Errore riga 39")
         console.log(err)
     })
+        
 }
 
 
@@ -389,27 +372,20 @@ function sendNotificationEmail(userEmail, text){
 
 function getUserTakingPart(req, res){
     var eventID = req.params.id;
-    User.findOne({auth_id : req.query.auth_id})
-    .then((result) => {
-        if (result){
-            var userID = result._id;
+    
+    var userID = req.user_id;
 
-            var userReservation = Reservation.findOne({
-                user: userID,
-                event: req.params.id,
-            })
-            .then((result) => {
-                var response = {
-                    userTakePart: result != null,
-                }
-                res.send(JSON.stringify(response))
-            })
-            
+    Reservation.findOne({
+        user: userID,
+        event: eventID,
+    })
+    .then((result) => {
+        var response = {
+            userTakePart: result != null,
         }
+        res.send(JSON.stringify(response))
     })
-    .catch((err) => {
-        console.log(err)
-    })
+        
 }
 
 // API 
@@ -450,51 +426,34 @@ async function isEventManager(req, res){
 //id Evento nei params, id User nel body
 function deleteEvent(req, res){
     var eventID = req.params.id
-    var userID = req.auth_id;
+    var userID = req.user_id;
 
     Event.findById(eventID)
     .then((eventObj) => {
         if (eventObj){ // se trova l'evento di riferimento
-            User.findOne({auth_id : userID})
-            .then((userObj) => {
-                if (userObj){ // se trova l'utente
-                    if (userObj._id.toString() === eventObj.author){ // se il creatore dell'evento è l'utente che vuole eliminare l'evento
-                        notifySubscribers(eventID)
-                        Event.findByIdAndDelete(eventID)
-                        .then((eventObj) => {
-                            var response = {
-                                deleted : true
-                            }
-                            res.send(response)
-                        })
-                        .catch((err) => {
-                            console.log(err)
-                            var response = {
-                                deleted : false
-                            }
-                            res.send(response)
-                        })
-                    }else{
-                        var response = {
-                            deleted : false
-                        }
-                        res.send(response)
+            
+            if (userID.toString() === eventObj.author){ // se il creatore dell'evento è l'utente che vuole eliminare l'evento
+                notifySubscribers(eventID)
+                Event.findByIdAndDelete(eventID)
+                .then((eventObj) => {
+                    var response = {
+                        deleted : true
                     }
-                    
-                }else{ // se non trova l'utente
+                    res.send(response)
+                })
+                .catch((err) => {
+                    console.log(err)
                     var response = {
                         deleted : false
                     }
-                    res.send(response) 
-                }
-            })
-            .catch((err) => {
-                console.log(err)
+                    res.send(response)
+                })
+            }else{
                 var response = {
                     deleted : false
                 }
                 res.send(response)
-            })
+            }
         }else{
             var response = {
                 deleted : false

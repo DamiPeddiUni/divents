@@ -53,7 +53,7 @@ app.post('/api/v2/registerUser', (req, res) => {
     registerUser(req, res);
 })
 
-app.post('/api/v1/createEvent', (req, res) => {
+app.post('/api/v2/createEvent', tokenChecker, (req, res) => {
     createEvent(req, res);
 })
 
@@ -77,7 +77,7 @@ app.post('/api/v1/checkReservation/:id', tokenChecker, (req, res) => {
     checkReservation(req, res);
 })
 
-app.get('/api/v1/getUserTakingPart/:id', (req, res) => {
+app.get('/api/v2/getUserTakingPart/:id', tokenChecker, (req, res) => {
     getUserTakingPart(req, res);
 })
 
@@ -85,7 +85,7 @@ app.get('/api/v1/isEventManager/:id', tokenChecker, (req, res) => {
     isEventManager(req, res);
 })
 
-app.delete('/api/v1/deleteEvent/:id', (req, res) => {
+app.delete('/api/v2/deleteEvent/:id', tokenChecker, (req, res) => {
     deleteEvent(req, res);
 })
 
