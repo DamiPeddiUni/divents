@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken')
 
 const tokenChecker = function(req, res, next) {
     var token = req.headers['authtoken'];
-    //console.log("AuthToken in tockenChecker" + token)
+    console.log("AuthToken in tockenChecker" + token)
     if (!token){
         res.status(401).json({success: false, message: 'Nessun token trovato.'});
         return

@@ -50,7 +50,7 @@ export default ({
   },
   methods: {
     getEventsList(){ //prendo gli evneti a cui un certo id è iscritto
-      DataService.getSubscriptionsEvents(JSON.stringify(this.user_id))
+      DataService.getSubscriptionsEvents()
       .then(response => {
         
         this.events = response.data

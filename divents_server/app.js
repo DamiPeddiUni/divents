@@ -65,7 +65,7 @@ app.get('/api/v1/getEventDetails/:id', (req, res) => {
     getEventDetails(req, res);
 })
 
-app.post('/api/v1/addReservation/:id', (req, res) => {
+app.post('/api/v2/addReservation/:id', tokenChecker, (req, res) => {
     addReservation(req, res);
 })
 
@@ -73,7 +73,7 @@ app.get('/api/v1/getUserDetails/:id', (req, res) =>{
     getUserDetails(req, res);
 })
 
-app.post('/api/v1/checkReservation/:id', tokenChecker, (req, res) => {
+app.post('/api/v2/checkReservation/:id', tokenChecker, (req, res) => {
     checkReservation(req, res);
 })
 
@@ -81,7 +81,7 @@ app.get('/api/v1/getUserTakingPart/:id', (req, res) => {
     getUserTakingPart(req, res);
 })
 
-app.get('/api/v1/isEventManager/:id', tokenChecker, (req, res) => {
+app.get('/api/v2/isEventManager/:id', tokenChecker, (req, res) => {
     isEventManager(req, res);
 })
 
@@ -93,8 +93,8 @@ app.get('/api/v1/getPartecipantsList/:id', (req, res) => {
     getPartecipantsList(req, res);
 })
 
-app.get('/api/v2/getSubscriptionsEvents/:id', (id, res) =>{
-    getSubscriptionsEvents(id, res);
+app.get('/api/v2/getSubscriptionsEvents', tokenChecker, (req, res) =>{
+    getSubscriptionsEvents(req, res);
 })
 
 app.get('/api/v2/getEventDetailsByID/:id', (id,res) =>{

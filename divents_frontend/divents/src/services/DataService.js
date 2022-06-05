@@ -29,8 +29,8 @@ class DataService {
         return http.post('/api/v1/createEvent', details);
     }
 
-    addReservation(id, data){
-        return http.post('/api/v1/addReservation/' + id, data)
+    addReservation(id){
+        return http.post('/api/v2/addReservation/' + id, {}, { headers: { "authtoken": localStorage.getItem('userToken')}});
     }
 
     getUserTakingPart(id, auth_id){
@@ -38,11 +38,11 @@ class DataService {
     }
 
     checkReservation(id, data){
-        return http.post('/api/v1/checkReservation/' + id, data)
+        return http.post('/api/v2/checkReservation/' + id, data, { headers: { "authtoken": localStorage.getItem('userToken')}})
     }
 
-    isEventManager(id, auth_id){
-        return http.get('/api/v1/isEventManager/' + id, { params: { auth_id: auth_id } })
+    isEventManager(id){
+        return http.get('/api/v2/isEventManager/' + id, { headers: { "authtoken": localStorage.getItem('userToken')}});
     }
 
     deleteEvent(ids){
@@ -52,8 +52,8 @@ class DataService {
     getPartecipantsList(id){
         return http.get('/api/v1/getPartecipantsList/'+id)
     }
-    getSubscriptionsEvents(id){
-        return http.get('/api/v2/getSubscriptionsEvents/'+id)
+    getSubscriptionsEvents(){
+        return http.get('/api/v2/getSubscriptionsEvents', { headers: { "authtoken": localStorage.getItem('userToken')}})
     }
 
     getEventDetailsByID(id){

@@ -7,10 +7,5 @@ let http = axios.create({
     }
 });
 
-// prima di ogni richiesta fai
-http.interceptors.request.use(function(config) {
-    config.headers.AuthToken = localStorage.getItem('userToken');
-    return config;
-});
 
 export default http;

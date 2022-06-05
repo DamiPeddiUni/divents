@@ -170,7 +170,7 @@ function getEventDetails (req, res) {
 
 function addReservation (req, res) {
 
-    User.findOne({auth_id :req.body.auth_id})
+    User.findById(req.user_id)
     .then((result) => {
         if (result){
             var reservationCode = Math.random() * 1000000
@@ -202,10 +202,7 @@ function addReservation (req, res) {
                 }else{
                     console.log("User has already took part")
                 }
-            })
-            
-
-            
+            })           
         }
     })
     .catch((err) => {
@@ -535,10 +532,9 @@ async function getEventDetailsByID(id){
 }
 
 function getSubscriptionsEvents(req, res){
-    var id = req.params.id.substring(1,req.params.id.length-1);
     var events_complete = [];
     var events= [];
-    Reservation.find({user : id})
+    Reservation.find({user : req.user_id})
     .then(async (result)=>{
         if(result.length>0)
         {
