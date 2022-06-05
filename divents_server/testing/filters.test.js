@@ -4,7 +4,6 @@ const app = require("../app")
 describe("Search testing", () => {
 
     var eventSpy;
-    var eventSpyFindById;
 
     beforeAll( () => {
         const Event = require("../models/Event");
@@ -12,7 +11,7 @@ describe("Search testing", () => {
             if (filters && filters.title && filters.title['$regex'] == ".*piscina.*"){
                 return [{
                     id: 1,
-                    author: "Damiano Pedoni",
+                    author: "2",
                     title: "Festa in piscina",
                     brief_descr: "Bellissima festa in piscina",
                     detailed_descr: "Bellissima festa in piscina da passare in compagnia",
@@ -31,7 +30,7 @@ describe("Search testing", () => {
             }else{
                 return [{
                     id: 0,
-                    author: "Mastro fornaio",
+                    author: "1",
                     title: "Una focaccia in compagnia",
                     brief_descr: "Un'occasione d'oro per mangiare una focaccia in compagnia",
                     detailed_descr: "Venite ad assaggiare la nostra focaccia",
@@ -49,7 +48,7 @@ describe("Search testing", () => {
                 },
                 {
                     id: 1,
-                    author: "Damiano Pedoni",
+                    author: "2",
                     title: "Festa in piscina",
                     brief_descr: "Bellissima festa in piscina",
                     detailed_descr: "Bellissima festa in piscina da passare in compagnia",
@@ -68,22 +67,10 @@ describe("Search testing", () => {
             }
             
         })
-        eventSpyFindById = jest.spyOn(Event, 'findById').mockImplementation((id) => {
-            if (id == 1){
-                return {
-                    id: 0,
-                    title: "Evento 1"
-                };
-            }else{
-                return {}
-            }
-            
-        })
     })
 
     afterAll(async () => {
         eventSpy.mockRestore();
-        eventSpyFindById.mockRestore();
     })
 
     test("A GET request at /api/v2/getEventsList without filters must return an array of events", async () => {

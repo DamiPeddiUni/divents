@@ -216,8 +216,53 @@ function addReservation (req, res) {
 
 // event : req.params.id, 
 // qrCode : req.body.qrCode
-function checkReservation (req, res) { //req.user_id creatore dell'evento
+async function checkReservation (req, res) { //req.user_id creatore dell'evento
     // cerco id dell'utente che ha creato l'evento findbyid
+
+    try{
+        let event = await Event.findById(req.params.id)
+        if (event){
+            if (event.author == req.user_id){
+                let reservation = await Reservation.findOne({event: req.params.id, qrCode: req.body.qrCode})
+                if (reservation) {
+                    let updated = await Event.findByIdAndUpdate(req.params.id,{$addToSet : {partecipants : reservation.user}})
+                    if (updated){
+                        var response = {
+                            success : true
+                        }
+                        res.send(JSON.stringify(response))
+                    }else{
+                        var response = {
+                            success : false
+                        }
+                        res.send(JSON.stringify(response))
+                    }
+                }else{
+                    var response = {
+                        success : false
+                    }
+                    res.send(JSON.stringify(response))
+                }
+            }else{
+                var response = {
+                    success : false
+                }
+                res.status(403).send(JSON.stringify(response))
+            }
+        }else{
+            var response = {
+                success : false
+            }
+            res.send(JSON.stringify(response))
+        }
+
+    }catch(error){
+        //console.log(error)
+        res.status(500);
+    }
+    
+    /*
+
     Event.findById(req.params.id)
     .then((result) => {
         if (result){
@@ -269,7 +314,8 @@ function checkReservation (req, res) { //req.user_id creatore dell'evento
     .catch( (err) => {
         console.log(err)
         res.send(JSON.stringify(err))
-    })            
+    })  
+    */          
 }
 
 function addSubscriber(userID, eventID){
