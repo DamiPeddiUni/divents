@@ -49,7 +49,7 @@ app.get('/api/v1/checkUserAuth/:id', (req, res) => {
     checkUserAuth(req, res);
 })
 
-app.post('/api/v1/registerUser', (req, res) => {
+app.post('/api/v2/registerUser', (req, res) => {
     registerUser(req, res);
 })
 
@@ -81,7 +81,7 @@ app.get('/api/v1/getUserTakingPart/:id', (req, res) => {
     getUserTakingPart(req, res);
 })
 
-app.get('/api/v1/isEventManager/:id', (req, res) => {
+app.get('/api/v1/isEventManager/:id', tokenChecker, (req, res) => {
     isEventManager(req, res);
 })
 

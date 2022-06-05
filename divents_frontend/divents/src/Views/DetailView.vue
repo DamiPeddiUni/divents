@@ -162,7 +162,9 @@ export default {
       })
     },
     getEventManagerControls(){
-      DataService.isEventManager(this.$route.params.id, this.loggedInUser.uid)
+      DataService.isEventManager(this.$route.params.id, JSON.stringify({
+        token: localStorage.getItem('userToken')
+      }))
       .then((result) => {
         this.isOwner = result.data.isCreator
       })

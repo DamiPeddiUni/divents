@@ -22,7 +22,7 @@ class DataService {
     }
 
     registerUser(data){
-        return http.post('/api/v1/registerUser', data);
+        return http.post('/api/v2/registerUser', data);
     }
     
     createEvent(details){
