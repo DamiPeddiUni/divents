@@ -1,7 +1,7 @@
 const request = require("supertest")
 const app = require("../app")
 
-describe("Search testing", () => {
+describe("Event details test", () => {
 
     var eventSpy;
 
