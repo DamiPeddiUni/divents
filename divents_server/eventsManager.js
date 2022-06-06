@@ -406,13 +406,13 @@ async function isEventManager(req, res){
                 var response = {
                     isCreator : false
                 }
-                res.status(200).send(response)
+                res.status(403).send(response)
             }
         }else{
             var response = {
                 isCreator : false
             }
-            res.status(500).send(response)
+            res.status(404).send(response)
         }
     }catch(err){
         console.log(err)
