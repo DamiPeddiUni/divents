@@ -310,6 +310,18 @@ paths:
                   isCreator:
                     type: boolean
                     description: "Contains the information about the check result"
+        '404':
+          description: 'Event not found.'
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - isCreator
+                properties:
+                  isCreator:
+                    type: boolean
+                    description: "Contains the information about the check result"
         '500':
           description: 'Server error.'
           content:
