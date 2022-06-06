@@ -429,10 +429,10 @@ paths:
                   required:
                     - token
                   properties:
-                    deleted:
+                    token:
                       type: string
                       description: "It contains the token"
-                
+  
     
 components:
   schemas:
