@@ -141,14 +141,8 @@ async function getEventsListWithPossibleFilters (req, res) {
     
 }
 
-function getEventDetails (req, res) {
-    Event.findById(req.params.id)
-    .then((result) => {
-        res.send(result) // ritorniamo il risultato
-    })
-    .catch((err) => {
-        res.send(err)
-    })
+async function getEventDetails (req, res) {
+    res.send(await Event.findById(req.params.id))
 }
 
 function addReservation (req, res) {
