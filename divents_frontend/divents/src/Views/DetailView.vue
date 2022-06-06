@@ -8,7 +8,7 @@
       <div>
         <div class="event-title" colspan="2">{{event.title}}</div>
         <div class="flex-two-column">
-          <div class="light-blue-text">Location</div>
+          <div class="light-blue-text">{{event.location_name}} - {{event.address}}</div>
           <div class="text-right">{{data}}</div>
         </div>
         <div class="event-brief-description">
