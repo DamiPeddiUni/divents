@@ -67,6 +67,10 @@ class DataService {
     generateToken(data){
         return http.post('/api/v2/generateToken', data)
     }
+
+    getUserType(){
+        return http.get('/api/v2/getUserType', { headers: { "authtoken": localStorage.getItem('userToken')}})
+    }
 }
 
 export default new DataService();

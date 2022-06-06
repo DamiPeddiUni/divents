@@ -160,6 +160,11 @@ function addReservation (req, res) {
             var userID = result._id;
             var userEmail = result.email;
 
+            if (result.type == 1){
+                res.status(403);
+                return;
+            }
+
             // check se non esiste già una reservation uguale
             var userReservation = Reservation.findOne({
                 user: userID,
@@ -176,7 +181,7 @@ function addReservation (req, res) {
                     .then((result) => {
                         sendEmail(userEmail, reservationCode)
                         addSubscriber(userID, req.params.id);
-                        res.send("")
+                        res.status(200).send("")
                     })
                     .catch((err) => {
                         //res.send(err)
@@ -184,6 +189,7 @@ function addReservation (req, res) {
                     })
                 }else{
                     console.log("User has already took part")
+                    res.status(400)
                 }
             })           
         }
@@ -400,13 +406,13 @@ async function isEventManager(req, res){
                 var response = {
                     isCreator : false
                 }
-                res.status(403).send(response)
+                res.status(200).send(response)
             }
         }else{
             var response = {
                 isCreator : false
             }
-            res.status(400).send(response)
+            res.status(500).send(response)
         }
     }catch(err){
         console.log(err)

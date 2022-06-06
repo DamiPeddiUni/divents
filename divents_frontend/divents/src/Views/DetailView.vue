@@ -39,7 +39,7 @@
           <div class="partecipants-number light-blue-text">{{event.subscribers.length}} take part</div>
           <div class="event-button-takepart">
             <button v-if="isLoggedIn && !isOwner" class="button" id="take-part-button" @click="takePartButton">Take part</button>
-            <a v-if="isOwner" class="verifyButton" id="take-part-button" :href="'/validate/' + this.$route.params.id">Verify subscribers</a>
+            <a v-if="isOwner" class="verifyButton" id="" :href="'/validate/' + this.$route.params.id">Verify subscribers</a>
             <button v-if="isOwner" class="delete-button" id="delete-button" @click="toggleDeleteModal">Delete event 🥺</button>
           </div>
         </div>
@@ -131,7 +131,8 @@ export default {
           this.loggedInUser = loggedInUser;
           this.isLoggedIn = true;
           this.checkUserTakingPart();
-          this.getEventManagerControls()
+          this.getEventManagerControls();
+          this.checkUserType();
           /*
           {
             uid: user.uid,
@@ -184,6 +185,21 @@ export default {
         console.log(error)
       })
       this.toggleDeleteModal();
+    },
+    checkUserType(){
+      DataService.getUserType()
+      .then((result) => {
+        if (result.data && result.data.type){
+          if (result.data.type == 1){
+            document.getElementById("take-part-button").disabled = true;
+            document.getElementById("take-part-button").innerHTML = "Your account can't take part.";
+          }
+        }
+        console.log(result.data)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
     }
   },
   mounted(){

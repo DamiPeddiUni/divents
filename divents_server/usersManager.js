@@ -137,6 +137,20 @@ function getIDFromAuthID(req, res){
     })
 }
 
+async function getUserType(req, res){
+    try{
+        let user = await User.findById(req.user_id)
+        if (user){
+            res.status(200).send(JSON.stringify({type: user.type}));
+        }else{
+            res.status(404);
+        }
+    }catch(error){
+        res.status(500);
+    }
+    
+}
+
 function generateToken(req, res){
     User.findOne({auth_id : req.body.auth_id})
     .then((result) => {
@@ -159,4 +173,5 @@ function generateToken(req, res){
         console.log("Errore User.findOne()")
     })
 }
-module.exports = { checkUserAuth, registerUser, getUserDetails, getIDFromAuthID, generateToken }
+
+module.exports = { checkUserAuth, registerUser, getUserDetails, getIDFromAuthID, generateToken, getUserType }

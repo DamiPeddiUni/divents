@@ -9,7 +9,7 @@ const jwt = require('jsonwebtoken')
 // import funzioni da altri files
 const { getVersion } = require('./version.js')
 const { createEvent, getEventsList, getEventDetails, addReservation, checkReservation, getUserTakingPart, isEventManager, deleteEvent, getPartecipantsList, getSubscriptionsEvents, getEventDetailsByID, getEventsListWithPossibleFilters } = require('./eventsManager')
-const { checkUserAuth, registerUser, getUserDetails, getIDFromAuthID, generateToken } = require('./usersManager')
+const { checkUserAuth, registerUser, getUserDetails, getIDFromAuthID, generateToken, getUserType } = require('./usersManager')
 const { tokenChecker } = require('./tokenChecker')
 
 // inizializzo il server
@@ -111,6 +111,10 @@ app.get('/api/v2/getEventsList', (req, res) => {
 
 app.post('/api/v2/generateToken', (req, res) =>{
     generateToken(req, res);
+})
+
+app.get('/api/v2/getUserType', tokenChecker, (req, res) => {
+    getUserType(req, res)
 })
 
 module.exports = app
