@@ -12,12 +12,20 @@ paths:
     get:
       summary: Get the events list
       description: >-
-        Gets the events list.
+        Gets the events list, the resuts can be filtered.
       parameters:
       - name: "num_result"
         in: "query"
         description: "Number of events to display"
         required: true
+      - name: "search_string"
+        in: "query"
+        description: "String of words"
+        required: false
+      - name: "search_date"
+        in: "query"
+        description: "Date in which the user wants to go to an event"
+        required: false
       responses:
         '200':
           description: 'Collection of events'
@@ -27,6 +35,8 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Event'
+        '500':
+          description: 'Server error'
                   
                   
   /getEventDetails/{eventID}:
