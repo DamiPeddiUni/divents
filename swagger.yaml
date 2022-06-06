@@ -57,7 +57,6 @@ paths:
             schema:
               type: object
               required:
-                - author
                 - title
                 - brief_descr
                 - detailed_descr
@@ -71,9 +70,6 @@ paths:
                 - photos
                 - max_subscribers
               properties:
-                author:
-                  type: string
-                  description: 'ID of the creator'
                 title:
                   type: string
                   description: 'Name of the event'
