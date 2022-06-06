@@ -152,7 +152,7 @@ paths:
         required: true
       responses:
         '200':
-          description: 'Succesfully verified.'
+          description: 'Successfully verified.'
           content:
             application/json:
               schema:
@@ -242,7 +242,7 @@ paths:
                   description: "QR code of the reservation"
       responses:
         '200':
-          description: 'Succesfully verified.'
+          description: 'Successfully verified.'
           content:
             application/json:
               schema:
@@ -265,7 +265,7 @@ paths:
         required: true
       responses:
         '200':
-          description: 'Succesfully verified.'
+          description: 'Successfully verified.'
           content:
             application/json:
               schema:
@@ -373,7 +373,7 @@ paths:
         required: true
       responses:
         '200':
-          description: 'User found succesfully.'
+          description: 'User found successfully.'
           content:
             application/json:
               schema:
@@ -386,13 +386,42 @@ paths:
       
       responses:
         '200':
-          description: "List returned succesfully"
+          description: "List returned successfully"
           content:
             application/json:
               schema:
                 type: array
                 items:
                   $ref: '#/components/schemas/Event'
+  
+  /generateToken:
+    post:
+      summary: Generate token
+      description: Generates an authentication token for the user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - auth_id
+              properties:
+                auth_id:
+                  type: string
+                  description: 'Authentication id of the user'
+      responses:
+        '201':
+          description: "Token created successfully."
+          content:
+              application/json:
+                schema:
+                  type: object
+                  required:
+                    - token
+                  properties:
+                    deleted:
+                      type: string
+                      description: "It contains the token"
                 
     
 components:
