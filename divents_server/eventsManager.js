@@ -3,11 +3,13 @@ const Reservation = require('./models/Reservation')
 const User = require('./models/User')
 const nodemailer = require('nodemailer')
 require('dotenv').config();
+const jwt = require('jsonwebtoken')
 var QRCode = require('qrcode')
+
 
 function createEvent (req, res) {
     const event = new Event({
-        author: req.body.author,
+        author: req.user_id,
         title: req.body.title,
         brief_descr: req.body.brief_descr,
         detailed_descr: req.body.detailed_descr,
@@ -24,33 +26,16 @@ function createEvent (req, res) {
         partecipants: []
     })
 
-    
-    // da auth_id a id utente
-    User.findOne({auth_id :req.body.author})
+    event.save() // inserisco nel database
     .then((result) => {
-        
-        if(result){
-            
-            event.author=result._id
-            console.log("Id creatore: " + result._id)
-            event.save() // inserisco nel database
-            .then((result) => {
-                console.log("Inserito correttamente")
-                res.send(result);
-            })
-            .catch((err) => {
-                console.log("Errore riga 39")
-                console.log(err)
-            })
-        }
-        else{
-            console.log("Id non trovato")
-        }
+        console.log("Inserito correttamente")
+        res.send(result);
     })
     .catch((err) => {
-        console.log("Sono nel catch")
+        console.log("Errore riga 39")
         console.log(err)
     })
+        
 }
 
 
@@ -77,6 +62,85 @@ function getEventsList (req, res) {
     })
 }
 
+async function getEventsListWithPossibleFilters (req, res) {  
+    
+    
+    var num_result = req.query.num_result;
+    var search_string = req.query.search_string;
+
+    var search_date = null;
+    var end_date = null;
+    
+    var filters = {}
+
+    
+
+    if (search_string != null)
+        if(search_string.trim().length > 0){
+            filters.title = { $regex: '.*' + search_string + '.*'
+        }
+    }
+    
+    if (req.query.search_date){
+        search_date = new Date(req.query.search_date);
+        end_date = new Date(req.query.search_date + 'T23:59:59');
+        filters.date = { $gte: search_date, $lte: end_date }
+    }
+
+    try{
+        let result = await Event.find(filters, null, {limit: req.query.num_result});
+
+        var dataOggi = new Date();
+        var daRit = [];
+        var length = result.length;
+        for (var i = 0; i < length; i++) {
+            // console.log(i)
+            if (result[i].date >= dataOggi){
+                daRit.push(result[i]);
+            }
+        }
+        
+        res.status(200).send(JSON.stringify(daRit))
+    }catch(error){
+        console.log(error)
+        res.status(500);
+    }
+    
+
+    /*
+    Event.find(filters) // trova gli eventi nel db
+    .then((result) => {
+        console.log(result)
+        res.status(200).send(JSON.stringify(result))
+    })
+    
+    .limit(req.query.num_result)
+    .then((result) => { // result è un array di eventi
+
+        
+
+
+        var dataOggi = new Date();
+        var daRit = [];
+        var length = result.length;
+        for (var i = 0; i < length; i++) {
+            // console.log(i)
+            if (result[i].date >= dataOggi){
+                daRit.push(result[i]);
+            }
+        }
+        console.log(daRit)
+        
+        res.status(200).send(JSON.stringify(daRit))
+        
+    })
+    .catch((err) => {
+        res.send(JSON.stringify(err))
+    })
+    */
+    
+}
+
 function getEventDetails (req, res) {
     Event.findById(req.params.id)
     .then((result) => {
@@ -89,7 +153,7 @@ function getEventDetails (req, res) {
 
 function addReservation (req, res) {
 
-    User.findOne({auth_id :req.body.auth_id})
+    User.findById(req.user_id)
     .then((result) => {
         if (result){
             var reservationCode = Math.random() * 1000000
@@ -121,10 +185,7 @@ function addReservation (req, res) {
                 }else{
                     console.log("User has already took part")
                 }
-            })
-            
-
-            
+            })           
         }
     })
     .catch((err) => {
@@ -135,49 +196,22 @@ function addReservation (req, res) {
 
 // event : req.params.id, 
 // qrCode : req.body.qrCode
-function checkReservation (req, res) { //req.body.auth_id del creatore dell'evento
-    // findOne trovo id di chi fa la richiesta
+async function checkReservation (req, res) { //req.user_id creatore dell'evento
     // cerco id dell'utente che ha creato l'evento findbyid
-    User.findOne({auth_id : req.body.auth_id})
-    .then( (result) => {
-        if (result){
-            var user_id = result._id
-            Event.findById(req.params.id)
-            .then((result) => {
-                if (result){
-                    if (result.author == user_id){
-                        // chi sta facendo la richiesta è il creatore dell'evento
-                        Reservation.findOne({
-                            event : req.params.id, 
-                            qrCode : req.body.qrCode
-                        })
-                        .then( (result) => {
-                            if (result){
-                                // aggiungo user id alla lista di partecipanti
-                                Event.findByIdAndUpdate(req.params.id,{$addToSet : {partecipants : result.user}})
-                                .then((result) => {
-                                    var response = {
-                                        success : true
-                                    }
-                                    res.send(JSON.stringify(response))
-                                })
-                                .catch( (err) => {
-                                    console.log(err)
-                                    res.send(JSON.stringify(err))
-                                })
-                            } else {
-                                var response = {
-                                    success : false
-                                }
-                                res.send(JSON.stringify(response))
-                            }
-                            
-                        })
-                        .catch( (err) => {
-                            console.log(err)
-                            res.send(JSON.stringify(err))
-                        })
-                    } else {
+
+    try{
+        let event = await Event.findById(req.params.id)
+        if (event){
+            if (event.author == req.user_id){
+                let reservation = await Reservation.findOne({event: req.params.id, qrCode: req.body.qrCode})
+                if (reservation) {
+                    let updated = await Event.findByIdAndUpdate(req.params.id,{$addToSet : {partecipants : reservation.user}})
+                    if (updated){
+                        var response = {
+                            success : true
+                        }
+                        res.send(JSON.stringify(response))
+                    }else{
                         var response = {
                             success : false
                         }
@@ -189,24 +223,79 @@ function checkReservation (req, res) { //req.body.auth_id del creatore dell'even
                     }
                     res.send(JSON.stringify(response))
                 }
-            })
-            .catch( (err) => {
-                console.log(err)
-                res.send(JSON.stringify(err))
-            })
-        } else {
+            }else{
+                var response = {
+                    success : false
+                }
+                res.status(403).send(JSON.stringify(response))
+            }
+        }else{
             var response = {
                 success : false
             }
             res.send(JSON.stringify(response))
+        }
 
+    }catch(error){
+        //console.log(error)
+        res.status(500);
+    }
+    
+    /*
+
+    Event.findById(req.params.id)
+    .then((result) => {
+        if (result){
+            if (result.author == req.user_id){
+                // chi sta facendo la richiesta è il creatore dell'evento
+                Reservation.findOne({
+                    event : req.params.id, 
+                    qrCode : req.body.qrCode
+                })
+                .then( (result) => {
+                    if (result){
+                        // aggiungo user id alla lista di partecipanti
+                        Event.findByIdAndUpdate(req.params.id,{$addToSet : {partecipants : result.user}})
+                        .then((result) => {
+                            var response = {
+                                success : true
+                            }
+                            res.send(JSON.stringify(response))
+                        })
+                        .catch( (err) => {
+                            console.log(err)
+                            res.send(JSON.stringify(err))
+                        })
+                    } else {
+                        var response = {
+                            success : false
+                        }
+                        res.send(JSON.stringify(response))
+                    }
+                            
+                })
+                .catch( (err) => {
+                    console.log(err)
+                    res.send(JSON.stringify(err))
+                })
+            } else {
+                var response = {
+                    success : false
+                }
+                res.send(JSON.stringify(response))
+            }
+        }else{
+            var response = {
+                success : false
+            }
+            res.send(JSON.stringify(response))
         }
     })
-    .catch((err) => {
+    .catch( (err) => {
         console.log(err)
-        res.send(err)
-    })
-    
+        res.send(JSON.stringify(err))
+    })  
+    */          
 }
 
 function addSubscriber(userID, eventID){
@@ -252,133 +341,116 @@ async function sendEmail(userEmail, reservationCode){
     })
 }
 
-function getUserTakingPart(req, res){
-    var eventID = req.params.id;
-    User.findOne({auth_id : req.query.auth_id})
-    .then((result) => {
-        if (result){
-            var userID = result._id;
+function sendNotificationEmail(userEmail, text){
 
-            var userReservation = Reservation.findOne({
-                user: userID,
-                event: req.params.id,
-            })
-            .then((result) => {
-                var response = {
-                    userTakePart: result != null,
-                }
-                res.send(JSON.stringify(response))
-            })
-            
+    //console.log("sending email to " + userEmail + " with content: " + text)
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: process.env.EMAIL_ACCOUNT,
+            pass: process.env.EMAIL_PASSWORD,
         }
     })
-    .catch((err) => {
-        console.log(err)
+    const mailOptions = {
+        from: process.env.EMAIL_ACCOUNT,
+        to: userEmail,
+        subject: 'One event you are subscribed to has been modified!',
+        attachDataUrls: true,
+        html: text
+    }
+    transporter.sendMail(mailOptions, function(error, info){
+        if (error){
+            console.log(error)
+        }else{
+            console.log("Email sent.")
+        }
     })
 }
 
-// API 
-function isEventManager(req, res){
-    var eventID = req.params.id
-    var userID = req.query.auth_id;
+function getUserTakingPart(req, res){
+    var eventID = req.params.id;
     
-    Event.findById(eventID)
-    .then((eventObj) => {
-        if (eventObj){ // se trova l'evento di riferimento
-            User.findOne({auth_id : userID})
-            .then((userObj) => {
-                if (userObj){ // se trova l'utente
-                    if (userObj._id.toString() === eventObj.author){ // se il creatore dell'evento è l'utente che vuole eliminare l'evento
-                        var response = {
-                            isCreator : true
-                        }
-                        res.send(response)
-                    }else{
-                        var response = {
-                            isCreator : false
-                        }
-                        res.send(response)
-                    }
-                    
-                }else{ // se non trova l'utente
-                    var response = {
-                        isCreator : false
-                    }
-                    res.send(response) 
+    var userID = req.user_id;
+
+    Reservation.findOne({
+        user: userID,
+        event: eventID,
+    })
+    .then((result) => {
+        var response = {
+            userTakePart: result != null,
+        }
+        res.send(JSON.stringify(response))
+    })
+        
+}
+
+// API 
+async function isEventManager(req, res){
+    var eventID = req.params.id
+    try{
+        let eventFound = await Event.findById(eventID)
+        if (eventFound){
+            if(req.user_id === eventFound.author){
+                var response = {
+                    isCreator : true
                 }
-            })
-            .catch((err) => {
-                console.log(err)
+                res.status(200).send(response)
+            }else{
                 var response = {
                     isCreator : false
                 }
-                res.send(response)
-            })
+                res.status(403).send(response)
+            }
         }else{
             var response = {
                 isCreator : false
             }
-            res.send(response)
+            res.status(400).send(response)
         }
-    })
-    .catch((err) => {
+    }catch(err){
         console.log(err)
         var response = {
             isCreator : false
         }
-        res.send(response)
-    })
+        res.status(500).send(response)
+    }
 }
+
 
 
 
 //id Evento nei params, id User nel body
 function deleteEvent(req, res){
     var eventID = req.params.id
-    var userID = req.body.auth;
+    var userID = req.user_id;
 
     Event.findById(eventID)
     .then((eventObj) => {
         if (eventObj){ // se trova l'evento di riferimento
-            User.findOne({auth_id : userID})
-            .then((userObj) => {
-                if (userObj){ // se trova l'utente
-                    if (userObj._id.toString() === eventObj.author){ // se il creatore dell'evento è l'utente che vuole eliminare l'evento
-                        Event.findByIdAndDelete(req.params.id)
-                        .then((eventObj) => {
-                            var response = {
-                                deleted : true
-                            }
-                            res.send(response)
-                        })
-                        .catch((err) => {
-                            console.log(err)
-                            var response = {
-                                deleted : false
-                            }
-                            res.send(response)
-                        })
-                    }else{
-                        var response = {
-                            deleted : false
-                        }
-                        res.send(response)
+            
+            if (userID.toString() === eventObj.author){ // se il creatore dell'evento è l'utente che vuole eliminare l'evento
+                notifySubscribers(eventID)
+                Event.findByIdAndDelete(eventID)
+                .then((eventObj) => {
+                    var response = {
+                        deleted : true
                     }
-                    
-                }else{ // se non trova l'utente
+                    res.send(response)
+                })
+                .catch((err) => {
+                    console.log(err)
                     var response = {
                         deleted : false
                     }
-                    res.send(response) 
-                }
-            })
-            .catch((err) => {
-                console.log(err)
+                    res.send(response)
+                })
+            }else{
                 var response = {
                     deleted : false
                 }
                 res.send(response)
-            })
+            }
         }else{
             var response = {
                 deleted : false
@@ -419,10 +491,9 @@ async function getEventDetailsByID(id){
 }
 
 function getSubscriptionsEvents(req, res){
-    var id = req.params.id.substring(1,req.params.id.length-1);
-    var events_complete= [];
+    var events_complete = [];
     var events= [];
-    Reservation.find({user : id})
+    Reservation.find({user : req.user_id})
     .then(async (result)=>{
         if(result.length>0)
         {
@@ -434,12 +505,29 @@ function getSubscriptionsEvents(req, res){
 
             for(var i=0; i<events.length; i++)
             {
-                let data = await getEventDetailsByID(events[i])
+                var data = await getEventDetailsByID(events[i])
+                
+                
                 if(data!=null)
                 {
-                    events_complete.push(data)
+                    var eventData = {
+                        _id: data._id,
+                        photos: data.photos,
+                        location: data.location,
+                        date: data.date,
+                        title: data.title,
+                        brief_descr: data.brief_descr,
+                        subscribers: data.subscribers,
+                        reservationCode: result[i].qrCode,
+
+                    }
+
+                
+                    events_complete.push(eventData)
+                    
                 }
             }
+            
             res.send(JSON.stringify(events_complete))
         }
         else{
@@ -452,4 +540,22 @@ function getSubscriptionsEvents(req, res){
     })
 }
 
-module.exports = { createEvent, getEventsList, getEventDetails, addReservation, checkReservation, getUserTakingPart, getSubscriptionsEvents, getEventDetailsByID, isEventManager, deleteEvent, getPartecipantsList }
+async function notifySubscribers(eventID){
+    try {
+        const event = await Event.findById(eventID).exec();
+        var title = event.title;
+        var text = "<h1>We are sorry for this</h1><p>The event: "+title+" has been canceled.</p><p>Hoping to see you again!</p>"
+        const reservations = await Reservation.find({event: eventID}).exec();
+        for (var i = 0; i < reservations.length; i++){
+            var userID = reservations[i].user;
+            var user = await User.findById(userID).exec();
+            var userEmail = user.email;
+            sendNotificationEmail(userEmail, text)
+        }
+    }catch(error){
+        console.log(error)
+    }
+    
+}
+
+module.exports = { createEvent, getEventsList, getEventDetails, addReservation, checkReservation, getUserTakingPart, getSubscriptionsEvents, getEventDetailsByID, isEventManager, deleteEvent, getPartecipantsList, getEventsListWithPossibleFilters }

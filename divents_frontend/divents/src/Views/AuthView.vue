@@ -28,22 +28,34 @@ export default {
 			.then((result) => {
 				this.user = result.user;
 				console.log(auth.currentUser);
-
-        this.checkUserAuth();
+        this.checkUserAuth(this);
 			})
 			.catch((error) => {
 				console.log(error);
 			});
     },
-    checkUserAuth(){
+    checkUserAuth(self){
       DataService.checkUserAuth(this.user.uid)
       .then(response => {
         var profile_completed = response.data.profile_completed
-        
+        console.log('entra in checkuserauth', profile_completed)
         if (profile_completed){
-          this.$router.push('/');
+          console.log('1 profilo completo', this.user.uid)
+          DataService.generateToken(JSON.stringify({
+            auth_id: this.user.uid
+          }))
+          .then((response) =>{
+            localStorage.setItem('userToken', response.data.token);
+            console.log(response.data.token)
+            self.$router.push('/');
+          })
+          .catch((error) => {
+            console.log("Errore nel controllo token")
+          })
+        
         }else{
-          this.$router.push('/completeProfile');
+          console.log('aaaaaaaaaaaaaa')
+          self.$router.push('/completeProfile');
         }
       })
       .catch(error => {

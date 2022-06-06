@@ -4,7 +4,7 @@
   "description": "Events management website",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --testEnvironment=node"
   },
   "author": "Damiano Pedoni, Erica Sofia Melotti, Riccardo Monticello",
   "license": "ISC",
@@ -12,9 +12,12 @@
     "cors": "^2.8.5",
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
+    "jest": "^28.1.0",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.3.2",
     "nodemailer": "^6.7.5",
     "nodemon": "^2.0.16",
-    "qrcode": "^1.5.0"
+    "qrcode": "^1.5.0",
+    "supertest": "^6.2.3"
   }
 }

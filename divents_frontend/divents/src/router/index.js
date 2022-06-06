@@ -44,7 +44,7 @@ const routes = [
     name: 'completeProfile',
     component: CompleteProfileView,
     meta: {
-      requiresAuth: true,
+      requiresAuth: false,
       onlyNotAuth: false,
     }
   },
@@ -91,9 +91,14 @@ const router = createRouter({
   routes
 })
 
+function checkTokenPresence(){
+  return localStorage.getItem('userToken')
+}
+
+
 router.beforeEach(async (to, from, next) => {
   if (to.matched.some((record) => record.meta.requiresAuth)) {
-    if (await getCurrentUser()) {
+    if (await getCurrentUser() && checkTokenPresence()) {
       next()
     } else {
       next('/auth')
