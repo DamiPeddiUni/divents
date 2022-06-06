@@ -1,6 +1,6 @@
 import axios from 'axios';
 let http = axios.create({
-    baseURL: "http://localhost:3000",
+    baseURL: "https://divents.herokuapp.com",
     headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json'

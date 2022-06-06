@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 var http = require('http');
 const jwt = require('jsonwebtoken')
+var path = require('path')
 
 // import funzioni da altri files
 const { getVersion } = require('./version.js')
@@ -18,6 +19,10 @@ app.use(express.json({limit: '50mb'}));
 const bodyParser = require("body-parser")
 
 app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(express.static('dist'));
+
+
 
 app.use(cors())
 const server = http.createServer(app);
@@ -116,5 +121,10 @@ app.post('/api/v2/generateToken', (req, res) =>{
 app.get('/api/v2/getUserType', tokenChecker, (req, res) => {
     getUserType(req, res)
 })
+
+app.route('/*')
+    .get(function(req, res) {
+          res.sendFile(path.join(__dirname + '/dist/index.html'));
+});
 
 module.exports = app
