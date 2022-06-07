@@ -34,7 +34,7 @@
       </div>
       <div>
         <div class="gray-panel">
-          <div class="event-location">Location</div>
+          <div class="event-location">{{event.location_name}} - {{event.address}}</div>
           <div class="event-date">{{data}}</div>
           <div class="partecipants-number light-blue-text">{{event.subscribers.length}} take part</div>
           <div class="event-button-takepart">
