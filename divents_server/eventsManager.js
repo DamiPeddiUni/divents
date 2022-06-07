@@ -500,11 +500,14 @@ async function getEventDetailsByID(id){
     
 }
 
-function getSubscriptionsEvents(req, res){
+async function getSubscriptionsEvents(req, res){
     var events_complete = [];
     var events= [];
-    Reservation.find({user : req.user_id})
-    .then(async (result)=>{
+    var result = [];
+    result = await Reservation.find({user : req.user_id})
+    console.log(result)
+    if(result)
+    {
         if(result.length>0)
         {
             //prendo gli id
@@ -543,11 +546,11 @@ function getSubscriptionsEvents(req, res){
         else{
             console.log("Restituito array vuoto");
         }
-    })
-    .catch((err) => {
-        console.log("error")
-        console.log(err)
-    })
+    }
+    else{
+        res.send(404)
+    }
+    
 }
 
 async function notifySubscribers(eventID){
