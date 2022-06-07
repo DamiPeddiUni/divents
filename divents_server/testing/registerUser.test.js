@@ -45,7 +45,7 @@ describe("Register user testing", () => {
         
     })
 
-    test('POST /api/v2/registerUser con tipo errato', async () => {
+    test('POST /api/v2/registerUser con tipo gestore eveento ma senza campo location -> dati incompleti', async () => {
         return request(app)
         .post('/api/v2/registerUser')
         .set('Accept', 'application/json')

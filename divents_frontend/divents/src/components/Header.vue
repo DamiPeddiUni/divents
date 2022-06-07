@@ -7,7 +7,7 @@
             <a href="/profile/mySubscriptions">My Subscriptions</a>
             <a href="#" @click="this.logOut">Logout</a>
         </div>
-        <a href="/profile" class="header-profile-pic" :style="{ 'background-image': 'url(' + profilePic + ')' }"></a>
+        <a :href="'/profile/' + profileID" class="header-profile-pic" :style="{ 'background-image': 'url(' + profilePic + ')' }"></a>
     </div>
     <div class="header-panel" v-else>
         <a href="/">Home</a>
@@ -27,6 +27,7 @@ export default {
     return {
       isLoggedIn: false,
       profilePic: null,
+      profileID: ""
     };
   },
   methods: {
@@ -35,6 +36,7 @@ export default {
         if (user) {
           this.isLoggedIn = true;
           this.profilePic = user.photoURL;
+          this.profileID = user.uid;
           console.log("Logged in as: " + user.displayName)
           /*
           {
