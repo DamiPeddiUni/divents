@@ -1,11 +1,33 @@
 const Event = require('./models/Event')
 const Reservation = require('./models/Reservation')
 const User = require('./models/User')
+const { google } = require("googleapis")
+const OAuth2 = google.auth.OAuth2
 const nodemailer = require('nodemailer')
 require('dotenv').config();
 const jwt = require('jsonwebtoken')
 var QRCode = require('qrcode')
 
+const myOAuth2Client = new OAuth2(
+    process.env.CLIENT_ID,
+    process.env.CLIENT_SECRET
+)
+myOAuth2Client.setCredentials({
+    refresh_token: process.env.REFRESH_TOKEN
+})
+const myAccessToken = myOAuth2Client.getAccessToken()
+
+const transport = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+        type: "OAuth2",
+        user: process.env.EMAIL_ACCOUNT,
+        clientId: process.env.CLIENT_ID,
+        clientSecret: process.env.CLIENT_SECRET,
+        refreshToken: process.env.REFRESH_TOKEN,
+        accessToken: process.env.ACCESS_TOKEN
+    }
+})
 
 function createEvent (req, res) {
     const event = new Event({
@@ -141,14 +163,8 @@ async function getEventsListWithPossibleFilters (req, res) {
     
 }
 
-function getEventDetails (req, res) {
-    Event.findById(req.params.id)
-    .then((result) => {
-        res.send(result) // ritorniamo il risultato
-    })
-    .catch((err) => {
-        res.send(err)
-    })
+async function getEventDetails (req, res) {
+    res.send(await Event.findById(req.params.id))
 }
 
 function addReservation (req, res) {
@@ -324,13 +340,7 @@ async function sendEmail(userEmail, reservationCode){
     
 
     console.log("sending email to " + userEmail + " with content: " + reservationCode)
-    const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: process.env.EMAIL_ACCOUNT,
-            pass: process.env.EMAIL_PASSWORD,
-        }
-    })
+    
     const mailOptions = {
         from: process.env.EMAIL_ACCOUNT,
         to: userEmail,
@@ -338,7 +348,7 @@ async function sendEmail(userEmail, reservationCode){
         attachDataUrls: true,
         html: '<h1>Thanks for your reservation.</h1><br><p>Here is your ticket!</p><br><img src="' + img +'">'
     }
-    transporter.sendMail(mailOptions, function(error, info){
+    transport.sendMail(mailOptions, function(error, info){
         if (error){
             console.log(error)
         }else{
@@ -350,13 +360,7 @@ async function sendEmail(userEmail, reservationCode){
 function sendNotificationEmail(userEmail, text){
 
     //console.log("sending email to " + userEmail + " with content: " + text)
-    const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: process.env.EMAIL_ACCOUNT,
-            pass: process.env.EMAIL_PASSWORD,
-        }
-    })
+    
     const mailOptions = {
         from: process.env.EMAIL_ACCOUNT,
         to: userEmail,
@@ -364,7 +368,7 @@ function sendNotificationEmail(userEmail, text){
         attachDataUrls: true,
         html: text
     }
-    transporter.sendMail(mailOptions, function(error, info){
+    transport.sendMail(mailOptions, function(error, info){
         if (error){
             console.log(error)
         }else{
@@ -406,13 +410,13 @@ async function isEventManager(req, res){
                 var response = {
                     isCreator : false
                 }
-                res.status(200).send(response)
+                res.status(403).send(response)
             }
         }else{
             var response = {
                 isCreator : false
             }
-            res.status(500).send(response)
+            res.status(404).send(response)
         }
     }catch(err){
         console.log(err)

@@ -6,7 +6,7 @@ describe("Register user testing", () => {
     let conn;
 
     beforeAll( async () => {
-        jest.setTimeout(800000);
+        jest.setTimeout(80000);
         jest.unmock('mongoose');
         conn = await mongoose.connect("mongodb+srv://DamianoPedoni:Mongo1234@supercluster.cigtt.mongodb.net/diventsDB?retryWrites=true&w=majority", {useNewUrlParser: true, useUnifiedTopology: true})
         console.log("Database connected");    

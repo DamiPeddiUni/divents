@@ -94,7 +94,7 @@ describe("Reservation check testing", () => {
 
     test("A POST request at /api/v1/checkReservation with a valid code but an invalid authtoken must return an authorization error", async () => {
         return request(app)
-        .post('/api/v1/checkReservation/1')
+        .post('/api/v2/checkReservation/1')
         .set('authtoken', invalid_token)
         .send({qrCode: "1234"})
         .expect(403)
@@ -102,7 +102,7 @@ describe("Reservation check testing", () => {
 
     test("A POST request at /api/v1/checkReservation with a valid code must return if the reservation is accepted or not", async () => {
         return request(app)
-        .post('/api/v1/checkReservation/1')
+        .post('/api/v2/checkReservation/1')
         .set('authtoken', token)
         .send({qrCode: "1234"})
         .expect(200)
@@ -116,7 +116,7 @@ describe("Reservation check testing", () => {
     })
     test("A POST request at /api/v1/checkReservation with a not valid code must return if the reservation is accepted or not", async () => {
         return request(app)
-        .post('/api/v1/checkReservation/1')
+        .post('/api/v2/checkReservation/1')
         .set('authtoken', token)
         .send({qrCode: "12345"})
         .expect(200)

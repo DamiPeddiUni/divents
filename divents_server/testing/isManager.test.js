@@ -65,7 +65,7 @@ describe("isEventManager testing", () => {
     
     // token non valido
     var token2 = jwt.sign(
-        {auth_id: "qwerty3"},
+        {},
         process.env.SUPER_SECRET,
         {expiresIn: 8000}
     )
@@ -76,12 +76,12 @@ describe("isEventManager testing", () => {
         process.env.SUPER_SECRET,
         {expiresIn: 8000}
     )
-    test("GET request at /api/v1/isEventManager/:id with not existent event ID", async () => {
+    test("GET request at /api/v2/isEventManager/:id with not existent event ID", async () => {
         return request(app)
-        .get("/api/v1/isEventManager/4")
+        .get("/api/v2/isEventManager/4")
         .set('authtoken', token1)
         .set('Accept', 'application/json')
-        .expect(400)
+        .expect(404)
         .then( (response) => {
             if (response.text){
                 var data = JSON.parse(response.text);
@@ -90,9 +90,9 @@ describe("isEventManager testing", () => {
         })
     })
 
-    test("GET request at /api/v1/isEventManager/:id with event ID", async () => {
+    test("GET request at /api/v2/isEventManager/:id with valid event ID and right token", async () => {
         return request(app)
-        .get("/api/v1/isEventManager/1")
+        .get("/api/v2/isEventManager/1")
         .set('authtoken', token1)
         .set('Accept', 'application/json')
         .expect(200)
@@ -103,9 +103,9 @@ describe("isEventManager testing", () => {
             }
         })
     })
-    test("GET request at /api/v1/isEventManager/:id with unvalid token", async () => {
+    test("GET request at /api/v2/isEventManager/:id with unvalid token", async () => {
         return request(app)
-        .get("/api/v1/isEventManager/1")
+        .get("/api/v2/isEventManager/1")
         .set('authtoken', token2)
         .set('Accept', 'application/json')
         .expect(403)
@@ -116,9 +116,9 @@ describe("isEventManager testing", () => {
             }
         })
     })
-    test("GET request at /api/v1/isEventManager/:id with token of a user that is not the creator of the event", async () => {
+    test("GET request at /api/v2/isEventManager/:id with token of a user that is not the creator of the event", async () => {
         return request(app)
-        .get("/api/v1/isEventManager/2")
+        .get("/api/v2/isEventManager/2")
         .set('authtoken', token3)
         .set('Accept', 'application/json')
         .expect(403)

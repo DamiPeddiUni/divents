@@ -12,12 +12,20 @@ paths:
     get:
       summary: Get the events list
       description: >-
-        Gets the events list.
+        Gets the events list, the resuts can be filtered.
       parameters:
       - name: "num_result"
         in: "query"
         description: "Number of events to display"
         required: true
+      - name: "search_string"
+        in: "query"
+        description: "String of words"
+        required: false
+      - name: "search_date"
+        in: "query"
+        description: "Date in which the user wants to go to an event"
+        required: false
       responses:
         '200':
           description: 'Collection of events'
@@ -27,6 +35,8 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Event'
+        '500':
+          description: 'Server error'
                   
                   
   /getEventDetails/{eventID}:
@@ -57,7 +67,6 @@ paths:
             schema:
               type: object
               required:
-                - author
                 - title
                 - brief_descr
                 - detailed_descr
@@ -71,9 +80,6 @@ paths:
                 - photos
                 - max_subscribers
               properties:
-                author:
-                  type: string
-                  description: 'ID of the creator'
                 title:
                   type: string
                   description: 'Name of the event'
@@ -124,17 +130,6 @@ paths:
         in: "path"
         description: "ID of the Event"
         required: true
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - auth_id
-              properties:
-                auth_id:
-                  type: string
-                  description: "Authentication token"
                 
       responses:
         '201':
@@ -149,10 +144,6 @@ paths:
       - name: "eventID"
         in: "path"
         description: "ID of the Event"
-        required: true
-      - name: "auth_id"
-        in: "query"
-        description: "Authentication token"
         required: true
       
       responses:
@@ -171,7 +162,7 @@ paths:
         required: true
       responses:
         '200':
-          description: 'Succesfully verified.'
+          description: 'Successfully verified.'
           content:
             application/json:
               schema:
@@ -196,6 +187,7 @@ paths:
               type: object
               required:
                 - name
+                - email
                 - type
                 - profile_photo
                 - brief_presentation
@@ -204,6 +196,9 @@ paths:
                 name:
                   type: string
                   description: "Name of the user"
+                email:
+                  type: string
+                  description: "Email of the user"
                 type:
                   type: integer
                   description: "Type of user (event manager or private user"
@@ -229,6 +224,10 @@ paths:
                   profile_completed:
                     type: boolean
                     description: "Information about the completeness of the profile."
+        '400':
+          description: "Bad Request"
+        '500':
+          description: "Server error"
     
   /checkReservation/{eventID}:
     get:
@@ -253,7 +252,7 @@ paths:
                   description: "QR code of the reservation"
       responses:
         '200':
-          description: 'Succesfully verified.'
+          description: 'Successfully verified.'
           content:
             application/json:
               schema:
@@ -274,20 +273,57 @@ paths:
         in: "path"
         description: "ID of the Event"
         required: true
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - auth_id
-              properties:
-                auth_id:
-                  type: integer
-                  description: 'Authentication token'
       responses:
         '200':
-          description: 'Succesfully verified.'
+          description: 'Successfully verified.'
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - isCreator
+                properties:
+                  isCreator:
+                    type: boolean
+                    description: "Contains the information about the check result"
+        '400':
+          description: 'Bad request.'
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - isCreator
+                properties:
+                  isCreator:
+                    type: boolean
+                    description: "Contains the information about the check result"
+        '403':
+          description: 'Authorization denied.'
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - isCreator
+                properties:
+                  isCreator:
+                    type: boolean
+                    description: "Contains the information about the check result"
+        '404':
+          description: 'Event not found.'
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - isCreator
+                properties:
+                  isCreator:
+                    type: boolean
+                    description: "Contains the information about the check result"
+        '500':
+          description: 'Server error.'
           content:
             application/json:
               schema:
@@ -359,31 +395,79 @@ paths:
         required: true
       responses:
         '200':
-          description: 'User found succesfully.'
+          description: 'User found successfully.'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
                 
+  /getUserType:
+    get:
+      summary: Get user type.
+      description: Gets the user's profile type.
+      
+      responses:
+        '200':
+          description: "Type found successfully."
+          content:
+              application/json:
+                schema:
+                  type: object
+                  required:
+                    - type
+                  properties:
+                    deleted:
+                      type: number
+                      description: "Type of profile"
+        '404':
+          description: "Type not found"
+        '500':
+          description: "Server error"
+                
   /getSubscriptionsEvents/{userID}:
     get:
       summary: Get the subscriptions list of the user
       description: Returns a list of events where the user has subscibed
-      parameters:
-      - name: "userID"
-        in: "path"
-        description: "ID of the User"
-        required: true
+      
       responses:
         '200':
-          description: "List returned succesfully"
+          description: "List returned successfully"
           content:
             application/json:
               schema:
                 type: array
                 items:
                   $ref: '#/components/schemas/Event'
-                
+  
+  /generateToken:
+    post:
+      summary: Generate token
+      description: Generates an authentication token for the user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - auth_id
+              properties:
+                auth_id:
+                  type: string
+                  description: 'Authentication id of the user'
+      responses:
+        '201':
+          description: "Token created successfully."
+          content:
+              application/json:
+                schema:
+                  type: object
+                  required:
+                    - token
+                  properties:
+                    token:
+                      type: string
+                      description: "It contains the token"
+  
     
 components:
   schemas:
