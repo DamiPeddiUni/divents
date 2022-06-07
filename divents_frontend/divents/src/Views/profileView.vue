@@ -9,15 +9,15 @@
                             <img class="profile-image" :src="user_details.profile_photo">
                         </td>
                         <td>
-                            <b>Nome:</b> {{user_details.name}}
+                            <b>Name:</b> {{user_details.name}}
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <b>Tipo profilo:</b> {{user_details.type}}
+                            <b>Profile Type:</b> {{user_details.type == 0 ? "Private User" : "Event Manager"}}
                         </td>
                     </tr>
-                    <tr>
+                    <tr v-if="user_details.type == 1">
                         <td>
                             <b>Location:</b> {{user_details.location}}
                         </td>
@@ -28,6 +28,7 @@
                         {{user_details.brief_presentation}}
                     </div>
                 </div>
+                <!--
                 <div>Events:</div>
                 <div class="space"></div>
                 <div class="events-container">
@@ -46,6 +47,7 @@
                     </a>
                     </div>
                 </div>
+                -->
             </div>
         </div>
     </div>
